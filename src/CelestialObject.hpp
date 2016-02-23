@@ -1,0 +1,18 @@
+#pragma once
+#include <glm/vec3.hpp>
+#include <string>
+#include "Mesh.hpp"
+namespace oa {
+namespace game {
+class CelestialObject {
+  std::string name;
+  virtual glm::vec3 getPoint() = 0;
+  virtual glm::vec3 getVelocity() = 0;
+  std::shared_ptr<render::Mesh> mesh;
+
+ public:
+  virtual void setMesh(std::shared_ptr<render::Mesh>);
+  CelestialObject(std::string n);
+};
+}
+}

@@ -1,0 +1,126 @@
+  [
+  {
+    "name":"Sun",
+    "isStar":true,
+    "mass":1.9885e30,
+    "radius":6.9551e8,
+    "mesh": {
+      "type":"StarMesh",
+      "color": [0.9, 0.8,0.1],
+      "vertexShader": "./shaders/sunShaderVertex.glsl",
+      "fragmentShader":"./shaders/sunShaderFragment.glsl"
+    }
+  },
+  {
+    "name":"Mercury",
+    "semiMajorAxis":57909227.0e3,
+    "eccentricity":0.20563593,
+    "meanAnomaly":"174.795884",
+    "inclination":"7.0",
+    "longitudeOfAscendingNode":"48.33167",
+    "argumentOfPeriapsis":"29.124279",
+    "mass":3.33022e23,
+    "radius":2439.7e3,
+    "axisTilt":"2.11'",
+    "dayLength":1407.5,
+    "surfacePressure":5e-15,
+    "orbitOn":"Sun",
+    "mesh":{
+      "type":"PlanetMesh",
+      "diffuse": "./textures/Mercury.jpg",
+      "vertexShader": "./shaders/rockPlanetVertex.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+    }
+  },
+  {
+    "name":"Venus",
+    "semiMajorAxis":108208930e3,
+    "eccentricity":0.0068,
+    "meanAnomaly":"236.83202",
+    "inclination":"3.39458",
+    "longitudeOfAscendingNode":"76.68069",
+    "argumentOfPeriapsis":"131.53298",
+    "mass":4.8676e24,
+    "radius":6051.8e3,
+    "axisTilt":"2.11'",
+    "dayLength":2802,
+    "surfacePressure":92,
+    "orbitOn":"Sun",
+    "mesh":{
+      "type":"PlanetMesh",
+      "diffuse": "./textures/Venus.jpg",
+      "vertexShader": "./shaders/rockPlanetVertex.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+    }
+  },
+  {
+    "name":"Earth",
+    "semiMajorAxis":149.60e3,
+    "eccentricity":0.0167,
+    "meanAnomaly":null,
+    "meanLongitude":"100.46435",
+    "inclination":"0.0005",
+    "longitudeOfAscendingNode":"-11.26064",
+    "argumentOfPeriapsis":"102.94719",
+    "mass":5.9726e24,
+    "radius":6378.1e3,
+    "axisTilt":"23.44",
+    "dayLength":24,
+    "surfacePressure":1.014,
+    "orbitOn":"Sun",
+    "mesh":{
+      "type":"PlanetMesh",
+      "diffuse": "./textures/Earth.png",
+      "normal": "./textures/Earth_N.png",
+      "specular": "./textures/Earth_S.png",
+      "vertexShader": "./shaders/rockPlanetVertex.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+    }
+  },
+  {
+    "name":"Mars",
+    "semiMajorAxis":227.92e3,
+    "eccentricity":0.0935,
+    "meanAnomaly":null,
+    "meanLongitude":"355.45332",
+    "inclination":"1.850",
+    "longitudeOfAscendingNode":"49.57854",
+    "argumentOfPeriapsis":"336.04084",
+    "mass":0.64174e24,
+    "radius":3389.5e3,
+    "axisTilt":"23.44",
+    "dayLength":24.6597,
+    "surfacePressure":6.36e-3,
+    "orbitOn":"Sun",
+    "mesh":{
+      "type":"PlanetMesh",
+      "diffuse": "./textures/Mars.png",
+      "normal": "./textures/Mars_N.png",
+      "vertexShader": "./shaders/rockPlanetVertex.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+    }
+  },
+  {
+    "name":"Moon",
+    "semiMajorAxis":0.3844e3,
+    "eccentricity":0.0549,
+    "meanAnomaly":null,
+    "meanLongitude":0,
+    "inclination":"5.145",
+    "longitudeOfAscendingNode":"0",
+    "argumentOfPeriapsis":"0",
+    "mass":0.07342e24,
+    "radius":1738.1e3,
+    "axisTilt":"1.5424",
+    "dayLength":null,
+    "surfacePressure":0,
+    "orbitOn":"Earth",
+    "mesh":{
+      "type":"PlanetMesh",
+      "diffuse": "./textures/Moon.png",
+      "normal": "./textures/Moon_N.jpg",
+      "vertexShader": "./shaders/rockPlanetVertex.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+    }
+  }
+]
