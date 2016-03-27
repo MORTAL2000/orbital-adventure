@@ -8,17 +8,22 @@ namespace oa {
 namespace render {
 class Object {
  protected:
-  glm::dmat4 matrix;
+  glm::mat4 matrix;
   Object *parent;
-  glm::dquat rotation;
-  glm::dvec3 position;
-  glm::dvec3 scale;
+  glm::quat rotation;
+  glm::vec3 position;
+  glm::vec3 scale;
+  void updateMatrix();
 
  public:
-  virtual void setPosition(glm::dvec3);
-  virtual void setScale(glm::dvec3);
-  virtual void setRotation(glm::dquat);
-  virtual glm::dmat4 getMatrix();
+  virtual void setPosition(glm::vec3);
+  virtual void setScale(glm::vec3);
+  virtual void setRotation(glm::quat);
+  virtual glm::quat getRotation();
+  virtual glm::mat4 getMatrix();
+  virtual glm::mat4 getMatrix() const;
+  virtual void setMatrix(glm::mat4);
+  Object();
   virtual ~Object(){};
 };
 }

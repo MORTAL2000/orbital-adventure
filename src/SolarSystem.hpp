@@ -12,7 +12,7 @@
 namespace oa {
 namespace game {
 typedef std::unique_ptr<CelestialObject> CelestialPtr;
-typedef std::shared_ptr<render::Mesh> MeshPtr;
+typedef render::Mesh *MeshPtr;
 class SolarSystem {
  public:
   SolarSystem();

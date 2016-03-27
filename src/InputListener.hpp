@@ -10,6 +10,7 @@ class InputListener {
 
   virtual void onKeyDown(int keyCode, int mods){};
   virtual void onKeyUp(int keyCode, int mods){};
+  virtual void onScroll(double w, double v){};
   virtual ~InputListener(){};
 };
 }

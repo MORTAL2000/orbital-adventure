@@ -4,6 +4,7 @@ namespace oa {
 namespace render {
 Renderer::Renderer() {}
 void Renderer::render(const render::Camera *const camera) {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   renderSolarSystem(camera);
   renderPlanetarySystem(camera);
 }
@@ -11,18 +12,19 @@ void Renderer::render(const render::Camera *const camera) {
 void Renderer::setSolarSystem(const game::SolarSystem *ss) { solarSystem = ss; }
 
 void Renderer::renderSolarSystem(const render::Camera *const camera) {
-  auto celestialCamera = camera->changeClipping(0, 1e10);
-  auto projectionView = celestialCamera->getMatrix();
+  auto celestialCamera = camera->changeClipping(0, 1000);
+  glm::mat4 cameraViewMatrix = celestialCamera->getMatrix();
+  glm::mat4 cameraProjection = celestialCamera->getProjectionMatrix();
   for (auto &pair : *solarSystem->getCelestialMeshes()) {
     auto mesh = pair.second;
-    auto indices = mesh->setupGeometry();
-    mesh->setupUniforms(projectionView);
-    this->drawElements(indices);
+    glUseProgram(mesh->getProgramId());
+    mesh->setupUniforms(cameraProjection, cameraViewMatrix);
+    mesh->render();
   }
 }
 
 void Renderer::renderPlanetarySystem(const render::Camera *const camera) {
-  std::cout << "No render today\n";
+  // std::cout << "No render today\n";
 }
 
 void Renderer::drawElements(uint32_t amount) {

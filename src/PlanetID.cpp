@@ -8,5 +8,6 @@ bool PlanetID::operator<(const PlanetID& o) const {
 bool PlanetID::operator<(const PlanetID& o) {
   return planetName < o.planetName;
 }
+std::string PlanetID::id() const { return planetName; }
 }
 }

@@ -27,53 +27,83 @@ void SphereGeometry::setupGeometry() {
 
 void SphereGeometry::prepareOpenglBuffers() {
   createGeometry();
-  GLuint buffers[] = {positionsBufferId, normalsBufferId, uvsBufferId,
-                      indicesBufferId};
+  GLuint buffers[4];
+
   glGenBuffers(4, buffers);
+  positionsBufferId = buffers[0];
+  normalsBufferId = buffers[1];
+  uvsBufferId = buffers[2];
+  indicesBufferId = buffers[3];
+
   glBindBuffer(GL_ARRAY_BUFFER, positionsBufferId);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(GLdouble) * 3 * positions.size(),
-               &positions.at(0), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * positions.size(),
+               &positions[0][0], GL_STATIC_DRAW);
   glBindBuffer(GL_ARRAY_BUFFER, normalsBufferId);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(GLdouble) * 3 * normals.size(),
-               &normals.at(0), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * normals.size(),
+               &normals[0][0], GL_STATIC_DRAW);
   glBindBuffer(GL_ARRAY_BUFFER, uvsBufferId);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(GLdouble) * 2 * uvs.size(), &uvs.at(0),
+  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 2 * uvs.size(), &uvs[0][0],
                GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indicesBufferId);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 3 * positions.size(),
-               &indices.at(0), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(),
+               &indices[0], GL_STATIC_DRAW);
 }
 
 void SphereGeometry::createGeometry() {
-  std::cout << M_PI_2 << "\n";
   std::vector<std::vector<uint32_t>> vertices;
   float const R = 1. / (float)(rings - 1);
   float const S = 1. / (float)(segments - 1);
   uint32_t index = 0;
-  for (int r = 0; r <= rings; ++r) {
+  float heightSegments = rings;
+  float widthSegments = segments;
+  for (int y = 0; y <= heightSegments; ++y) {
     std::vector<uint32_t> rowIxes;
-    for (int s = 0; s <= segments; ++s) {
-      float const y = sin(-M_PI_2 + M_PI * r * R);
-      float const x = cos(2 * M_PI * s * S) * sin(M_PI * r * R);
-      float const z = sin(2 * M_PI * s * S) * sin(M_PI * r * R);
-      glm::dvec3 n(x, y, z);
-      glm::dvec3 p(x * radius, y * radius, z * radius);
-      glm::dvec2 uv(r * R, s * S);
+    float v = float(y) / heightSegments;
+    for (int x = 0; x <= widthSegments; ++x) {
+      float u = float(x) / widthSegments;
+      float const px = -radius * cos(u * 2 * M_PI) * sin(v * M_PI);
+      float const py = radius * cos(v * M_PI);
+      float const pz = radius * sin(u * 2 * M_PI) * sin(v * M_PI);
+      glm::vec3 n(px, py, pz);
+      glm::vec3 p(px, py, pz);
+      glm::vec2 uv(u, v);
       positions.push_back(p);
       normals.push_back(n);
       uvs.push_back(uv);
-      rowIxes.push_back(index++);
+      rowIxes.push_back(index);
+      ++index;
     }
     vertices.push_back(rowIxes);
   }
+
   for (int r = 0; r < rings; ++r) {
     for (int s = 0; s < segments; ++s) {
       auto v1 = vertices[r][s + 1];
       auto v2 = vertices[r][s];
       auto v3 = vertices[r + 1][s];
       auto v4 = vertices[r + 1][s + 1];
-      if (r != 0) indices.push_back(glm::vec3(v1, v2, v4));
-      if (r != rings - 1) indices.push_back(glm::vec3(v2, v3, v4));
+      /*
+      std::cout << v1 << " " << v2 << " " << v3 << " " << v4 << "\n";
+      std::cout << positions[v1][0] << "," << positions[v1][1] << ","
+                << positions[v1][2] << ","
+                << " " << positions[v2][0] << "," << positions[v2][1] << ","
+                << positions[v2][2] << ","
+                << " " << positions[v3][0] << "," << positions[v3][1] << ","
+                << positions[v3][2] << ","
+                << " " << positions[v4][0] << "," << positions[v4][1] << ","
+                << positions[v4][2] << ","
+                << "\n";
+                */
+      if (r != 0) {
+        indices.push_back(v1);
+        indices.push_back(v2);
+        indices.push_back(v4);
+      }
+      if (r != rings - 1) {
+        indices.push_back(v2);
+        indices.push_back(v3);
+        indices.push_back(v4);
+      }
     }
   }
 }

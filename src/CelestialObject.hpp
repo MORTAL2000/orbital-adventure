@@ -8,11 +8,12 @@ class CelestialObject {
   std::string name;
   virtual glm::vec3 getPoint() = 0;
   virtual glm::vec3 getVelocity() = 0;
-  std::shared_ptr<render::Mesh> mesh;
+  render::Mesh* mesh;
 
  public:
-  virtual void setMesh(std::shared_ptr<render::Mesh>);
+  virtual void setMesh(render::Mesh*);
   CelestialObject(std::string n);
+  virtual ~CelestialObject(){};
 };
 }
 }

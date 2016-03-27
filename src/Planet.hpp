@@ -7,6 +7,7 @@ namespace game {
 class Planet : public CelestialObject {
  public:
   Planet(double, double, double, Orbit, std::string);
+  ~Planet();
   glm::vec3 getPoint();
   glm::vec3 getVelocity();
 

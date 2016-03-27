@@ -9,6 +9,9 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 find_package(GLM REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(jpeg REQUIRED)
+find_package(png REQUIRED)
+FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
 
 file(GLOB OA_SOURCE_FILES ${OA_SOURCES}/*.cpp) 
@@ -17,6 +20,10 @@ include_directories(${GLFW_INCLUDE_DIRS})
 
 
 add_executable(orbital-adventure ${OA_SOURCE_FILES})
-set(libs ${OPENGL_LIBRARY} ${GLFW_LIBRARIES} )
+set(libs ${OPENGL_LIBRARY} 
+    ${GLFW_LIBRARIES} 
+    ${Boost_LIBRARIES}
+    ${PNG_LIBRARIES} 
+    ${JPEG_LIBRARIES})
 target_link_libraries(orbital-adventure ${libs})
 

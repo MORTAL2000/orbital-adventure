@@ -6,25 +6,21 @@
 
 namespace oa {
 namespace geometry {
-class SphereGeometry {
+class SphereGeometry : public Geometry {
   float radius;
   int segments;
   int rings;
-  GLuint positionsBufferId;
-  GLuint normalsBufferId;
-  GLuint uvsBufferId;
-  GLuint indicesBufferId;
 
-  std::vector<glm::dvec3> positions;
-  std::vector<glm::dvec3> normals;
-  std::vector<glm::dvec2> uvs;
-  std::vector<glm::ivec3> indices;
+  std::vector<glm::vec3> positions;
+  std::vector<glm::vec3> normals;
+  std::vector<glm::vec2> uvs;
+  std::vector<uint32_t> indices;
 
   void createGeometry();
 
  public:
   uint32_t getIndexAmount();
-  SphereGeometry(float radius = 1, int segments = 10, int rings = 10);
+  SphereGeometry(float radius = 0.1, int segments = 10, int rings = 10);
   void prepareOpenglBuffers();
   void setupGeometry();
 };

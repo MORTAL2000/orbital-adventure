@@ -7,6 +7,7 @@ class PlanetID {
   PlanetID(std::string);
   bool operator<(const PlanetID &o);
   bool operator<(const PlanetID &o) const;
+  std::string id() const;
 
  private:
   std::string planetName;

@@ -10,13 +10,18 @@ class PlanetMesh : public Mesh {
   GLuint specularMapId;
   GLuint normalMapId;
 
+  GLuint mvpLocation;
+  GLuint diffuseLocation;
+  GLuint normalLocation;
+  GLuint specularLocation;
+
  public:
   PlanetMesh();
   void setDiffuse(std::string);
   void setSpecular(std::string);
   void setNormal(std::string);
-  uint32_t setupGeometry();
-  void setupUniforms(glm::dmat4);
+  void render();
+  void setupUniforms(glm::mat4, glm::mat4);
   uint32_t getProgramId();
 };
 }

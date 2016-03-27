@@ -47,11 +47,12 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
               longitudeOfAscendingNode, argumentOfPeriapsis, meanAnomaly);
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
-  celestialsMap.insert(std::make_pair(id, std::move(planet)));
   auto mesh = createMesh(tree.get_child("mesh"));
   celestialMeshes.insert(std::make_pair(id, mesh));
   planet->setMesh(mesh);
+  celestialsMap.insert(std::make_pair(id, std::move(planet)));
 }
+inline float random() { return float(std::rand()) / (std::pow(2, 32) / 2); }
 
 MeshPtr SolarSystem::createMesh(boost::property_tree::ptree meshDescription) {
   std::string meshType = meshDescription.get<std::string>("type");
@@ -59,18 +60,24 @@ MeshPtr SolarSystem::createMesh(boost::property_tree::ptree meshDescription) {
   auto normalMap = meshDescription.get_optional<std::string>("normal");
   auto specularMap = meshDescription.get_optional<std::string>("specular");
   if (meshType == "StarMesh") {
-    return MeshPtr(new render::StarMesh);
+    return new render::StarMesh;
   }
   if (meshType == "PlanetMesh") {
     render::PlanetMesh *meshPtr = new render::PlanetMesh;
-    MeshPtr mesh(meshPtr);
 
     if (diffuseMap) meshPtr->setDiffuse(*diffuseMap);
     if (normalMap) meshPtr->setNormal(*normalMap);
     if (specularMap) meshPtr->setSpecular(*specularMap);
-    return mesh;
+
+    auto rx = random() * 2;
+    auto ry = random() * 2;
+    auto rz = random() * 2;
+    auto pos = glm::vec3(rx, ry, rz);
+    meshPtr->setPosition(pos);
+    return meshPtr;
   }
 }
+
 const std::map<PlanetID, MeshPtr> *const SolarSystem::getCelestialMeshes()
     const {
   return &celestialMeshes;
