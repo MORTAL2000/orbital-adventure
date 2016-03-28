@@ -23,8 +23,8 @@ class GLFWWrapper final {
   ~GLFWWrapper();
 
  private:
-  int glfwVersionMajor = 3;
-  int glfwVersionMinor = 2;
+  int glfwVersionMajor = 4;
+  int glfwVersionMinor = 1;
   int samples = 4;
   bool isFullScreen = false;
   bool glewInitialized = false;

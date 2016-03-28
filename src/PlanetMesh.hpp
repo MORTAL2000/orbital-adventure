@@ -11,6 +11,9 @@ class PlanetMesh : public Mesh {
   GLuint normalMapId;
 
   GLuint mvpLocation;
+  GLuint modelLocation;
+  GLuint viewLocation;
+  GLuint projectionlLocation;
   GLuint diffuseLocation;
   GLuint normalLocation;
   GLuint specularLocation;

@@ -13,17 +13,7 @@ Object::Object()
       rotation(1.0f, 0.f, 0.f, 0.f),
       scale(1.f, 1.f, 1.f) {}
 
-glm::mat4 Object::getMatrix() {
-  std::cout << "M :"
-            << "\n";
-  for (int i = 0; i < 4; ++i) {
-    for (int j = 0; j < 4; ++j) {
-      std::cout << matrix[i][j] << "\t";
-    }
-    std::cout << "\n";
-  }
-  return matrix;
-}
+glm::mat4 Object::getMatrix() { return matrix; }
 glm::mat4 Object::getMatrix() const { return matrix; }
 void Object::setMatrix(glm::mat4 m) {
   matrix = m;
@@ -50,8 +40,9 @@ void Object::setRotation(glm::quat r) {
 }
 
 void Object::updateMatrix() {
+  std::cout << "update matrix\n";
   auto s = glm::scale(glm::mat4(1.0f), scale);
-  auto rotMat = glm::mat4_cast(glm::inverse(rotation));
+  auto rotMat = glm::mat4_cast(rotation);
   auto p = glm::translate(glm::mat4(1.0), position);
   matrix = p * rotMat * s;
 }

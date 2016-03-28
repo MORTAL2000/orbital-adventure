@@ -6,8 +6,8 @@ out vec4 color;
 
 
 void main(){
-    float a = length(uv);
-    vec3 n = norm;
-    // n.x += §0.5;
-    color = vec4( n,  1.0);
+    vec4 c = gl_FragCoord;
+    color = vec4( uv, 0.0,  1.0);
+    gl_FragDepth = 1-c.w;
+    
 }

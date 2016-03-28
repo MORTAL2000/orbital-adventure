@@ -4,12 +4,12 @@
 namespace oa {
 namespace game {
 class CameraRotationCommand : public Command {
-  glm::quat rotation;
+  glm::vec3 center, eye, up;
   render::Camera *cameraPtr;
   void execute();
 
  public:
-  CameraRotationCommand(render::Camera *, glm::quat);
+  CameraRotationCommand(render::Camera *, glm::vec3, glm::vec3, glm::vec3);
 };
 }
 }

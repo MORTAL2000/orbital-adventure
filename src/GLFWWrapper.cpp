@@ -29,11 +29,14 @@ void GLFWWrapper::initOpenGL() {
   }
   glfwSetErrorCallback(this->errorCallback);
   determineOpenGLVersion();
+  glClearColor(0.0, 0.0, 0.4, 0.0);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
+  // glDisable(GL_STENCIL_TEST);
+  glDepthRange(0, 1000);
   genAttribArrays();
-  glClearColor(0.1, 0.0, 0.4, .0);
-  // glEnable(GL_DEPTH_TEST);
-  // glDepthFunc(GL_LESS);
-  // glEnable(GL_CULL_FACE);
   printf("Shader lang: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
   glew();
 }
@@ -41,7 +44,7 @@ void GLFWWrapper::initOpenGL() {
 void GLFWWrapper::glew() {
 #ifndef __APPLE__
   if (!glewInitialized) {
-    glewExperimental = GL_TRUE;
+    // glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (err != GLEW_OK) {
       fprintf(stderr, "Failed to initialize GLEW\n");
@@ -58,7 +61,6 @@ void GLFWWrapper::initInput() {
   glfwSetMouseButtonCallback(window, GLFWWrapper::mouseKeyCallback);
   glfwSetKeyCallback(window, GLFWWrapper::keyCallback);
   glfwSetScrollCallback(window, GLFWWrapper::mouseScrollCallback);
-  std::cout << "input glewInitialized \n";
 }
 
 GLFWWrapper *GLFWWrapper::getInstance() {
@@ -67,6 +69,7 @@ GLFWWrapper *GLFWWrapper::getInstance() {
 }
 
 void GLFWWrapper::determineOpenGLVersion() {
+  glfwDefaultWindowHints();
   for (int max = glfwVersionMajor; max != 0; --max) {
     if (max < glfwVersionMajor) glfwVersionMinor = 9;
     for (int min = glfwVersionMinor; min != 0; --min) {
@@ -74,24 +77,25 @@ void GLFWWrapper::determineOpenGLVersion() {
       glfwWindowHint(GLFW_SAMPLES, samples);
       glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, max);
       glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, min);
-      // if(glfwVersionMajor * 10 + glfwVersionMinor > 32)
       glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
       glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-      GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-      const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-      if (isFullScreen)
+      if (isFullScreen) {
+        GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode *mode = glfwGetVideoMode(monitor);
         window = glfwCreateWindow(mode->width, mode->height, title.c_str(),
                                   monitor, NULL);
-      else
+      } else {
+        std::cout << "create window\n";
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+      }
       if (!window) continue;
 
       glfwMakeContextCurrent(window);
       glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
-      std::cout << "determined\n";
       glfwVersionMajor = max;
       glfwVersionMinor = min;
+
       return;
     }
   }

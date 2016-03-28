@@ -37,10 +37,7 @@ void Game::initSolarSystem() {
   renderer.setSolarSystem(&solarSystem);
 }
 
-void Game::addCommand(Command *c) {
-  std::cout << "Add command\n";
-  commandQueue.push(c);
-}
+void Game::addCommand(Command *c) { commandQueue.push(c); }
 
 void Game::processCommands() {
   while (commandQueue.size() > 0) {
@@ -51,9 +48,8 @@ void Game::processCommands() {
   }
 }
 void Game::initPlayer() {
-  camera = new render::PerspectiveCamera(glm::radians(45.0f), 4.0 / 3.0, 0.1,
-                                         1000.0);
-  camera->lookAt(vec3(10.0, 0.0, 0.0), vec3(0, 0.10, 0), vec3(0, 1.0, 0));
+  camera = new render::PerspectiveCamera(glm::radians(45.0f), 4.0f / 3.0f, 1.0f,
+                                         100.0f);
 }
 
 void Game::mainLoop() {

@@ -9,9 +9,11 @@ namespace game {
 class CameraControlCommandProvider : public CommandProvider,
                                      public input::InputListener {
   render::Camera *camera;
-  glm::quat lastQuaternion;
-  float lastDistance;
-  glm::vec3 lastCenter;
+  glm::quat quaternion;
+  glm::quat currentRotation;
+  glm::mat4 cm;
+  float distance;
+  glm::vec3 center;
   glm::vec3 up;
 
   bool leftButtonPressed = false;
@@ -23,6 +25,7 @@ class CameraControlCommandProvider : public CommandProvider,
   void onMouseUp(int key, int mods);
   void onMouseMove(glm::vec2 point);
   void onScroll(double w, double v);
+  void createCommand();
 
  public:
   CameraControlCommandProvider(CommandAcceptor *, render::Camera *);

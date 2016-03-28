@@ -1,11 +1,5 @@
 #pragma once
-#ifndef __APPLE_CC__
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#include <OpenGL/glext.h>
-#endif
-
+#include "GLFWWrapper.hpp"
 namespace oa {
 namespace geometry {
 class Geometry {

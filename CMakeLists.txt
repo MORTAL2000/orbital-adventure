@@ -11,6 +11,7 @@ find_package(GLM REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(jpeg REQUIRED)
 find_package(png REQUIRED)
+find_package(glew REQUIRED)
 FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
 
@@ -24,6 +25,7 @@ set(libs ${OPENGL_LIBRARY}
     ${GLFW_LIBRARIES} 
     ${Boost_LIBRARIES}
     ${PNG_LIBRARIES} 
+    ${GLEW_LIBRARIES} 
     ${JPEG_LIBRARIES})
 target_link_libraries(orbital-adventure ${libs})
 

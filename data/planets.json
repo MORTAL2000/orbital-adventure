@@ -28,8 +28,8 @@
     "mesh":{
       "type":"PlanetMesh",
       "diffuse": "./textures/Mercury.jpg",
-      "vertexShader": "./shaders/rockPlanetVertex.glsl",
-      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+      "vertexShader": "./shaders/rockPlanetVertex21.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment21.glsl"
     }
   },
   {
@@ -49,8 +49,8 @@
     "mesh":{
       "type":"PlanetMesh",
       "diffuse": "./textures/Venus.jpg",
-      "vertexShader": "./shaders/rockPlanetVertex.glsl",
-      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+      "vertexShader": "./shaders/rockPlanetVertex21.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment21.glsl"
     }
   },
   {
@@ -73,8 +73,8 @@
       "diffuse": "./textures/Earth.png",
       "normal": "./textures/Earth_N.png",
       "specular": "./textures/Earth_S.png",
-      "vertexShader": "./shaders/rockPlanetVertex.glsl",
-      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+      "vertexShader": "./shaders/rockPlanetVertex21.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment21.glsl"
     }
   },
   {
@@ -96,8 +96,8 @@
       "type":"PlanetMesh",
       "diffuse": "./textures/Mars.png",
       "normal": "./textures/Mars_N.png",
-      "vertexShader": "./shaders/rockPlanetVertex.glsl",
-      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+      "vertexShader": "./shaders/rockPlanetVertex21.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment21.glsl"
     }
   },
   {
@@ -119,8 +119,8 @@
       "type":"PlanetMesh",
       "diffuse": "./textures/Moon.png",
       "normal": "./textures/Moon_N.jpg",
-      "vertexShader": "./shaders/rockPlanetVertex.glsl",
-      "fragmentShader":"./shaders/rockPlanetFragment.glsl"
+      "vertexShader": "./shaders/rockPlanetVertex21.glsl",
+      "fragmentShader":"./shaders/rockPlanetFragment21.glsl"
     }
   }
 ]
