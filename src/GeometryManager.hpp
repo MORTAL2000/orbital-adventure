@@ -2,17 +2,18 @@
 #include "GLFWWrapper.hpp"
 #include "Geometry.hpp"
 #include <map>
+#include <boost/property_tree/ptree.hpp>
 
 namespace oa {
 namespace render {
 class GeometryManager {
   GeometryManager();
-  std::map<std::string, std::shared_ptr<geometry::Geometry>> loadedGeometries;
+  std::map<std::string, std::unique_ptr<geometry::Geometry>> loadedGeometries;
 
  public:
-  static GeometryManager *instance();
-  std::shared_ptr<geometry::Geometry> loadGeometry(std::string geometryName);
-  std::shared_ptr<geometry::Geometry> createSphereGeometry();
+  static GeometryManager* instance();
+  geometry::Geometry* loadGeometry(boost::property_tree::ptree& geometryProps);
+  geometry::Geometry* createSphereGeometry(double radius=1.0f, int rings =10, int segments=10);
 };
 }
 }

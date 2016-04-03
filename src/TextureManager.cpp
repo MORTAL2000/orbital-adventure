@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -13,8 +14,10 @@ namespace oa {
 namespace render {
 TextureManager::TextureManager() {}
 GLuint TextureManager::loadTexture(std::string filepath) {
+  std::cout << "LOAD TEXTURE " << filepath << "\n";
   auto p = boost::filesystem::path(filepath);
   std::string extension = p.extension().string();
+  std::cout << "is jpeg " << isJpeg(extension) << "\n";
   if (isJpeg(extension)) {
     return loadJpegTexture(filepath);
   }
@@ -28,12 +31,6 @@ GLuint TextureManager::loadTexture(std::string filepath) {
 GLuint TextureManager::loadJpegTexture(std::string filename) {
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr emgr;
-  // struct TextureManager::error_mgr errmgr;
-  FILE* infile;
-  if ((infile = fopen(filename.c_str(), "rb")) == NULL) {
-    std::cerr << "can't open " << filename << " \n";
-    return 0;
-  }
   struct stat file_info;
   int rc = stat(filename.c_str(), &file_info);
   if (rc) {
@@ -41,18 +38,20 @@ GLuint TextureManager::loadJpegTexture(std::string filename) {
     exit(EXIT_FAILURE);
   }
   long jpg_size = file_info.st_size;
-  unsigned char* jpg_buffer = new unsigned char[jpg_size + 100];
+  char* jpg_buffer = new char[jpg_size + 100];
   int i = 0;
 
-  while (i < jpg_size) {
-    rc = fread(jpg_buffer + i, jpg_size - i, 1, infile);
-    i += rc;
+  std::ifstream infile;
+  infile.open(filename.c_str(), std::ios::in | std::ios::binary);
+
+  while (infile.read((char*)(jpg_buffer + i), jpg_size - i)) {
+    i += infile.gcount();
+    if (i == jpg_size) break;
   }
 
   cinfo.err = jpeg_std_error(&emgr);
-  // emgr.error_exit = TextureManager::jpeg_error_exit;
   jpeg_create_decompress(&cinfo);
-  jpeg_mem_src(&cinfo, jpg_buffer, jpg_size);
+  jpeg_mem_src(&cinfo, (unsigned char*)jpg_buffer, jpg_size);
 
   rc = jpeg_read_header(&cinfo, TRUE);
 
@@ -79,6 +78,7 @@ GLuint TextureManager::loadJpegTexture(std::string filename) {
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(GL_TEXTURE_2D, 0, type, cinfo.output_width, cinfo.output_height,
                0, type, GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D);
 
   jpeg_finish_decompress(&cinfo);
   jpeg_destroy_decompress(&cinfo);
@@ -86,79 +86,147 @@ GLuint TextureManager::loadJpegTexture(std::string filename) {
 }
 
 GLuint TextureManager::loadPngTexture(std::string filename) {
-  char header[8];  // 8 is the maximum size that can be checked
-  png_byte color_type;
-  png_byte bit_depth;
-  png_structp png_ptr;
-  png_infop info_ptr;
+   png_byte header[8];
 
-  /* open file and test for it being a png */
-  FILE* fp = fopen(filename.c_str(), "rb");
-  if (!fp)
-    std::cerr << "[read_png_file] File  could not be opened for reading"
-              << filename << "\n";
-  fread(header, 1, 8, fp);
-  // if (png_sig_cmp(header, 0, 8))
-  // std::cerr << "[read_png_file] File %s is not recognized as a PNG file"
-  //<< filename << "\n";
+    FILE *fp = fopen(filename.c_str(), "rb");
+    if (fp == 0)
+    {
+        perror(filename.c_str());
+        return 0;
+    }
 
-  /* initialize stuff */
-  png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    // read the header
+    fread(header, 1, 8, fp);
 
-  if (!png_ptr)
-    std::cerr << "[read_png_file] png_create_read_struct failed"
-              << "\n";
+    if (png_sig_cmp(header, 0, 8))
+    {
+        fprintf(stderr, "error: %s is not a PNG.\n", filename.c_str());
+        fclose(fp);
+        return 0;
+    }
 
-  info_ptr = png_create_info_struct(png_ptr);
-  if (!info_ptr) std::cerr << "[read_png_file] png_create_info_struct failed\n";
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr)
+    {
+        fprintf(stderr, "error: png_create_read_struct returned 0.\n");
+        fclose(fp);
+        return 0;
+    }
 
-  if (setjmp(png_jmpbuf(png_ptr)))
-    std::cerr << "[read_png_file] Error during init_io\n";
+    // create png info struct
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+        fprintf(stderr, "error: png_create_info_struct returned 0.\n");
+        png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+        fclose(fp);
+        return 0;
+    }
 
-  png_init_io(png_ptr, fp);
-  png_set_sig_bytes(png_ptr, 8);
+    // create png info struct
+    png_infop end_info = png_create_info_struct(png_ptr);
+    if (!end_info)
+    {
+        fprintf(stderr, "error: png_create_info_struct returned 0.\n");
+        png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
+        fclose(fp);
+        return 0;
+    }
 
-  png_read_info(png_ptr, info_ptr);
+    // the code in this if statement gets called if libpng encounters an error
+    if (setjmp(png_jmpbuf(png_ptr))) {
+        fprintf(stderr, "error from libpng\n");
+        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+        fclose(fp);
+        return 0;
+    }
 
-  int width = png_get_image_width(png_ptr, info_ptr);
-  int height = png_get_image_height(png_ptr, info_ptr);
-  color_type = png_get_color_type(png_ptr, info_ptr);
-  bit_depth = png_get_bit_depth(png_ptr, info_ptr);
+    // init png reading
+    png_init_io(png_ptr, fp);
 
-  int number_of_passes = png_set_interlace_handling(png_ptr);
-  png_read_update_info(png_ptr, info_ptr);
+    // let libpng know you already read the first 8 bytes
+    png_set_sig_bytes(png_ptr, 8);
 
-  /* read file */
-  if (setjmp(png_jmpbuf(png_ptr)))
-    std::cerr << "[read_png_file] Error during read_image\n";
+    // read all the info up to the image data
+    png_read_info(png_ptr, info_ptr);
 
-  png_bytepp row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
+    // variables to pass to get info
+    int bit_depth, color_type;
+    png_uint_32 temp_width, temp_height;
 
-  for (size_t y = 0; y < height; y++)
-    row_pointers[y] = (png_byte*)malloc(png_get_rowbytes(png_ptr, info_ptr));
+    // get info about png
+    png_get_IHDR(png_ptr, info_ptr, &temp_width, &temp_height, &bit_depth, &color_type,
+        NULL, NULL, NULL);
 
-  png_read_image(png_ptr, row_pointers);
+    //if (width){ *width = temp_width; }
+    //if (height){ *height = temp_height; }
+
+    // Update the png info struct.
+    png_read_update_info(png_ptr, info_ptr);
+
+    // Row size in bytes.
+    int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+
+    // glTexImage2d requires rows to be 4-byte aligned
+    rowbytes += 3 - ((rowbytes-1) % 4);
+
+    // Allocate the image_data as a big block, to be given to opengl
+    png_byte * image_data;
+    image_data = (unsigned char*) malloc(rowbytes * temp_height * sizeof(png_byte)+15);
+    if (image_data == NULL)
+    {
+        fprintf(stderr, "error: could not allocate memory for PNG image data\n");
+        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+        fclose(fp);
+        return 0;
+    }
+
+    // row_pointers is for pointing to image_data for reading the png with libpng
+    png_bytep * row_pointers = (png_bytep*)malloc(temp_height * sizeof(png_bytep));
+    if (row_pointers == NULL)
+    {
+        fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
+        png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+        free(image_data);
+        fclose(fp);
+        return 0;
+    }
+
+    // set the individual row_pointers to point at the correct offsets of image_data
+    int i;
+    for (i = 0; i < temp_height; i++)
+    {
+        row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
+    }
+
+    // read the png into image_data through row_pointers
+    png_read_image(png_ptr, row_pointers);
+
+    // Generate the OpenGL texture object
 
   GLuint textureId;
   glGenTextures(1, &textureId);
   glBindTexture(GL_TEXTURE_2D, textureId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-               GL_UNSIGNED_BYTE, row_pointers);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_width, temp_height, 0, GL_RGB,
+               GL_UNSIGNED_BYTE, image_data);
+  glGenerateMipmap(GL_TEXTURE_2D);
 
   fclose(fp);
   return textureId;
 }
 
 bool TextureManager::isPng(std::string ext) {
-  std::vector<std::string> exts({"png", "PNG"});
+  std::vector<std::string> exts({".png", ".PNG"});
   auto pos = std::find_if(exts.cbegin(), exts.cend(),
                           [&ext](std::string e) { return ext == e; });
   return pos != exts.cend();
 }
 bool TextureManager::isJpeg(std::string ext) {
-  std::vector<std::string> exts({"jpeg", "jpg", "JPG", "JPEG"});
+  std::cout << "EXT " << ext << " \n";
+  std::vector<std::string> exts({".jpeg", ".jpg", ".JPG", ".JPEG"});
   auto pos = std::find_if(exts.cbegin(), exts.cend(),
                           [&ext](std::string e) { return ext == e; });
+
   return pos != exts.cend();
 }
 

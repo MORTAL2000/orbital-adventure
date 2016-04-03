@@ -9,7 +9,7 @@ namespace render {
 class Object {
  protected:
   glm::mat4 matrix;
-  Object *parent;
+  Object* parent;
   glm::quat rotation;
   glm::vec3 position;
   glm::vec3 scale;
@@ -19,9 +19,9 @@ class Object {
   virtual void setPosition(glm::vec3);
   virtual void setScale(glm::vec3);
   virtual void setRotation(glm::quat);
-  virtual glm::quat getRotation();
-  virtual glm::mat4 getMatrix();
-  virtual glm::mat4 getMatrix() const;
+  virtual const glm::quat& getRotation();
+  virtual const glm::mat4& getMatrix();
+  virtual const glm::mat4& getMatrix() const;
   virtual void setMatrix(glm::mat4);
   Object();
   virtual ~Object(){};

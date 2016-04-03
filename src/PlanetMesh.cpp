@@ -13,11 +13,11 @@ uint32_t PlanetMesh::getProgramId() {
   return programId;
 }
 PlanetMesh::PlanetMesh() {
-  geometry = GeometryManager::instance()->loadGeometry("SphereGeometry");
+  // geometry = GeometryManager::instance()->loadGeometry("SphereGeometry");
 
-  programId = ShaderProgramManager::instance()->loadProgram(
-      "../data/shaders/rockPlanetVertex.glsl",
-      "../data/shaders/rockPlanetFragment.glsl");
+  // programId = ShaderProgramManager::instance()->loadProgram(
+  //"../data/shaders/rockPlanetVertex.glsl",
+  //"../data/shaders/rockPlanetFragment.glsl");
   glUseProgram(programId);
   mvpLocation = glGetUniformLocation(programId, "modelViewMatrix");
   modelLocation = glGetUniformLocation(programId, "model");
@@ -39,18 +39,12 @@ void PlanetMesh::setNormal(std::string fname) {
 
 void PlanetMesh::setupUniforms(glm::mat4 projection, glm::mat4 view) {
   static float cx = 0;
-  auto mm = glm::translate(glm::mat4(1.0), glm::vec3(programId, 0, 0));
-  glm::quat rot = glm::angleAxis(cx / 100, glm::vec3(0.0f, 1.0f, 0.0f));
-
-  mm *= glm::mat4_cast(rot);
-  // this->getMatrix();
+  // const glm::mat4 &mm = this->getMatrix();
   // auto m = projection * view * mm;
-  // auto mv = view * mm;
   // glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &m[0][0]);
-  glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(mm));
-  glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-  glUniformMatrix4fv(projectionlLocation, 1, GL_FALSE,
-                     glm::value_ptr(projection));
+  // glActiveTexture(GL_TEXTURE0);
+  // glBindTexture(GL_TEXTURE_2D, diffuseMapId);
+  // glUniform1i(diffuseLocation, 0);
 }
 
 void PlanetMesh::render() {

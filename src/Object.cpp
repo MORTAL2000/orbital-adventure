@@ -13,8 +13,8 @@ Object::Object()
       rotation(1.0f, 0.f, 0.f, 0.f),
       scale(1.f, 1.f, 1.f) {}
 
-glm::mat4 Object::getMatrix() { return matrix; }
-glm::mat4 Object::getMatrix() const { return matrix; }
+const glm::mat4& Object::getMatrix() { return matrix; }
+const glm::mat4& Object::getMatrix() const { return matrix; }
 void Object::setMatrix(glm::mat4 m) {
   matrix = m;
   glm::vec3 scew;
@@ -32,7 +32,7 @@ void Object::setScale(glm::vec3 s) {
   updateMatrix();
 }
 
-glm::quat Object::getRotation() { return rotation; }
+const glm::quat& Object::getRotation() { return rotation; }
 
 void Object::setRotation(glm::quat r) {
   rotation = r;
@@ -40,7 +40,6 @@ void Object::setRotation(glm::quat r) {
 }
 
 void Object::updateMatrix() {
-  std::cout << "update matrix\n";
   auto s = glm::scale(glm::mat4(1.0f), scale);
   auto rotMat = glm::mat4_cast(rotation);
   auto p = glm::translate(glm::mat4(1.0), position);

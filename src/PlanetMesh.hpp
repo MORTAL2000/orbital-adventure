@@ -3,7 +3,7 @@
 #include "SphereGeometry.hpp"
 namespace oa {
 namespace render {
-class PlanetMesh : public Mesh {
+class PlanetMesh /*: public Mesh*/ {
   std::shared_ptr<geometry::Geometry> geometry;
   uint32_t programId;
   GLuint diffuseMapId;

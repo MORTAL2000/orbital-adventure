@@ -3,10 +3,13 @@
 #include "Planet.hpp"
 #include "PlanetMesh.hpp"
 #include "StarMesh.hpp"
+#include <boost/filesystem.hpp>
 
 namespace oa {
 namespace game {
-SolarSystem::SolarSystem() : planetFilePath("../data/planets.json") {}
+SolarSystem::SolarSystem() : planetFilePath("../data/planets.json") {
+  meshFabric.setRootDir(planetFilePath);
+}
 
 void SolarSystem::createPlanets() {
   using boost::property_tree::ptree;
@@ -14,6 +17,8 @@ void SolarSystem::createPlanets() {
   read_json(planetFilePath, planetsTree);
   for (auto &v : planetsTree) parsePlanet(v);
 }
+
+inline float random() { return float(std::rand()) / (std::pow(2, 32) / 2); }
 
 void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
   auto tree = value.second;
@@ -23,8 +28,9 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
   double mass = tree.get<double>("mass");
   double radius = tree.get<double>("radius");
   if (isStar) {
+    boost::property_tree::ptree meshProps = tree.get_child("mesh");
     auto star = CelestialPtr(new Star(mass, radius, name));
-    auto mesh = createMesh(tree.get_child("mesh"));
+    auto mesh = meshFabric.createMesh(meshProps);
     celestialMeshes.insert(std::make_pair(id, mesh));
     star->setMesh(mesh);
     celestialsMap.insert(std::make_pair(id, std::move(star)));
@@ -47,35 +53,13 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
               longitudeOfAscendingNode, argumentOfPeriapsis, meanAnomaly);
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
-  auto mesh = createMesh(tree.get_child("mesh"));
+  auto mesh = meshFabric.createMesh(tree.get_child("mesh"));
   celestialMeshes.insert(std::make_pair(id, mesh));
+  mesh->setPosition(glm::vec3(random() * 10.f, 0.f, 0.f));
+  mesh->setRotation(glm::quat(1.f, 0.f, 0.f, 0.f));
+  mesh->setScale(glm::vec3(1.f, 1.f, 1.f));
   planet->setMesh(mesh);
   celestialsMap.insert(std::make_pair(id, std::move(planet)));
-}
-inline float random() { return float(std::rand()) / (std::pow(2, 32) / 2); }
-
-MeshPtr SolarSystem::createMesh(boost::property_tree::ptree meshDescription) {
-  std::string meshType = meshDescription.get<std::string>("type");
-  auto diffuseMap = meshDescription.get_optional<std::string>("diffuse");
-  auto normalMap = meshDescription.get_optional<std::string>("normal");
-  auto specularMap = meshDescription.get_optional<std::string>("specular");
-  if (meshType == "StarMesh") {
-    return new render::StarMesh;
-  }
-  if (meshType == "PlanetMesh") {
-    render::PlanetMesh *meshPtr = new render::PlanetMesh;
-
-    if (diffuseMap) meshPtr->setDiffuse(*diffuseMap);
-    if (normalMap) meshPtr->setNormal(*normalMap);
-    if (specularMap) meshPtr->setSpecular(*specularMap);
-
-    auto rx = random() * 2;
-    auto ry = random() * 2;
-    auto rz = random() * 2;
-    auto pos = glm::vec3(rx, ry, rz);
-    meshPtr->setPosition(pos);
-    return meshPtr;
-  }
 }
 
 const std::map<PlanetID, MeshPtr> *const SolarSystem::getCelestialMeshes()

@@ -3,22 +3,29 @@
 
 namespace oa {
 namespace render {
+  using namespace boost::property_tree;
 GeometryManager::GeometryManager() {}
 
-std::shared_ptr<geometry::Geometry> GeometryManager::createSphereGeometry() {
-  auto s =
-      std::make_shared<geometry::SphereGeometry>(geometry::SphereGeometry());
+geometry::Geometry *GeometryManager::createSphereGeometry(double radius,int rings, int segments) {
+  geometry::SphereGeometry *s = new geometry::SphereGeometry(radius, segments, rings);
   s->prepareOpenglBuffers();
   return s;
 }
-std::shared_ptr<geometry::Geometry> GeometryManager::loadGeometry(
-    std::string geometryName) {
+geometry::Geometry *GeometryManager::loadGeometry( ptree &geometryProps) {
+  std::string geometryName = geometryProps.get_value<std::string>("name");
+  ptree options = geometryProps.get_child("options");
+
+
   if (geometryName == "SphereGeometry") {
-    return createSphereGeometry();
+    int rings = options.get<int>("rings",10);
+    int segments = options.get<int>("segments", 10);
+    double radius = options.get<double>("radius", 1.f);
+    return createSphereGeometry(radius, rings, segments);
   }
-  // Return sphere geometry in any other case;
   return createSphereGeometry();
 }
+
+
 GeometryManager *GeometryManager::instance() {
   static GeometryManager inst;
   return &inst;

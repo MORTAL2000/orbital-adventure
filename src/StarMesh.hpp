@@ -4,7 +4,7 @@
 #include "Geometry.hpp"
 namespace oa {
 namespace render {
-class StarMesh : public Mesh {
+class StarMesh /* : public Mesh*/ {
   uint32_t programId;
   std::shared_ptr<geometry::Geometry> geometry;
 

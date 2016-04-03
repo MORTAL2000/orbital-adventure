@@ -8,6 +8,7 @@
 #include "CelestialObject.hpp"
 #include "PlanetID.hpp"
 #include "Mesh.hpp"
+#include "MeshFabric.hpp"
 
 namespace oa {
 namespace game {
@@ -21,12 +22,13 @@ class SolarSystem {
   const std::map<PlanetID, MeshPtr> *const getCelestialMeshes() const;
 
  private:
+  render::MeshFabric meshFabric;
   std::map<PlanetID, CelestialPtr> celestialsMap;
   std::map<PlanetID, MeshPtr> celestialMeshes;
 
   std::string planetFilePath;
   void parsePlanet(boost::property_tree::ptree::value_type &);
-  MeshPtr createMesh(boost::property_tree::ptree meshDescription);
+  // MeshPtr createMesh(boost::property_tree::ptree meshDescription);
 };
 }
 }
