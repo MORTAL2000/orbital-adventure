@@ -3,6 +3,9 @@
 #include <iostream>
 namespace oa {
 namespace render {
+geometry::Geometry *Mesh::getGeometry() { return this->geometry; }
+ShaderProgram *Mesh::getShader() { return program; }
+
 Mesh::Mesh(ShaderProgram *p, geometry::Geometry *g) : program(p), geometry(g) {
   setUniformValue("MVP", new Mat4Uniform(&modelViewProjection));
   setUniformValue("modelViewMatrix", new Mat4Uniform(&modelViewProjection));
