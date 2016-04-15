@@ -1,6 +1,5 @@
-#pragma once
-#include "Geometry.hpp"
 #include <iostream>
+#include "Geometry.hpp"
 namespace oa {
 namespace geometry {
 

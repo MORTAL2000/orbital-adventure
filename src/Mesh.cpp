@@ -1,6 +1,6 @@
+#include <iostream>
 #include "Mesh.hpp"
 #include "Uniform.hpp"
-#include <iostream>
 namespace oa {
 namespace render {
 geometry::Geometry *Mesh::getGeometry() { return this->geometry; }

@@ -1,6 +1,6 @@
-#include "SphereGeometry.hpp"
 #include <math.h>
 #include <iostream>
+#include "SphereGeometry.hpp"
 namespace oa {
 namespace geometry {
 SphereGeometry::SphereGeometry(float r, int s, int rings)
@@ -82,7 +82,6 @@ void SphereGeometry::createGeometry() {
       auto v2 = vertices[r][s];
       auto v3 = vertices[r + 1][s];
       auto v4 = vertices[r + 1][s + 1];
-      /*
       std::cout << v1 << " " << v2 << " " << v3 << " " << v4 << "\n";
       std::cout << positions[v1][0] << "," << positions[v1][1] << ","
                 << positions[v1][2] << ","
@@ -93,7 +92,6 @@ void SphereGeometry::createGeometry() {
                 << " " << positions[v4][0] << "," << positions[v4][1] << ","
                 << positions[v4][2] << ","
                 << "\n";
-                */
       if (r != 0) {
         indices.push_back(v1);
         indices.push_back(v2);

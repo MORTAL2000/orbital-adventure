@@ -1,6 +1,7 @@
-#include "GameEventsCommandProvider.hpp"
-#include "Game.hpp"
+#include <iostream>
 #include "ExitCommand.hpp"
+#include "Game.hpp"
+#include "GameEventsCommandProvider.hpp"
 
 namespace oa {
 namespace game {

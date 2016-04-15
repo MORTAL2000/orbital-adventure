@@ -1,12 +1,14 @@
-#include "GLFWWrapper.hpp"
 #include <iostream>
+#include "GLFWWrapper.hpp"
 
 namespace oa {
 namespace gl {
 
 GLFWWrapper::GLFWWrapper() : title("Orbital adventure") {}
 GLFWWrapper::~GLFWWrapper() {
+  // if (glfwVersionMajor == 4) {
   glDeleteVertexArrays(1, &VertexArrayID);
+  //}
   glfwTerminate();
 }
 
@@ -16,10 +18,12 @@ void GLFWWrapper::init() {
 }
 
 void GLFWWrapper::genAttribArrays() {
+  // if (glfwVersionMajor == 4) {
   std::cout << "gen Attrib arrays\n";
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
   std::cout << "GGG " << VertexArrayID << "\n";
+  //}
 }
 
 void GLFWWrapper::initOpenGL() {
@@ -29,22 +33,22 @@ void GLFWWrapper::initOpenGL() {
   }
   glfwSetErrorCallback(this->errorCallback);
   determineOpenGLVersion();
+  glew();
   glClearColor(0.0, 0.0, 0.4, 0.0);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
-  // glDisable(GL_STENCIL_TEST);
   glDepthRange(0, 1000);
   genAttribArrays();
   printf("Shader lang: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-  glew();
 }
 
 void GLFWWrapper::glew() {
 #ifndef __APPLE__
+  std::cout << "INIT GLEW\n";
   if (!glewInitialized) {
-    // glewExperimental = GL_TRUE;
+    glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     if (err != GLEW_OK) {
       fprintf(stderr, "Failed to initialize GLEW\n");
@@ -89,7 +93,9 @@ void GLFWWrapper::determineOpenGLVersion() {
         std::cout << "create window\n";
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
       }
-      if (!window) continue;
+      if (!window) {
+        continue;
+      }
 
       glfwMakeContextCurrent(window);
       glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);

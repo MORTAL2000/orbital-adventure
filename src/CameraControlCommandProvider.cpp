@@ -1,10 +1,9 @@
-#pragma once
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <iostream>
 #include "CameraControlCommandProvider.hpp"
 #include "CameraRotationCommand.hpp"
-#include <iostream>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
 namespace oa {
 namespace game {
 CameraControlCommandProvider::CameraControlCommandProvider(CommandAcceptor *a,
@@ -60,7 +59,7 @@ void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
 }
 
 void CameraControlCommandProvider::onScroll(double w, double v) {
-  distance += v / 100;
+  distance += v / 30;
   std::cout << "D: " << distance << "\n";
   createCommand();
 }

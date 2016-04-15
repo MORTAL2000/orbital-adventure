@@ -1,6 +1,6 @@
 #pragma once
-#include "GLFWWrapper.hpp"
 #include <glm/mat4x4.hpp>
+#include "GLFWWrapper.hpp"
 namespace oa {
 namespace render {
 class Uniform {
@@ -16,6 +16,7 @@ class Mat4Uniform : public Uniform {
  public:
   Mat4Uniform(glm::mat4 *);
 };
+
 class TextureUniform : public Uniform {
   GLuint textureId;
   void setup(GLuint);

@@ -1,8 +1,6 @@
 #include "SolarSystem.hpp"
 #include "Star.hpp"
 #include "Planet.hpp"
-#include "PlanetMesh.hpp"
-#include "StarMesh.hpp"
 #include <boost/filesystem.hpp>
 
 namespace oa {

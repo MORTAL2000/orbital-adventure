@@ -1,5 +1,4 @@
 #include "Planet.hpp"
-#include "PlanetMesh.hpp"
 #include <iostream>
 
 namespace oa {

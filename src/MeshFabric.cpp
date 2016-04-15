@@ -1,9 +1,10 @@
+#include <iostream>
+#include "Geometry.hpp"
+#include "GeometryManager.hpp"
+#include "Mesh.hpp"
 #include "MeshFabric.hpp"
 #include "ShaderManager.hpp"
-#include "GeometryManager.hpp"
-#include "Geometry.hpp"
 #include "TextureManager.hpp"
-#include "Mesh.hpp"
 
 namespace oa {
 namespace render {

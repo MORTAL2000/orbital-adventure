@@ -7,11 +7,11 @@ set(OA_SOURCES ${OA_SOURCE_DIR}/src)
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
-find_package(GLM REQUIRED)
+find_package(glm REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(jpeg REQUIRED)
-find_package(png REQUIRED)
-find_package(glew REQUIRED)
+find_package(JPEG REQUIRED)
+find_package(PNG REQUIRED)
+find_package(GLEW REQUIRED)
 FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
 

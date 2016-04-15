@@ -1,5 +1,4 @@
 #include "Star.hpp"
-#include "StarMesh.hpp"
 namespace oa {
 namespace game {
 Star::Star(double m, double r, std::string n)

@@ -1,5 +1,5 @@
-#include "Renderer.hpp"
 #include <iostream>
+#include "Renderer.hpp"
 namespace oa {
 namespace render {
 Renderer::Renderer() {}
