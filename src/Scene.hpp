@@ -1,10 +1,10 @@
 #pragma once
-#include "ShaderProgam.hpp"
-#include "Geometry.hpp"
-#include "Mesh.hpp"
-#include <vector>
 #include <map>
 #include <set>
+#include <vector>
+#include "Geometry.hpp"
+#include "Mesh.hpp"
+#include "ShaderProgam.hpp"
 namespace oa {
 namespace render {
 class Scene {
@@ -15,9 +15,10 @@ class Scene {
 
  public:
   void addMesh(Mesh *);
-  const std::set<ShaderProgram *> &getAllShaders();
-  const std::set<geometry::Geometry *> &getGeometries(const ShaderProgram *);
-  const std::set<Mesh *> &getMeshes(const geometry::Geometry *);
+  const std::set<ShaderProgram *> &getAllShaders() const;
+  const std::set<geometry::Geometry *> &getGeometries(
+      const ShaderProgram *) const;
+  const std::set<Mesh *> &getMeshes(const geometry::Geometry *) const;
 };
 }
 }

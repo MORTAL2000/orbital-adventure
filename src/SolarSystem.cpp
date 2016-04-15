@@ -1,13 +1,15 @@
+#include <boost/filesystem.hpp>
+#include "Planet.hpp"
 #include "SolarSystem.hpp"
 #include "Star.hpp"
-#include "Planet.hpp"
-#include <boost/filesystem.hpp>
 
 namespace oa {
 namespace game {
 SolarSystem::SolarSystem() : planetFilePath("../data/planets.json") {
   meshFabric.setRootDir(planetFilePath);
 }
+
+const render::Scene *SolarSystem::getScene() { return &scene; }
 
 void SolarSystem::createPlanets() {
   using boost::property_tree::ptree;
@@ -32,6 +34,7 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
     celestialMeshes.insert(std::make_pair(id, mesh));
     star->setMesh(mesh);
     celestialsMap.insert(std::make_pair(id, std::move(star)));
+    scene.addMesh(mesh);
     return;
   }
   double meanAnomaly = tree.get("meanAnomaly", -10000.0f);
@@ -57,6 +60,7 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
   mesh->setRotation(glm::quat(1.f, 0.f, 0.f, 0.f));
   mesh->setScale(glm::vec3(1.f, 1.f, 1.f));
   planet->setMesh(mesh);
+  scene.addMesh(mesh);
   celestialsMap.insert(std::make_pair(id, std::move(planet)));
 }
 

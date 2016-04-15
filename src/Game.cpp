@@ -1,8 +1,8 @@
+#include <chrono>
+#include <memory>
+#include <thread>
 #include "Game.hpp"
 #include "PerspectiveCamera.hpp"
-#include <chrono>
-#include <thread>
-#include <memory>
 
 #include <iostream>
 namespace oa {
@@ -34,7 +34,7 @@ void Game::initGLFW() { glfw->init(); }
 
 void Game::initSolarSystem() {
   solarSystem.createPlanets();
-  renderer.setSolarSystem(&solarSystem);
+  // renderer.setSolarSystem(&solarSystem);
 }
 
 void Game::addCommand(Command *c) { commandQueue.push(c); }
@@ -56,7 +56,7 @@ void Game::mainLoop() {
   while (isPlaying) {
     processCommands();
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    renderer.render(camera);
+    renderer.render(solarSystem.getScene(), camera);
     glfw->endFrame();
   }
 

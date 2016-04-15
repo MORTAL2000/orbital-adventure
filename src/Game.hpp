@@ -1,12 +1,12 @@
 #pragma once
 #include <queue>
-#include "GLFWWrapper.hpp"
-#include "SolarSystem.hpp"
 #include "Camera.hpp"
-#include "Renderer.hpp"
-#include "CommandAcceptor.hpp"
-#include "GameEventsCommandProvider.hpp"
 #include "CameraControlCommandProvider.hpp"
+#include "CommandAcceptor.hpp"
+#include "GLFWWrapper.hpp"
+#include "GameEventsCommandProvider.hpp"
+#include "Renderer.hpp"
+#include "SolarSystem.hpp"
 
 namespace oa {
 namespace game {

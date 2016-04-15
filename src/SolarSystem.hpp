@@ -1,14 +1,15 @@
 #pragma once
-#include <string>
+#include <boost/foreach.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <map>
 #include <memory>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/foreach.hpp>
+#include <string>
 #include "CelestialObject.hpp"
-#include "PlanetID.hpp"
 #include "Mesh.hpp"
 #include "MeshFabric.hpp"
+#include "PlanetID.hpp"
+#include "Scene.hpp"
 
 namespace oa {
 namespace game {
@@ -20,6 +21,7 @@ class SolarSystem {
   void createPlanets();
   void updatePlanets(long);
   const std::map<PlanetID, MeshPtr> *const getCelestialMeshes() const;
+  const render::Scene *getScene();
 
  private:
   render::MeshFabric meshFabric;
@@ -28,7 +30,7 @@ class SolarSystem {
 
   std::string planetFilePath;
   void parsePlanet(boost::property_tree::ptree::value_type &);
-  // MeshPtr createMesh(boost::property_tree::ptree meshDescription);
+  render::Scene scene;
 };
 }
 }

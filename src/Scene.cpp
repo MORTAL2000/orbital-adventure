@@ -1,8 +1,10 @@
+#include <iostream>
 #include "Scene.hpp"
 
 namespace oa {
 namespace render {
 void Scene::addMesh(Mesh* meshptr) {
+  std::cout << "Adding mesh! \n";
   auto geometry = meshptr->getGeometry();
   auto shader = meshptr->getShader();
   shaders.emplace(shader);
@@ -13,13 +15,13 @@ void Scene::addMesh(Mesh* meshptr) {
     geometryMeshMap[geometry] = std::set<Mesh*>();
   geometryMeshMap[geometry].emplace(meshptr);
 }
-const std::set<ShaderProgram*>& Scene::getAllShaders() { return shaders; }
+const std::set<ShaderProgram*>& Scene::getAllShaders() const { return shaders; }
 const std::set<geometry::Geometry*>& Scene::getGeometries(
-    const ShaderProgram* sp) {
-  return materialGeometryMap[sp];
+    const ShaderProgram* sp) const {
+  return materialGeometryMap.at(sp);
 }
-const std::set<Mesh*>& Scene::getMeshes(const geometry::Geometry* g) {
-  return geometryMeshMap[g];
+const std::set<Mesh*>& Scene::getMeshes(const geometry::Geometry* g) const {
+  return geometryMeshMap.at(g);
 }
 }
 }
