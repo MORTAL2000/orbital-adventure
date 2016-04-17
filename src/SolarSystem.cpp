@@ -57,6 +57,7 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
               longitudeOfAscendingNode, argumentOfPeriapsis, meanAnomaly);
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
+  planet->setOrbit(orbit);
   auto mesh = meshFabric.createMesh(tree.get_child("mesh"));
   celestialMeshes.insert(std::make_pair(id, mesh));
   // mesh->setRotation(glm::quat(1.f, 0.f, 0.f, 0.f));

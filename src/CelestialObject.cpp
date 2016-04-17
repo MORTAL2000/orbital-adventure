@@ -3,6 +3,7 @@
 
 namespace oa {
 namespace game {
+void CelestialObject::setOrbit(const Orbit& orbit) { this->orbit = orbit; }
 glm::vec3 CelestialObject::getPosition() { return position; }
 glm::vec3 CelestialObject::getPosition() const { return position; }
 void CelestialObject::setPosition(glm::vec3 p) {
