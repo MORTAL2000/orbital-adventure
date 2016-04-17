@@ -1,6 +1,6 @@
 #pragma once
 #include "CommandProvider.hpp"
-#include "InputListener.hpp"
+#include "engine/InputListener.hpp"
 
 namespace oa {
 namespace game {

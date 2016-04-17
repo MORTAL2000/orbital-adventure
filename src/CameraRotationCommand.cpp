@@ -1,9 +1,11 @@
 #include "CameraRotationCommand.hpp"
 namespace oa {
 namespace game {
-CameraRotationCommand::CameraRotationCommand(render::Camera *c, glm::vec3 eye,
-                                             glm::vec3 center, glm::vec3 up)
-    : cameraPtr(c), center(center), eye(eye), up(up) {}
-void CameraRotationCommand::execute() { cameraPtr->lookAt(eye, center, up); }
+CameraRotationCommand::CameraRotationCommand(CelestialCameraManager *c,
+                                             glm::vec3 dir, float distance)
+    : cameraMgrPtr(c), direction(dir), distance(distance) {}
+void CameraRotationCommand::execute() {
+  cameraMgrPtr->setRotationAndDistance(direction, distance);
+}
 }
 }

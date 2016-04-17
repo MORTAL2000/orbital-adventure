@@ -16,11 +16,19 @@ FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
 
 file(GLOB OA_SOURCE_FILES ${OA_SOURCES}/*.cpp) 
-include_directories(${GLFW_INCLUDE_DIRS})
+file(GLOB ENGINE_SOURCE_FILES ${OA_SOURCES}/engine/src/*.cpp) 
+set(EngineIncludes ${OA_SOURCES}/engine/)
+include_directories(
+    ${GLFW_INCLUDE_DIRS}
+    ${EngineIncludes}
+    )
 
 
 
-add_executable(orbital-adventure ${OA_SOURCE_FILES})
+add_executable(orbital-adventure 
+    ${ENGINE_SOURCE_FILES}
+    ${OA_SOURCE_FILES}
+    )
 set(libs ${OPENGL_LIBRARY} 
     ${GLFW_LIBRARIES} 
     ${Boost_LIBRARIES}

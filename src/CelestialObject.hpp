@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/vec3.hpp>
 #include <string>
-#include "Mesh.hpp"
+#include "engine/Mesh.hpp"
 namespace oa {
 namespace game {
 class CelestialObject {

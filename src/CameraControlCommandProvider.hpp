@@ -1,14 +1,14 @@
 #pragma once
 #include "CommandProvider.hpp"
-#include "InputListener.hpp"
-#include "Camera.hpp"
+#include "engine/InputListener.hpp"
+#include "CelestialCameraManager.hpp"
 #include "glm/vec2.hpp"
 
 namespace oa {
 namespace game {
 class CameraControlCommandProvider : public CommandProvider,
                                      public input::InputListener {
-  render::Camera *camera;
+  CelestialCameraManager *cameraMgr;
   glm::quat quaternion;
   glm::quat currentRotation;
   glm::mat4 cm;
@@ -28,7 +28,7 @@ class CameraControlCommandProvider : public CommandProvider,
   void createCommand();
 
  public:
-  CameraControlCommandProvider(CommandAcceptor *, render::Camera *);
+  CameraControlCommandProvider(CommandAcceptor *, CelestialCameraManager *);
 };
 }
 }

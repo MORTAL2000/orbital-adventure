@@ -2,7 +2,7 @@
 #include <memory>
 #include <thread>
 #include "Game.hpp"
-#include "PerspectiveCamera.hpp"
+#include "engine/PerspectiveCamera.hpp"
 
 #include <iostream>
 namespace oa {
@@ -23,40 +23,32 @@ void Game::initCommandsInf() {
   glfw->registerInputListener(gm);
   providers.push_back(std::unique_ptr<CommandProvider>(gm));
 
-  auto cm = new CameraControlCommandProvider(this, this->camera);
+  auto cm = new CameraControlCommandProvider(this, &this->cameraManager);
   glfw->registerInputListener(cm);
   providers.push_back(std::unique_ptr<CommandProvider>(cm));
+  auto fp = new PlanetInFocusCommandProvider(this, &this->solarSystem,
+                                             &this->cameraManager);
+  glfw->registerInputListener(fp);
+  providers.push_back(std::unique_ptr<CommandProvider>(fp));
 }
 
 void Game::stopGame() { isPlaying = false; }
 
 void Game::initGLFW() { glfw->init(); }
 
-void Game::initSolarSystem() {
-  solarSystem.createPlanets();
-  // renderer.setSolarSystem(&solarSystem);
-}
+void Game::initSolarSystem() { solarSystem.createPlanets(); }
 
-void Game::addCommand(Command *c) { commandQueue.push(c); }
-
-void Game::processCommands() {
-  while (commandQueue.size() > 0) {
-    auto command = commandQueue.front();
-    command->execute();
-    commandQueue.pop();
-    delete command;
-  }
-}
 void Game::initPlayer() {
-  camera = new render::PerspectiveCamera(glm::radians(45.0f), 4.0f / 3.0f, 1.0f,
-                                         100.0f);
+  // camera = new render::PerspectiveCamera(glm::radians(45.0f), 4.0f / 3.0f,
+  // 1.0f,
+  // 100.0f);
 }
 
 void Game::mainLoop() {
   while (isPlaying) {
     processCommands();
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    renderer.render(solarSystem.getScene(), camera);
+    renderer.render(solarSystem.getScene(), cameraManager.getCamera());
     glfw->endFrame();
   }
 

@@ -6,10 +6,10 @@
 #include "CameraRotationCommand.hpp"
 namespace oa {
 namespace game {
-CameraControlCommandProvider::CameraControlCommandProvider(CommandAcceptor *a,
-                                                           render::Camera *c)
+CameraControlCommandProvider::CameraControlCommandProvider(
+    CommandAcceptor *a, CelestialCameraManager *c)
     : CommandProvider(a),
-      camera(c),
+      cameraMgr(c),
       quaternion(1.0f, 0.f, 0.f, 0.f),
       currentRotation(1.0f, 0.f, 0.f, 0.f),
       distance(10.0f),
@@ -35,12 +35,12 @@ void CameraControlCommandProvider::createCommand() {
   std::cout << " CR " << currentRotation.x << " " << currentRotation.y << " "
             << currentRotation.z << "\n";
   auto direction =
-      ((currentRotation * quaternion) * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)) *
-      distance;
+      ((currentRotation * quaternion) * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
   glm::vec3 dir3(direction.x, direction.y, direction.z);
 
-  addCommand(new CameraRotationCommand(camera, center + dir3, center, up));
+  addCommand(new CameraRotationCommand(cameraMgr, dir3, distance));
 }
+
 void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
   lastMousePosition = point;
   if (leftButtonPressed) {

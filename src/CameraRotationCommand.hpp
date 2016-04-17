@@ -1,15 +1,17 @@
 #pragma once
 #include "Command.hpp"
-#include "Camera.hpp"
+#include "CelestialCameraManager.hpp"
 namespace oa {
 namespace game {
 class CameraRotationCommand : public Command {
-  glm::vec3 center, eye, up;
-  render::Camera *cameraPtr;
+  glm::vec3 direction;
+  float distance;
+  CelestialCameraManager *cameraMgrPtr;
   void execute();
 
  public:
-  CameraRotationCommand(render::Camera *, glm::vec3, glm::vec3, glm::vec3);
+  CameraRotationCommand(CelestialCameraManager *, glm::vec3 direction,
+                        float distance);
 };
 }
 }

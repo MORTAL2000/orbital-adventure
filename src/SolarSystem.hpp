@@ -6,10 +6,10 @@
 #include <memory>
 #include <string>
 #include "CelestialObject.hpp"
-#include "Mesh.hpp"
-#include "MeshFabric.hpp"
+#include "engine/Mesh.hpp"
+#include "engine/MeshFabric.hpp"
 #include "PlanetID.hpp"
-#include "Scene.hpp"
+#include "engine/Scene.hpp"
 
 namespace oa {
 namespace game {
