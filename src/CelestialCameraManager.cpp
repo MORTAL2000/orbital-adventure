@@ -11,8 +11,14 @@ const render::Camera* CelestialCameraManager::getCamera() {
   return camera.get();
 }
 
+void CelestialCameraManager::setCurrentCelestial(
+    const CelestialObject* celestial) {
+  center = celestial->getPosition();
+  camera->lookAt((dir * distance) + center, center, up);
+}
 void CelestialCameraManager::setRotationAndDistance(glm::vec3 dir,
                                                     float distance) {
+  this->dir = dir, this->distance = distance;
   camera->lookAt((dir * distance) + center, center, up);
 }
 }

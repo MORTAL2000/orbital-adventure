@@ -20,6 +20,9 @@ void SolarSystem::createPlanets() {
 
 inline float random() { return float(std::rand()) / (std::pow(2, 32) / 2); }
 
+const std::map<PlanetID, CelestialPtr> &SolarSystem::getPlanetMap() const {
+  return this->celestialsMap;
+}
 void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
   auto tree = value.second;
   std::string name = tree.get<std::string>("name");
@@ -56,10 +59,10 @@ void SolarSystem::parsePlanet(boost::property_tree::ptree::value_type &value) {
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
   auto mesh = meshFabric.createMesh(tree.get_child("mesh"));
   celestialMeshes.insert(std::make_pair(id, mesh));
-  mesh->setPosition(glm::vec3(random() * 10.f, 0.f, 0.f));
-  mesh->setRotation(glm::quat(1.f, 0.f, 0.f, 0.f));
-  mesh->setScale(glm::vec3(1.f, 1.f, 1.f));
+  // mesh->setRotation(glm::quat(1.f, 0.f, 0.f, 0.f));
+  // mesh->setScale(glm::vec3(1.f, 1.f, 1.f));
   planet->setMesh(mesh);
+  planet->setPosition(glm::vec3(random() * 10.f, 0.f, 0.f));
   scene.addMesh(mesh);
   celestialsMap.insert(std::make_pair(id, std::move(planet)));
 }

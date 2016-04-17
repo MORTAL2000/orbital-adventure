@@ -17,15 +17,18 @@ typedef std::unique_ptr<CelestialObject> CelestialPtr;
 typedef render::Mesh *MeshPtr;
 class SolarSystem {
  public:
+  typedef std::map<PlanetID, CelestialPtr> CelestialMap;
+  typedef const std::map<PlanetID, CelestialPtr> &CelestialMapRef;
   SolarSystem();
   void createPlanets();
   void updatePlanets(long);
   const std::map<PlanetID, MeshPtr> *const getCelestialMeshes() const;
   const render::Scene *getScene();
+  CelestialMapRef getPlanetMap() const;
 
  private:
   render::MeshFabric meshFabric;
-  std::map<PlanetID, CelestialPtr> celestialsMap;
+  CelestialMap celestialsMap;
   std::map<PlanetID, MeshPtr> celestialMeshes;
 
   std::string planetFilePath;

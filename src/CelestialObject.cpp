@@ -3,12 +3,14 @@
 
 namespace oa {
 namespace game {
-void CelestialObject::setMesh(render::Mesh* m) {
-  std::cout << "set mesh\n";
-  mesh = m;
+glm::vec3 CelestialObject::getPosition() { return position; }
+glm::vec3 CelestialObject::getPosition() const { return position; }
+void CelestialObject::setPosition(glm::vec3 p) {
+  this->position = p;
+  if (mesh) mesh->setPosition(position);
 }
-CelestialObject::CelestialObject(std::string n) : name(n) {
-  std::cout << "CO" << name << "\n";
-};
+
+void CelestialObject::setMesh(render::Mesh* m) { mesh = m; }
+CelestialObject::CelestialObject(std::string n) : name(n), mesh(nullptr){};
 }
 }

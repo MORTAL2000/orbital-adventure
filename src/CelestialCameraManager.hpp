@@ -16,7 +16,7 @@ class CelestialCameraManager {
  public:
   CelestialCameraManager();
   void setRotationAndDistance(glm::vec3 r, float d);
-  void setCurrentCelestial(PlanetID id);
+  void setCurrentCelestial(const CelestialObject *object);
   void setSolarSystem(SolarSystem *);
   const render::Camera *getCamera();
 };

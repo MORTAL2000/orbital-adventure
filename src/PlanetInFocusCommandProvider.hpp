@@ -8,8 +8,13 @@ namespace oa {
 namespace game {
 class PlanetInFocusCommandProvider : public CommandProvider,
                                      public input::InputListener {
-  SolarSystem* solarSystem;
+  const SolarSystem* solarSystem;
   CelestialCameraManager* cameraMgr;
+  SolarSystem::CelestialMapRef planetMap;
+  SolarSystem::CelestialMap::const_iterator currentIterator;
+
+  void onKeyUp(int keyCode, int mods);
+  void createCommand();
 
  public:
   PlanetInFocusCommandProvider(CommandAcceptor*, SolarSystem* ss,
