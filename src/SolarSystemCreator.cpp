@@ -50,13 +50,8 @@ void SolarSystemCreator::parsePlanet(
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
   planet->setOrbit(orbit);
   auto mesh = meshFabric.createMesh(tree.get_child("mesh"));
-  // celestialMeshes.insert(std::make_pair(id, mesh));
-  // mesh->setRotation(glm::quat(1.f, 0.f, 0.f, 0.f));
-  // mesh->setScale(glm::vec3(1.f, 1.f, 1.f));
   planet->setMesh(mesh);
   planet->setPosition(glm::vec3(random() * 10.f, 0.f, 0.f));
-  // scene.addMesh(mesh);
-  // celestialsMap.insert(std::make_pair(id, std::move(planet)));
   solarSystem->addPlanet(std::move(planet));
 }
 }

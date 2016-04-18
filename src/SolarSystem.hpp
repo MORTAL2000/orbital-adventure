@@ -15,6 +15,8 @@ namespace oa {
 namespace game {
 typedef std::unique_ptr<CelestialObject> CelestialPtr;
 class SolarSystem {
+  const static double G;
+
  public:
   typedef std::map<PlanetID, CelestialPtr> CelestialMap;
   typedef const std::map<PlanetID, CelestialPtr> &CelestialMapRef;
@@ -22,6 +24,13 @@ class SolarSystem {
  private:
   CelestialMap celestialsMap;
   render::Scene scene;
+
+  double trueAnomaly(double eccentricity, double E, double precision);
+  double eccentricityAnomaly(double eccentricity, double anomaly);
+  glm::vec3 planetPlaneCoordinates(Orbit &orbit, double moment, double M,
+                                   double m);
+  double getMoment(int year, int month, int day,
+                   uint32_t millisecondsTillDayStart);
 
  public:
   SolarSystem();

@@ -82,16 +82,6 @@ void SphereGeometry::createGeometry() {
       auto v2 = vertices[r][s];
       auto v3 = vertices[r + 1][s];
       auto v4 = vertices[r + 1][s + 1];
-      std::cout << v1 << " " << v2 << " " << v3 << " " << v4 << "\n";
-      std::cout << positions[v1][0] << "," << positions[v1][1] << ","
-                << positions[v1][2] << ","
-                << " " << positions[v2][0] << "," << positions[v2][1] << ","
-                << positions[v2][2] << ","
-                << " " << positions[v3][0] << "," << positions[v3][1] << ","
-                << positions[v3][2] << ","
-                << " " << positions[v4][0] << "," << positions[v4][1] << ","
-                << positions[v4][2] << ","
-                << "\n";
       if (r != 0) {
         indices.push_back(v1);
         indices.push_back(v2);

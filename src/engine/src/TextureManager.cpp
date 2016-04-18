@@ -8,7 +8,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <iostream>
-#include <jpeglib.h>
+#include <jpeglib.h> // jpeglib include is order-dependent, It MUST be included after <stdio.h>
 #include "TextureManager.hpp"
 // clang-format on
 

@@ -7,6 +7,7 @@ namespace oa {
 namespace game {
 class CelestialObject {
   Orbit orbit;
+  double mass;
   std::string name;
   glm::vec3 position;
   virtual glm::vec3 getPoint() = 0;

@@ -37,7 +37,9 @@ flags = [
     '-x',
     'c++',
     '-I/usr/local/include',
-    '-std=c++0x',
+    '-I../',
+    '-Isrc/engine/',
+    '-std=c++14',
 ]
 
 
