@@ -1,13 +1,13 @@
 #pragma once
-#include "engine/Camera.hpp"
 #include "CameraControlCommandProvider.hpp"
-#include "PlanetInFocusCommandProvider.hpp"
-#include "CommandAcceptor.hpp"
-#include "engine/GLFWWrapper.hpp"
-#include "GameEventsCommandProvider.hpp"
-#include "engine/Renderer.hpp"
-#include "SolarSystem.hpp"
 #include "CelestialCameraManager.hpp"
+#include "CommandAcceptor.hpp"
+#include "GameEventsCommandProvider.hpp"
+#include "PlanetInFocusCommandProvider.hpp"
+#include "SolarSystem.hpp"
+#include "engine/Camera.hpp"
+#include "engine/GLFWWrapper.hpp"
+#include "engine/Renderer.hpp"
 
 namespace oa {
 namespace game {
@@ -27,7 +27,7 @@ class Game : public CommandAcceptor {
   void initCommandsInf();
   gl::GLFWWrapper *glfw;
   void deinit();
-  SolarSystem solarSystem;
+  std::unique_ptr<SolarSystem> solarSystem;
   render::Renderer renderer;
   // render::Camera *camera;
   CelestialCameraManager cameraManager;

@@ -4,6 +4,7 @@ namespace oa {
 namespace game {
 class PlanetID {
  public:
+  PlanetID() = default;
   PlanetID(std::string);
   bool operator<(const PlanetID &o);
   bool operator<(const PlanetID &o) const;

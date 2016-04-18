@@ -1,6 +1,6 @@
 #pragma once
-#include "Orbit.hpp"
 #include "CelestialObject.hpp"
+#include "Orbit.hpp"
 
 namespace oa {
 namespace game {

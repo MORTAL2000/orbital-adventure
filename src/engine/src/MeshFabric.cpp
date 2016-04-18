@@ -20,7 +20,6 @@ Mesh *MeshFabric::createMesh(ptree &meshDescription) {
   boost::filesystem::path root(rootDir);
   std::string vertexShaderPath = meshDescription.get("vertexShader", "no");
   std::string fragmentShaderPath = meshDescription.get("fragmentShader", "no");
-  std::cout << "shaders " << vertexShaderPath << "\n";
   ShaderProgram *sp = ShaderProgramManager::instance()->loadProgram(
       (root.parent_path() / vertexShaderPath).string(),
       (root.parent_path() / fragmentShaderPath).string());
@@ -32,7 +31,6 @@ Mesh *MeshFabric::createMesh(ptree &meshDescription) {
 
   auto uniforms = meshDescription.get_child("uniforms");
   for (ptree::value_type &p : uniforms) {
-    std::cout << "p " << p.first << " WWW\n";
     ptree uniform = p.second;
     mesh->setUniformValue(p.first, createUniform(uniform));
   }
@@ -45,6 +43,7 @@ Uniform *MeshFabric::createUniform(ptree &uniform) {
     std::string value = uniform.get("value", "");
     boost::filesystem::path p(rootDir);
     p = p.parent_path() / value;
+    std::cout << p.parent_path().string() << " FILE\n";
     auto textureId = TextureManager::instance()->loadTexture(p.string());
     return new TextureUniform(textureId);
   }
