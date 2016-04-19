@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.0)
 project(OA C CXX)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(OA_SOURCES ${OA_SOURCE_DIR}/src)
 
 find_package(PkgConfig REQUIRED)

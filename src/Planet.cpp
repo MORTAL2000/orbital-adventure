@@ -1,10 +1,11 @@
-#include "Planet.hpp"
 #include <iostream>
+#include "Planet.hpp"
 
 namespace oa {
 namespace game {
+bool Planet::hasOrbit() { return true; }
 Planet::Planet(double m, double rad, double atm, Orbit o, std::string n)
-    : CelestialObject(n), orbit(o), mass(m), radius(rad), surfacePressure(atm) {
+    : CelestialObject(n, m), orbit(o), radius(rad), surfacePressure(atm) {
   std::cout << "planet constructed\n";
 }
 Planet::~Planet() { std::cout << "planet deconstructed\n"; }

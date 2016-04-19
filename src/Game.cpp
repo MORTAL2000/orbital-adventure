@@ -51,7 +51,10 @@ void Game::initPlayer() {
 
 void Game::mainLoop() {
   while (isPlaying) {
+    auto timePoint = std::chrono::system_clock::now();
+    solarSystem->updatePlanets(timePoint);
     processCommands();
+
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
     renderer.render(solarSystem->getScene(), cameraManager.getCamera());
     glfw->endFrame();

@@ -15,12 +15,15 @@ class CelestialObject {
   render::Mesh* mesh;
 
  public:
+  const Orbit& getOrbit();
+  double getMass();
   void setPosition(glm::vec3);
   glm::vec3 getPosition();
   glm::vec3 getPosition() const;
   virtual void setMesh(render::Mesh*);
+  virtual bool hasOrbit() = 0;
   void setOrbit(const Orbit& orbit);
-  CelestialObject(std::string n);
+  CelestialObject(std::string n, double mass);
   std::string getName();
   render::Mesh* getMesh();
   virtual ~CelestialObject(){};

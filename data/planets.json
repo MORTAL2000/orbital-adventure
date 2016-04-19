@@ -35,7 +35,6 @@
     "radius":2439.7e3,
     "axisTilt":"2.11'",
     "dayLength":1407.5,
-    "rotatinalPerios":
     "surfacePressure":5e-15,
     "orbitOn":"Sun",
     "mesh":{
@@ -175,7 +174,7 @@
   },
   {
     "name":"Moon",
-    "semiMajorAxis":0.3844e3,
+    "semiMajorAxis":0.3844e9,
     "eccentricity":0.0549,
     "meanAnomaly":115.3654,
     "inclination":5.1454,

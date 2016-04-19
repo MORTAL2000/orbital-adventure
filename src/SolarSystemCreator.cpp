@@ -4,6 +4,12 @@
 
 namespace oa {
 namespace game {
+
+long double operator"" _pi(long double r) { return r * M_PI; }
+long double operator"" _pi(unsigned long long int r) {
+  return double(r) * M_PI;
+}
+
 SolarSystemCreator::SolarSystemCreator() : solarSystem(new SolarSystem) {}
 std::unique_ptr<SolarSystem> SolarSystemCreator::getSolarSystem() {
   return std::move(solarSystem);
@@ -33,6 +39,7 @@ void SolarSystemCreator::parsePlanet(
   }
   double meanAnomaly = tree.get("meanAnomaly", -10000.0f);
   double meanLongitude = tree.get("meanLongitude", -10000.0f);
+  double longitudeOfPeriapsis = tree.get("logngitudeOfPeriapsis", -10000.0f);
   double longitudeOfAscendingNode =
       tree.get<double>("longitudeOfAscendingNode");
   double argumentOfPeriapsis = tree.get<double>("argumentOfPeriapsis");
@@ -41,11 +48,12 @@ void SolarSystemCreator::parsePlanet(
   double semiMajorAxis = tree.get<double>("semiMajorAxis");
   double surfacePressure = tree.get<double>("surfacePressure");
   if (meanAnomaly < -9000 && meanLongitude > -9000)
-    meanAnomaly =
-        meanLongitude - longitudeOfAscendingNode + argumentOfPeriapsis;
+    meanAnomaly = meanLongitude - longitudeOfPeriapsis;
+  while (meanAnomaly < 0) meanAnomaly += 2_pi;
 
-  Orbit orbit(id, semiMajorAxis, eccentricity, inclination,
-              longitudeOfAscendingNode, argumentOfPeriapsis, meanAnomaly);
+  Orbit orbit(id, semiMajorAxis, eccentricity, glm::radians(inclination),
+              glm::radians(longitudeOfAscendingNode),
+              glm::radians(argumentOfPeriapsis), glm::radians(meanAnomaly));
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
   planet->setOrbit(orbit);
