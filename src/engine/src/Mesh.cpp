@@ -14,15 +14,15 @@ Mesh::Mesh(ShaderProgram *p, geometry::Geometry *g) : program(p), geometry(g) {
 }
 uint32_t Mesh::getProgramId() { return program->getProgramId(); }
 
-void Mesh::setUniformValue(std::string name, Uniform *u) {
-  uniforms[name] = std::unique_ptr<Uniform>(u);
-}
 void Mesh::render() {
   geometry->setBuffers();
   geometry->render();
   geometry->unsetBuffers();
 }
-void Mesh::setupUniforms(glm::mat4 projection, glm::mat4 view) {
+void Mesh::prerender(const UniformHolder *) {}
+void Mesh::setupUniforms(const Camera *camera) {
+  auto &view = camera->getMatrix();
+  auto &projection = camera->getProjectionMatrix();
   modelViewProjection = projection * view * this->getMatrix();
 
   std::cout << view << "\n";
@@ -30,11 +30,7 @@ void Mesh::setupUniforms(glm::mat4 projection, glm::mat4 view) {
   for (auto &pair : program->getUniformLocations()) {
     auto name = pair.first;
     auto location = pair.second;
-    if (!uniforms.count(name)) {
-      std::cerr << "No such uniform in mesh: " << name << "\n";
-      continue;
-    }
-    uniforms[name]->setup(location);
+    setupUniform(name, location);
   }
 }
 }

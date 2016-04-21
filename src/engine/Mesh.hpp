@@ -1,28 +1,29 @@
 #pragma once
 #include <map>
 #include <string>
+#include "Camera.hpp"
+#include "Geometry.hpp"
 #include "Object.hpp"
 #include "ShaderProgam.hpp"
-#include "Geometry.hpp"
 #include "Uniform.hpp"
+#include "UniformHolder.hpp"
 
 namespace oa {
 namespace render {
-class Mesh : public render::Object {
+class Mesh : public render::Object, public render::UniformHolder {
   ShaderProgram *program;
   geometry::Geometry *geometry;
-  std::map<std::string, std::unique_ptr<Uniform>> uniforms;
   glm::mat4 modelViewProjection;
 
  public:
   geometry::Geometry *getGeometry();
   ShaderProgram *getShader();
   Mesh(ShaderProgram *, geometry::Geometry *);
-  virtual void setUniformValue(std::string, Uniform *);
   virtual uint32_t getProgramId();
   virtual void render();
 
-  virtual void setupUniforms(glm::mat4 projection, glm::mat4 view);
+  virtual void prerender(const UniformHolder *uniformSource);
+  virtual void setupUniforms(const Camera *);
   virtual ~Mesh(){};
 };
 }

@@ -4,15 +4,13 @@
 #include "Planet.hpp"
 #include "SolarSystem.hpp"
 #include "Star.hpp"
+#include "engine/LanguageUtils.hpp"
 
 namespace oa {
 namespace game {
 using namespace std::chrono;
 using namespace std::chrono_literals;
-long double operator"" _pi(long double r) { return r * M_PI; }
-long double operator"" _pi(unsigned long long int r) {
-  return double(r) * M_PI;
-}
+using namespace utils;
 const double SolarSystem::G = 6.67408e-11;
 SolarSystem::SolarSystem() : objectOfIntrest(nullptr) {
   std::tm time;
@@ -68,10 +66,6 @@ void SolarSystem::updatePlanets(system_clock::time_point &timePoint) {
     glm::dvec3 position =
         planetPlaneCoordinates(planet->getOrbit(), momentInDays,
                                parentPlanet->getMass(), planet->getMass());
-    // std::cout << planet->getName() << " " << std::setprecision(15) <<
-    // position.x
-    //<< "  " << position.y << "  " << position.z << "  "
-    //<< "\n";
     planet->setPosition(position);
   }
 }

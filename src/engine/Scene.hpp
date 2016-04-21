@@ -5,9 +5,10 @@
 #include "Geometry.hpp"
 #include "Mesh.hpp"
 #include "ShaderProgam.hpp"
+#include "UniformHolder.hpp"
 namespace oa {
 namespace render {
-class Scene {
+class Scene : public UniformHolder {
   std::map<const ShaderProgram *, std::set<geometry::Geometry *>>
       materialGeometryMap;
   std::map<const geometry::Geometry *, std::set<Mesh *>> geometryMeshMap;

@@ -11,7 +11,8 @@ void Renderer::render(const Scene *scene, const Camera *camera) {
     for (auto g : scene->getGeometries(sp)) {
       g->setBuffers();
       for (auto m : scene->getMeshes(g)) {
-        m->setupUniforms(camera->getProjectionMatrix(), camera->getMatrix());
+        m->prerender(scene);
+        m->setupUniforms(camera);
         g->render();
       }
       g->unsetBuffers();
