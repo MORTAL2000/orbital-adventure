@@ -14,8 +14,6 @@
 
 namespace oa {
 namespace game {
-long double operator"" _pi(long double r);
-long double operator"" _pi(unsigned long long int r);
 
 typedef std::unique_ptr<CelestialObject> CelestialPtr;
 class SolarSystem {

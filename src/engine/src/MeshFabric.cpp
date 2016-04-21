@@ -3,19 +3,25 @@
 #include "GeometryManager.hpp"
 #include "Mesh.hpp"
 #include "MeshFabric.hpp"
+#include "PersonalClippingMesh.hpp"
 #include "ShaderManager.hpp"
 #include "TextureManager.hpp"
 
 namespace oa {
 namespace render {
 using namespace boost::property_tree;
+
+Mesh *MeshFabric::meshOfType(std::string type, ShaderProgram *sp,
+                             geometry::Geometry *geometry) {
+  if (type == "Mesh") return new Mesh(sp, geometry);
+  if (type == "PersonalClippingMesh")
+    return new PersonalClippingMesh(sp, geometry);
+}
 Mesh *MeshFabric::createMesh(ptree &meshDescription) {
   using namespace boost::filesystem;
   std::string meshType = meshDescription.get<std::string>("type");
 
-  if (meshType == "star") {
-    std::cout << "star mesh";
-  }
+  std::cout << meshType << "\n";
 
   boost::filesystem::path root(rootDir);
   std::string vertexShaderPath = meshDescription.get("vertexShader", "no");
@@ -27,7 +33,7 @@ Mesh *MeshFabric::createMesh(ptree &meshDescription) {
   ptree geometryProps = meshDescription.get_child("geometry");
   geometry::Geometry *geometry =
       GeometryManager::instance()->loadGeometry(geometryProps);
-  Mesh *mesh = new Mesh(sp, geometry);
+  Mesh *mesh = meshOfType(meshType, sp, geometry);
 
   auto uniforms = meshDescription.get_child("uniforms");
   for (ptree::value_type &p : uniforms) {

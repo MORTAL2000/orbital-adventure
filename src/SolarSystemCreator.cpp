@@ -2,9 +2,11 @@
 #include "Planet.hpp"
 #include "SolarSystemCreator.hpp"
 #include "Star.hpp"
+#include "engine/LanguageUtils.hpp"
 
 namespace oa {
 namespace game {
+using namespace utils;
 
 SolarSystemCreator::SolarSystemCreator() : solarSystem(new SolarSystem) {}
 std::unique_ptr<SolarSystem> SolarSystemCreator::getSolarSystem() {
