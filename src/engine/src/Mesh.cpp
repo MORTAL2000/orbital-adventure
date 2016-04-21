@@ -1,8 +1,10 @@
-#include <iostream>
+#include "LanguageUtils.hpp"
 #include "Mesh.hpp"
 #include "Uniform.hpp"
+
 namespace oa {
 namespace render {
+using namespace utils;
 geometry::Geometry *Mesh::getGeometry() { return this->geometry; }
 ShaderProgram *Mesh::getShader() { return program; }
 
@@ -23,13 +25,7 @@ void Mesh::render() {
 void Mesh::setupUniforms(glm::mat4 projection, glm::mat4 view) {
   modelViewProjection = projection * view * this->getMatrix();
 
-  std::cout << "view MAT\n\n";
-  for (int i = 0; i < 4; ++i) {
-    for (int j = 0; j < 4; ++j) {
-      std::cout << view[i][j] << "  ";
-    }
-    std::cout << "\n";
-  }
+  std::cout << view << "\n";
 
   for (auto &pair : program->getUniformLocations()) {
     auto name = pair.first;

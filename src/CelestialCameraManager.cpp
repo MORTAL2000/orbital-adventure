@@ -13,9 +13,6 @@ void CelestialCameraManager::setCurrentCelestial(
     const CelestialObject* celestial) {
   center = celestial->getPosition();
   glm::vec3 zero(0.0, 0.0, 0.0);
-  std::cout << "SET " << celestial->getName() << "\n";
-  std::cout << "up " << up.x << " " << up.y << " " << up.z << "\n";
-  std::cout << "dist " << distance << "\n";
   camera->lookAt((dir * distance), zero, up);
   solarSystem->setCurrentCelestial(celestial);
 }
