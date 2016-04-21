@@ -29,7 +29,6 @@ class Game : public CommandAcceptor {
   void deinit();
   std::unique_ptr<SolarSystem> solarSystem;
   render::Renderer renderer;
-  // render::Camera *camera;
   CelestialCameraManager cameraManager;
 };
 }

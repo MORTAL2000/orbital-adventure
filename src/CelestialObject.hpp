@@ -8,25 +8,30 @@ namespace game {
 class CelestialObject {
   Orbit orbit;
   double mass;
+  double size;
   std::string name;
-  glm::vec3 position;
-  virtual glm::vec3 getPoint() = 0;
-  virtual glm::vec3 getVelocity() = 0;
+  glm::dvec3 position;
   render::Mesh* mesh;
 
  public:
   const Orbit& getOrbit();
   double getMass();
-  void setPosition(glm::vec3);
-  glm::vec3 getPosition();
-  glm::vec3 getPosition() const;
-  virtual void setMesh(render::Mesh*);
+  void setPosition(glm::dvec3);
+  glm::dvec3 getPosition();
+  glm::dvec3 getPosition() const;
+
+  void setMesh(render::Mesh*);
   virtual bool hasOrbit() = 0;
   void setOrbit(const Orbit& orbit);
-  CelestialObject(std::string n, double mass);
+  CelestialObject(std::string n, double mass, double size);
+  double getSize();
+  double getSize() const;
   std::string getName();
+  std::string getName() const;
+
   render::Mesh* getMesh();
   virtual ~CelestialObject(){};
+  void updateMesh(const CelestialObject*);
 };
 }
 }

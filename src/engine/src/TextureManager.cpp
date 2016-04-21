@@ -16,10 +16,8 @@ namespace oa {
 namespace render {
 TextureManager::TextureManager() {}
 GLuint TextureManager::loadTexture(std::string filepath) {
-  std::cout << "LOAD TEXTURE " << filepath << "\n";
   auto p = boost::filesystem::path(filepath);
   std::string extension = p.extension().string();
-  std::cout << "is jpeg " << isJpeg(extension) << "\n";
   if (isJpeg(extension)) {
     return loadJpegTexture(filepath);
   }
@@ -80,7 +78,6 @@ GLuint TextureManager::loadJpegTexture(std::string filename) {
   glBindTexture(GL_TEXTURE_2D, textureId);
   glTexImage2D(GL_TEXTURE_2D, 0, type, cinfo.output_width, cinfo.output_height,
                0, type, GL_UNSIGNED_BYTE, data);
-  std::cout << "texture id " << textureId << "\n";
   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -226,7 +223,6 @@ bool TextureManager::isPng(std::string ext) {
   return pos != exts.cend();
 }
 bool TextureManager::isJpeg(std::string ext) {
-  std::cout << "EXT " << ext << " \n";
   std::vector<std::string> exts({".jpeg", ".jpg", ".JPG", ".JPEG"});
   auto pos = std::find_if(exts.cbegin(), exts.cend(),
                           [&ext](std::string e) { return ext == e; });

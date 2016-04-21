@@ -43,7 +43,6 @@ Uniform *MeshFabric::createUniform(ptree &uniform) {
     std::string value = uniform.get("value", "");
     boost::filesystem::path p(rootDir);
     p = p.parent_path() / value;
-    std::cout << p.parent_path().string() << " FILE\n";
     auto textureId = TextureManager::instance()->loadTexture(p.string());
     return new TextureUniform(textureId);
   }

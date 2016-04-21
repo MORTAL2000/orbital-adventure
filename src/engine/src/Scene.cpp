@@ -4,7 +4,6 @@
 namespace oa {
 namespace render {
 void Scene::addMesh(Mesh* meshptr) {
-  std::cout << "Adding mesh! \n";
   auto geometry = meshptr->getGeometry();
   auto shader = meshptr->getShader();
   shaders.emplace(shader);

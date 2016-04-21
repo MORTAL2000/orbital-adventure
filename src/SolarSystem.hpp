@@ -14,6 +14,9 @@
 
 namespace oa {
 namespace game {
+long double operator"" _pi(long double r);
+long double operator"" _pi(unsigned long long int r);
+
 typedef std::unique_ptr<CelestialObject> CelestialPtr;
 class SolarSystem {
   const static double G;
@@ -28,19 +31,20 @@ class SolarSystem {
   std::chrono::system_clock::time_point epoch2000;
   CelestialMap celestialsMap;
   render::Scene scene;
+  const CelestialObject *objectOfIntrest;
 
   double trueAnomaly(double eccentricity, double E, double precision);
   double eccentricityAnomaly(double eccentricity, double anomaly);
-  glm::vec3 planetPlaneCoordinates(const Orbit &orbit, double moment, double M,
-                                   double m);
-  double getMoment(int year, int month, int day,
-                   uint32_t millisecondsTillDayStart);
+  glm::dvec3 planetPlaneCoordinates(const Orbit &orbit, double moment, double M,
+                                    double m);
   double getMoment(std::chrono::system_clock::time_point &);
 
  public:
   SolarSystem();
   void addPlanet(CelestialPtr);
   void updatePlanets(std::chrono::system_clock::time_point &);
+  void setCurrentCelestial(const CelestialObject *);
+  const CelestialObject *getObjectOfInterest();
   const render::Scene *getScene();
   CelestialMapRef getPlanetMap() const;
 };

@@ -9,8 +9,12 @@ namespace oa {
 namespace game {
 using namespace std::chrono;
 using namespace std::chrono_literals;
+long double operator"" _pi(long double r) { return r * M_PI; }
+long double operator"" _pi(unsigned long long int r) {
+  return double(r) * M_PI;
+}
 const double SolarSystem::G = 6.67408e-11;
-SolarSystem::SolarSystem() {
+SolarSystem::SolarSystem() : objectOfIntrest(nullptr) {
   std::tm time;
   time.tm_sec = 0;
   time.tm_min = 0;
@@ -23,7 +27,18 @@ SolarSystem::SolarSystem() {
   epoch2000 = system_clock::from_time_t(tm);
 }
 
-const render::Scene *SolarSystem::getScene() { return &scene; }
+const CelestialObject *SolarSystem::getObjectOfInterest() {
+  return objectOfIntrest;
+}
+void SolarSystem::setCurrentCelestial(const CelestialObject *ptr) {
+  objectOfIntrest = ptr;
+}
+
+const render::Scene *SolarSystem::getScene() {
+  if (!objectOfIntrest) return &scene;
+  for (auto &p : celestialsMap) p.second->updateMesh(objectOfIntrest);
+  return &scene;
+}
 
 inline float random() { return float(std::rand()) / (std::pow(2, 32) / 2); }
 
@@ -43,45 +58,39 @@ double SolarSystem::getMoment(system_clock::time_point &timePoint) {
 }
 
 void SolarSystem::updatePlanets(system_clock::time_point &timePoint) {
-  auto momentInDays = getMoment(timePoint);
+  double momentInDays = getMoment(timePoint);
   for (auto &pair : celestialsMap) {
     auto &planet = pair.second;
     if (!planet->hasOrbit()) continue;
     auto &orbit = planet->getOrbit();
     auto &parentPlanet = celestialsMap[orbit.body];
 
-    glm::vec3 position =
+    glm::dvec3 position =
         planetPlaneCoordinates(planet->getOrbit(), momentInDays,
                                parentPlanet->getMass(), planet->getMass());
-    std::cout << std::setprecision(15) << momentInDays << " "
-              << planet->getName() << " " << glm::length(position) << "  "
-              << orbit.semiMajorAxis << "\n";
+    // std::cout << planet->getName() << " " << std::setprecision(15) <<
+    // position.x
+    //<< "  " << position.y << "  " << position.z << "  "
+    //<< "\n";
     planet->setPosition(position);
   }
 }
-double SolarSystem::getMoment(int year, int month, int day,
-                              uint32_t milliseconds) {
-  year -= 2000;
-  double d =
-      367 * year - 7 * (year + (month + 9) / 12) / 4 + 275 * month / 9 + day;
-  d += (double(milliseconds) / 1000 / 60 / 60) / 24;
-  std::cout << std::setprecision(8) << d << " ";
-  return d;
-}
 
-glm::vec3 SolarSystem::planetPlaneCoordinates(const Orbit &orbit, double moment,
-                                              double Mass, double mass) {
-  auto mu = G * (Mass + mass);
+glm::dvec3 SolarSystem::planetPlaneCoordinates(const Orbit &orbit,
+                                               double moment, double Mass,
+                                               double mass) {
+  double mu = G * (Mass + mass);
   auto e = orbit.eccentricity;
   auto e2 = e * e;
   double DAY = 60 * 60 * 24;
-  double meanMotion = std::sqrt(mu / std::pow(orbit.semiMajorAxis, 3)) * DAY;
-  double M = orbit.meanAnomaly + meanMotion * moment;
+  double meanMotion =
+      std::sqrt(mu / std::pow(orbit.semiMajorAxis, double(3))) * DAY;
+  double M = std::fmod(orbit.meanAnomaly + meanMotion * moment, 2_pi);
   double E = eccentricityAnomaly(e, M);
   double phi = trueAnomaly(e, E, 0.0);
   double R = orbit.semiMajorAxis * (1.0 - e2) / (1.0 + e * std::cos(phi));
 
-  return glm::vec3(R * std::cos(phi), R * std::sin(phi), 0.0);
+  return glm::dvec3(R * std::cos(phi), R * std::sin(phi), 0.0);
 }
 
 double SolarSystem::eccentricityAnomaly(double eccentricity, double M) {

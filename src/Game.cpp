@@ -24,13 +24,16 @@ void Game::initCommandsInf() {
   glfw->registerInputListener(gm);
   providers.push_back(std::unique_ptr<CommandProvider>(gm));
 
-  auto cm = new CameraControlCommandProvider(this, &this->cameraManager);
-  glfw->registerInputListener(cm);
-  providers.push_back(std::unique_ptr<CommandProvider>(cm));
   auto fp = new PlanetInFocusCommandProvider(this, solarSystem.get(),
                                              &this->cameraManager);
   glfw->registerInputListener(fp);
+  processCommands();
+
   providers.push_back(std::unique_ptr<CommandProvider>(fp));
+
+  auto cm = new CameraControlCommandProvider(this, &this->cameraManager);
+  glfw->registerInputListener(cm);
+  providers.push_back(std::unique_ptr<CommandProvider>(cm));
 }
 
 void Game::stopGame() { isPlaying = false; }
@@ -41,6 +44,7 @@ void Game::initSolarSystem() {
   SolarSystemCreator creator;
   creator.createSolarSystem("../data/planets.json");
   solarSystem = creator.getSolarSystem();
+  cameraManager.setSolarSystem(solarSystem.get());
 }
 
 void Game::initPlayer() {

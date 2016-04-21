@@ -13,7 +13,6 @@ class Planet : public CelestialObject {
 
  private:
   Orbit orbit;
-  double radius;
   double surfacePressure;
   bool hasOrbit();
 };

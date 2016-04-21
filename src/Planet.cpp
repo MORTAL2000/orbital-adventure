@@ -5,7 +5,7 @@ namespace oa {
 namespace game {
 bool Planet::hasOrbit() { return true; }
 Planet::Planet(double m, double rad, double atm, Orbit o, std::string n)
-    : CelestialObject(n, m), orbit(o), radius(rad), surfacePressure(atm) {
+    : CelestialObject(n, m, rad), orbit(o), surfacePressure(atm) {
   std::cout << "planet constructed\n";
 }
 Planet::~Planet() { std::cout << "planet deconstructed\n"; }

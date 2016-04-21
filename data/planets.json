@@ -123,8 +123,8 @@
         "name":"SphereGeometry",
         "options":{
           "radius":1,
-          "segments":10,
-          "rings":10
+          "segments":100,
+          "rings":100
         }
       },
       "diffuse": "./textures/Earth.png",
@@ -141,7 +141,6 @@
     "meanAnomaly":null,
     "meanLongitude":355.45332,
     "longitudeOfPeriapsis":336.04084,
-
     "inclination":1.850,
     "longitudeOfAscendingNode":49.57854,
     "argumentOfPeriapsis":336.04084,

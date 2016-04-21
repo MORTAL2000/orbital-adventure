@@ -1,8 +1,8 @@
-#include "ShaderManager.hpp"
 #include <fstream>
-#include <string>
-#include <streambuf>
 #include <iostream>
+#include <streambuf>
+#include <string>
+#include "ShaderManager.hpp"
 namespace oa {
 namespace render {
 ShaderProgramManager::ShaderProgramManager() {}
@@ -10,7 +10,6 @@ ShaderProgramManager::ShaderProgramManager() {}
 ShaderProgram *ShaderProgramManager::loadProgram(std::string vs,
                                                  std::string fs) {
   std::string identity = vs + " :: " + fs;
-  std::cout << "IDENTITY : " << identity << "\n";
   if (loadedPrograms.count(identity) > 0) {
     return loadedPrograms[identity].get();
   }

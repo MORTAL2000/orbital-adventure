@@ -1,14 +1,10 @@
+#include <iostream>
 #include "Planet.hpp"
 #include "SolarSystemCreator.hpp"
 #include "Star.hpp"
 
 namespace oa {
 namespace game {
-
-long double operator"" _pi(long double r) { return r * M_PI; }
-long double operator"" _pi(unsigned long long int r) {
-  return double(r) * M_PI;
-}
 
 SolarSystemCreator::SolarSystemCreator() : solarSystem(new SolarSystem) {}
 std::unique_ptr<SolarSystem> SolarSystemCreator::getSolarSystem() {
@@ -37,9 +33,9 @@ void SolarSystemCreator::parsePlanet(
     solarSystem->addPlanet(std::move(star));
     return;
   }
-  double meanAnomaly = tree.get("meanAnomaly", -10000.0f);
-  double meanLongitude = tree.get("meanLongitude", -10000.0f);
-  double longitudeOfPeriapsis = tree.get("logngitudeOfPeriapsis", -10000.0f);
+  auto meanAnomaly = tree.get_optional<double>("meanAnomaly");
+  auto meanLongitude = tree.get_optional<double>("meanLongitude");
+  auto longitudeOfPeriapsis = tree.get_optional<double>("longitudeOfPeriapsis");
   double longitudeOfAscendingNode =
       tree.get<double>("longitudeOfAscendingNode");
   double argumentOfPeriapsis = tree.get<double>("argumentOfPeriapsis");
@@ -47,13 +43,25 @@ void SolarSystemCreator::parsePlanet(
   double eccentricity = tree.get<double>("eccentricity");
   double semiMajorAxis = tree.get<double>("semiMajorAxis");
   double surfacePressure = tree.get<double>("surfacePressure");
-  if (meanAnomaly < -9000 && meanLongitude > -9000)
-    meanAnomaly = meanLongitude - longitudeOfPeriapsis;
-  while (meanAnomaly < 0) meanAnomaly += 2_pi;
+  double meanAnomalyAtJ200 = 0;
+  if (meanAnomaly)
+    meanAnomalyAtJ200 = *meanAnomaly;
+  else {
+    if (meanLongitude && longitudeOfPeriapsis) {
+      meanAnomalyAtJ200 = *meanLongitude - *longitudeOfPeriapsis;
+    } else {
+      if (!meanLongitude) std::cout << "no meanLongitude\n";
+      if (!longitudeOfPeriapsis) std::cout << "no longitudeOfPeriapsis\n";
+    }
+  }
+  meanAnomalyAtJ200 = glm::radians(meanAnomalyAtJ200);
+  while (meanAnomalyAtJ200 < 0) meanAnomalyAtJ200 += 2_pi;
 
   Orbit orbit(id, semiMajorAxis, eccentricity, glm::radians(inclination),
               glm::radians(longitudeOfAscendingNode),
-              glm::radians(argumentOfPeriapsis), glm::radians(meanAnomaly));
+              glm::radians(argumentOfPeriapsis), meanAnomalyAtJ200);
+  std::cout << name << "Mean anomaly " << meanAnomalyAtJ200 << "\n";
+
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
   planet->setOrbit(orbit);

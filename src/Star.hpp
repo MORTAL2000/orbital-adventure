@@ -9,7 +9,6 @@ class Star : public CelestialObject {
   glm::vec3 getVelocity();
 
  private:
-  double radius;
   bool hasOrbit();
 };
 }

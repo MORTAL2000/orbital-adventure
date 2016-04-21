@@ -1,12 +1,10 @@
+#include <iostream>
 #include "CelestialCameraManager.hpp"
 #include "engine/PerspectiveCamera.hpp"
 namespace oa {
 namespace game {
 CelestialCameraManager::CelestialCameraManager()
-    : camera(new render::PerspectiveCamera(glm::radians(45.0f), 4.0f / 3.0f,
-                                           1.0f, 100.0f)),
-      center(0.0, 0.0, 0.0),
-      up(0.0, 1.0, 0.0) {}
+    : center(0.0, 0.0, 0.0), up(0.0, 1.0, 0.0) {}
 const render::Camera* CelestialCameraManager::getCamera() {
   return camera.get();
 }
@@ -14,12 +12,28 @@ const render::Camera* CelestialCameraManager::getCamera() {
 void CelestialCameraManager::setCurrentCelestial(
     const CelestialObject* celestial) {
   center = celestial->getPosition();
-  camera->lookAt((dir * distance) + center, center, up);
+  glm::vec3 zero(0.0, 0.0, 0.0);
+  std::cout << "SET " << celestial->getName() << "\n";
+  std::cout << "up " << up.x << " " << up.y << " " << up.z << "\n";
+  std::cout << "dist " << distance << "\n";
+  camera->lookAt((dir * distance), zero, up);
+  solarSystem->setCurrentCelestial(celestial);
+}
+
+void CelestialCameraManager::setSolarSystem(SolarSystem* ss) {
+  solarSystem = ss;
+  double maxClipping = 7e7;
+  camera = std::unique_ptr<render::Camera>(new render::PerspectiveCamera(
+      glm::radians(45.0f), 4.0f / 3.0f, 2.0e3f, maxClipping * 2 * 10));
+}
+const CelestialObject* CelestialCameraManager::getCurrentCelestial() {
+  return solarSystem->getObjectOfInterest();
 }
 void CelestialCameraManager::setRotationAndDistance(glm::vec3 dir,
                                                     float distance) {
   this->dir = dir, this->distance = distance;
-  camera->lookAt((dir * distance) + center, center, up);
+  glm::vec3 zero(0.0, 0.0, 0.0);
+  camera->lookAt((dir * distance), zero, up);
 }
 }
 }

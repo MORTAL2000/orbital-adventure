@@ -23,6 +23,14 @@ void Mesh::render() {
 void Mesh::setupUniforms(glm::mat4 projection, glm::mat4 view) {
   modelViewProjection = projection * view * this->getMatrix();
 
+  std::cout << "view MAT\n\n";
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      std::cout << view[i][j] << "  ";
+    }
+    std::cout << "\n";
+  }
+
   for (auto &pair : program->getUniformLocations()) {
     auto name = pair.first;
     auto location = pair.second;

@@ -1,10 +1,10 @@
-#include "Object.hpp"
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
 #include <iostream>
+#include "Object.hpp"
 
 namespace oa {
 namespace render {
@@ -42,8 +42,19 @@ void Object::setRotation(glm::quat r) {
 void Object::updateMatrix() {
   auto s = glm::scale(glm::mat4(1.0f), scale);
   auto rotMat = glm::mat4_cast(rotation);
-  auto p = glm::translate(glm::mat4(1.0), position);
+  auto p = glm::translate(glm::mat4(1.0f), position);
+
   matrix = p * rotMat * s;
+
+  /*
+  std::cout << "MAT\n\n";
+  for (int i = 0; i < 4; ++i) {
+    for (int j = 0; j < 4; ++j) {
+      std::cout << matrix[i][j] << "  ";
+    }
+    std::cout << "\n";
+  }
+  */
 }
 }
 }

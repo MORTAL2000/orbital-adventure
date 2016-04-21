@@ -12,7 +12,7 @@ CameraControlCommandProvider::CameraControlCommandProvider(
       cameraMgr(c),
       quaternion(1.0f, 0.f, 0.f, 0.f),
       currentRotation(1.0f, 0.f, 0.f, 0.f),
-      distance(10.0f),
+      distance(1.1 * c->getCurrentCelestial()->getSize()),
       center(0.0f, 0.0f, 0.0f),
       up(0.0, 1.0f, 0.0f) {
   createCommand();
@@ -32,8 +32,6 @@ void CameraControlCommandProvider::onMouseUp(int key, int mod) {
 }
 
 void CameraControlCommandProvider::createCommand() {
-  std::cout << " CR " << currentRotation.x << " " << currentRotation.y << " "
-            << currentRotation.z << "\n";
   auto direction =
       ((currentRotation * quaternion) * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
   glm::vec3 dir3(direction.x, direction.y, direction.z);
@@ -56,18 +54,14 @@ void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
           currentRotation *
           glm::angleAxis(diff.x / 100, glm::vec3(0.0f, -1.0f, 0.0f));
 
-      std::cout << "lastQuaternion "
-                << " x " << currentRotation.x << " y " << currentRotation.y
-                << " z " << currentRotation.z << " w " << currentRotation.w
-                << " DX " << diff.x << "\n";
       createCommand();
     }
   }
 }
 
 void CameraControlCommandProvider::onScroll(double w, double v) {
-  distance += v / 30;
-  std::cout << "D: " << distance << "\n";
+  std::cout << "DD " << distance << "\n";
+  distance += v * 0.01 * distance;
   createCommand();
 }
 }

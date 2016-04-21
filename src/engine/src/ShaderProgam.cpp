@@ -1,7 +1,7 @@
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <boost/algorithm/string.hpp>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include "ShaderProgam.hpp"
 namespace oa {
 namespace render {
@@ -51,10 +51,6 @@ void ShaderProgram::parseShader(std::string shader) {
 GLuint ShaderProgram::getProgramId() { return programId; }
 void ShaderProgram::free() { glDeleteProgram(programId); }
 void ShaderProgram::compile(std::string vs, std::string fs) {
-  std::cout << "GO compile shader!\n";
-  std::cout << "vestex shader: " << vs << "\n";
-  std::cout << "fragment shader: " << fs << "\n";
-
   std::ifstream vsf(vs);
   std::ifstream fsf(fs);
   std::string vshader((std::istreambuf_iterator<char>(vsf)),
@@ -70,9 +66,6 @@ void ShaderProgram::compile(std::string vs, std::string fs) {
   parseShader(vshader);
   parseShader(fshader);
 
-  for (auto &u : uniformTypes) {
-    std::cout << "U: " << u.first << ": " << u.second << "\n";
-  }
   // vertex
   char const *VertexSourcePointer = vshader.c_str();
   glShaderSource(vShaderId, 1, &VertexSourcePointer, NULL);
