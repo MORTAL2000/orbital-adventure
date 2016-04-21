@@ -99,6 +99,7 @@ void GLFWWrapper::determineOpenGLVersion() {
 
       glfwMakeContextCurrent(window);
       glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+      glfwSwapInterval(0);
       glfwVersionMajor = max;
       glfwVersionMinor = min;
 

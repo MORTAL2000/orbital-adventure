@@ -14,13 +14,13 @@ class Mesh : public render::Object, public render::UniformHolder {
   ShaderProgram *program;
   geometry::Geometry *geometry;
   glm::mat4 modelViewProjection;
+  std::function<std::unique_ptr<Camera>(const Camera *)> cameraModifier;
 
  public:
   geometry::Geometry *getGeometry();
   ShaderProgram *getShader();
   Mesh(ShaderProgram *, geometry::Geometry *);
   virtual uint32_t getProgramId();
-  virtual void render();
 
   virtual void prerender(const UniformHolder *uniformSource);
   virtual void setupUniforms(const Camera *);

@@ -7,7 +7,9 @@ namespace oa {
 namespace game {
 GameEventsCommandProvider::GameEventsCommandProvider(CommandAcceptor* acceptor,
                                                      Game* game)
-    : CommandProvider(acceptor), game(game) {}
+    : CommandProvider(acceptor), game(game) {
+  std::cout << "GECP\n";
+}
 
 void GameEventsCommandProvider::onKeyDown(int key, int) {
   std::cout << "on key down\n";

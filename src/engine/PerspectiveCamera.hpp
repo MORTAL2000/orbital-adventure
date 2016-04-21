@@ -7,7 +7,7 @@ class PerspectiveCamera : public Camera {
 
  public:
   PerspectiveCamera(double fov, double aspect, double near, double far);
-  virtual Camera *changeClipping(double, double) const;
+  Camera *changeClipping(double, double) const;
 };
 }
 }

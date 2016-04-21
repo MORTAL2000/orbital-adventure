@@ -19,6 +19,7 @@ class Game : public CommandAcceptor {
   void stopGame();
 
  private:
+  std::chrono::system_clock::time_point oldTimePoint;
   std::vector<std::unique_ptr<CommandProvider>> providers;
   void initGLFW();
   void initSolarSystem();

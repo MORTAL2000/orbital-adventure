@@ -14,18 +14,11 @@ Mesh::Mesh(ShaderProgram *p, geometry::Geometry *g) : program(p), geometry(g) {
 }
 uint32_t Mesh::getProgramId() { return program->getProgramId(); }
 
-void Mesh::render() {
-  geometry->setBuffers();
-  geometry->render();
-  geometry->unsetBuffers();
-}
 void Mesh::prerender(const UniformHolder *) {}
 void Mesh::setupUniforms(const Camera *camera) {
   auto &view = camera->getMatrix();
   auto &projection = camera->getProjectionMatrix();
   modelViewProjection = projection * view * this->getMatrix();
-
-  std::cout << view << "\n";
 
   for (auto &pair : program->getUniformLocations()) {
     auto name = pair.first;
