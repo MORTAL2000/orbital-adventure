@@ -51,8 +51,7 @@ void SolarSystem::addPlanet(CelestialPtr planet) {
   celestialsMap.insert(std::make_pair(id, std::move(planet)));
 }
 double SolarSystem::getMoment(system_clock::time_point &timePoint) {
-  auto daysDiff = duration_cast<FloatDaysDuration>(timePoint - epoch2000);
-  return daysDiff.count();
+  return duration_cast<FloatDuration>(timePoint - epoch2000).count();
 }
 
 void SolarSystem::updatePlanets(system_clock::time_point &timePoint) {
@@ -61,6 +60,7 @@ void SolarSystem::updatePlanets(system_clock::time_point &timePoint) {
     auto &planet = pair.second;
     if (!planet->hasOrbit()) continue;
     auto &orbit = planet->getOrbit();
+    std::cout << "parentPlanet" << orbit.body.id() << "\n";
     auto &parentPlanet = celestialsMap[orbit.body];
 
     glm::dvec3 position =
@@ -77,9 +77,11 @@ glm::dvec3 SolarSystem::planetPlaneCoordinates(const Orbit &orbit,
   auto e = orbit.eccentricity;
   auto e2 = e * e;
   double DAY = 60 * 60 * 24;
-  double meanMotion =
-      std::sqrt(mu / std::pow(orbit.semiMajorAxis, double(3))) * DAY;
-  double M = std::fmod(orbit.meanAnomaly + meanMotion * moment, 2_pi);
+  std::cout << "G " << std::setprecision(17) << G << " mu " << mu << " " << Mass
+            << " " << mass << "\n";
+  double meanMotion = std::sqrt(mu / std::pow(orbit.semiMajorAxis, double(3)));
+  double M = orbit.meanAnomaly + meanMotion * moment;
+  std::cout << "M " << moment / 60 / 60 / 24 << "\n";
   double E = eccentricityAnomaly(e, M);
   double phi = trueAnomaly(e, E, 0.0);
   double R = orbit.semiMajorAxis * (1.0 - e2) / (1.0 + e * std::cos(phi));

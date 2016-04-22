@@ -19,7 +19,10 @@ class Game : public CommandAcceptor {
   void stopGame();
 
  private:
+  typedef std::chrono::duration<double, std::ratio<1>> Duration;
   std::chrono::system_clock::time_point oldTimePoint;
+  std::chrono::system_clock::time_point simulatatedTime;
+  double timeMultiplier = 1.0;
   std::vector<std::unique_ptr<CommandProvider>> providers;
   void initGLFW();
   void initSolarSystem();

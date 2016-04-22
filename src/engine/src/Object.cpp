@@ -17,9 +17,9 @@ const glm::mat4& Object::getMatrix() { return matrix; }
 const glm::mat4& Object::getMatrix() const { return matrix; }
 void Object::setMatrix(glm::mat4 m) {
   matrix = m;
-  glm::vec3 scew;
-  glm::vec4 perspective;
-  glm::decompose(matrix, scale, rotation, position, scew, perspective);
+  // glm::vec3 scew;
+  // glm::vec4 perspective;
+  // glm::decompose(matrix, scale, rotation, position, scew, perspective);
 }
 
 void Object::setPosition(glm::vec3 p) {
@@ -31,6 +31,8 @@ void Object::setScale(glm::vec3 s) {
   scale = s;
   updateMatrix();
 }
+glm::vec3 Object::getPosition() const { return position; }
+glm::vec3 Object::getScale() const { return scale; }
 
 const glm::quat& Object::getRotation() { return rotation; }
 

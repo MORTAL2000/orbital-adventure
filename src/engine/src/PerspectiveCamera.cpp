@@ -1,4 +1,5 @@
 #include "PerspectiveCamera.hpp"
+#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace oa {

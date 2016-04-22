@@ -9,8 +9,13 @@
 namespace oa {
 namespace game {
 using namespace glm;
+using namespace std::chrono;
 
-Game::Game() : isPlaying(true), glfw(oa::gl::GLFWWrapper::getInstance()) {}
+Game::Game()
+    : simulatatedTime(std::chrono::system_clock::now()),
+      oldTimePoint(std::chrono::system_clock::now()),
+      isPlaying(true),
+      glfw(oa::gl::GLFWWrapper::getInstance()) {}
 
 void Game::init() {
   initGLFW();
@@ -56,12 +61,21 @@ void Game::initPlayer() {
 void Game::mainLoop() {
   while (isPlaying) {
     auto timePoint = std::chrono::system_clock::now();
-    solarSystem->updatePlanets(timePoint);
+    auto timeDiff = timePoint - oldTimePoint;
+    if (timeMultiplier < 0.9e5) timeMultiplier = 60 * 60 * 24 * 7;
+    // std::cout << timeDiff.count() / 1000000 << "\n";
+
+    simulatatedTime +=
+        system_clock::duration(uint64_t(timeDiff.count() * timeMultiplier));
+    auto tt = system_clock::to_time_t(simulatatedTime);
+    auto tm = localtime(&tt);
+    solarSystem->updatePlanets(simulatatedTime);
+    std::cout << tm->tm_year << " " << tm->tm_mon << " " << tm->tm_mday << "\n";
     processCommands();
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
     renderer.render(solarSystem->getScene(), cameraManager.getCamera());
     glfw->endFrame();
+    oldTimePoint = timePoint;
   }
 
   deinit();

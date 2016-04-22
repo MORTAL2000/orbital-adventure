@@ -22,6 +22,8 @@ class Object {
   virtual const glm::quat& getRotation();
   virtual const glm::mat4& getMatrix();
   virtual const glm::mat4& getMatrix() const;
+  virtual glm::vec3 getPosition() const;
+  virtual glm::vec3 getScale() const;
   virtual void setMatrix(glm::mat4);
   Object();
   virtual ~Object(){};

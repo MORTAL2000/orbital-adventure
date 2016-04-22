@@ -22,8 +22,7 @@ class SolarSystem {
  public:
   typedef std::map<PlanetID, CelestialPtr> CelestialMap;
   typedef const std::map<PlanetID, CelestialPtr> &CelestialMapRef;
-  typedef std::chrono::duration<double, std::ratio<24 * 3600, 1>>
-      FloatDaysDuration;
+  typedef std::chrono::duration<double, std::ratio<1>> FloatDuration;
 
  private:
   std::chrono::system_clock::time_point epoch2000;

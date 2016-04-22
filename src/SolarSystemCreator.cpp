@@ -45,6 +45,7 @@ void SolarSystemCreator::parsePlanet(
   double eccentricity = tree.get<double>("eccentricity");
   double semiMajorAxis = tree.get<double>("semiMajorAxis");
   double surfacePressure = tree.get<double>("surfacePressure");
+  std::string parentName = tree.get<std::string>("orbitOn");
   double meanAnomalyAtJ200 = 0;
   if (meanAnomaly)
     meanAnomalyAtJ200 = *meanAnomaly;
@@ -59,7 +60,9 @@ void SolarSystemCreator::parsePlanet(
   meanAnomalyAtJ200 = glm::radians(meanAnomalyAtJ200);
   while (meanAnomalyAtJ200 < 0) meanAnomalyAtJ200 += 2_pi;
 
-  Orbit orbit(id, semiMajorAxis, eccentricity, glm::radians(inclination),
+  PlanetID parentId(parentName);
+
+  Orbit orbit(parentId, semiMajorAxis, eccentricity, glm::radians(inclination),
               glm::radians(longitudeOfAscendingNode),
               glm::radians(argumentOfPeriapsis), meanAnomalyAtJ200);
   std::cout << name << "Mean anomaly " << meanAnomalyAtJ200 << "\n";

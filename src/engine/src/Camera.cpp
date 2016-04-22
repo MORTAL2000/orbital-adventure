@@ -2,11 +2,18 @@
 #include <glm/vec4.hpp>
 #include <iostream>
 #include "Camera.hpp"
+#include "LanguageUtils.hpp"
 
 namespace oa {
 namespace render {
+using namespace utils;
 
+glm::vec3 Camera::getDirection() { return direction; }
+glm::vec3 Camera::getDirection() const { return direction; }
 void Camera::lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
+  position = eye;
+  direction = eye - center;
+  // std::cout << "EYE " << eye << "\n";
   this->setMatrix(glm::lookAt(eye, center, up));
 }
 
