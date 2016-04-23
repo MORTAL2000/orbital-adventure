@@ -13,6 +13,7 @@ class CameraControlCommandProvider : public CommandProvider,
   glm::quat currentRotation;
   glm::mat4 cm;
   float distance;
+  double lat, lon;
   glm::vec3 center;
   glm::vec3 up;
 

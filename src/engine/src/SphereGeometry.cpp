@@ -61,12 +61,12 @@ void SphereGeometry::createGeometry() {
     float v = float(y) / heightSegments;
     for (int x = 0; x <= widthSegments; ++x) {
       float u = float(x) / widthSegments;
-      float const px = -radius * cos(u * 2 * M_PI) * sin(v * M_PI);
-      float const py = radius * cos(v * M_PI);
-      float const pz = radius * sin(u * 2 * M_PI) * sin(v * M_PI);
+      float const px = radius * cos(u * 2 * M_PI) * sin(v * M_PI);
+      float const py = radius * sin(u * 2 * M_PI) * sin(v * M_PI);
+      float const pz = radius * cos(v * M_PI);
       glm::vec3 n(px, py, pz);
       glm::vec3 p(px, py, pz);
-      glm::vec2 uv(u, v);
+      glm::vec2 uv(u, 1.0 - v);
       positions.push_back(p);
       normals.push_back(n);
       uvs.push_back(uv);
