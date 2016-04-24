@@ -58,15 +58,17 @@ void SolarSystem::updatePlanets(system_clock::time_point &timePoint) {
   double momentInDays = getMoment(timePoint);
   for (auto &pair : celestialsMap) {
     auto &planet = pair.second;
-    if (!planet->hasOrbit()) continue;
+    if (!planet->hasOrbit()) {
+      continue;
+    }
     auto &orbit = planet->getOrbit();
-    // std::cout << "parentPlanet" << orbit.body.id() << "\n";
     auto &parentPlanet = celestialsMap[orbit.body];
 
     glm::dvec3 position =
         planetPlaneCoordinates(planet->getOrbit(), momentInDays,
                                parentPlanet->getMass(), planet->getMass());
-    planet->setPosition(position);
+
+    planet->setPosition(position + parentPlanet->getPosition());
   }
 }
 
@@ -77,17 +79,21 @@ glm::dvec3 SolarSystem::planetPlaneCoordinates(const Orbit &orbit,
   auto e = orbit.eccentricity;
   auto e2 = e * e;
   double DAY = 60 * 60 * 24;
-  // std::cout << "G " << std::setprecision(17) << G << " mu " << mu << " " <<
-  // Mass
-  // << " " << mass << "\n";
   double meanMotion = std::sqrt(mu / std::pow(orbit.semiMajorAxis, double(3)));
   double M = orbit.meanAnomaly + meanMotion * moment;
-  // std::cout << "M " << moment / 60 / 60 / 24 << "\n";
   double E = eccentricityAnomaly(e, M);
   double phi = trueAnomaly(e, E, 0.0);
   double R = orbit.semiMajorAxis * (1.0 - e2) / (1.0 + e * std::cos(phi));
+  double N = orbit.longitudeOfAscendingNode;
+  double w = orbit.argumentOfPeriapsis;
+  double v = phi;
+  double i = orbit.inclination;
 
-  return glm::dvec3(R * std::cos(phi), R * std::sin(phi), 0.0);
+  double x = R * (cos(N) * cos(v + w) - sin(N) * sin(v + w) * cos(i));
+  double y = R * (sin(N) * cos(v + w) + cos(N) * sin(v + w) * cos(i));
+  double z = R * (sin(v + w) * sin(i));
+
+  return glm::dvec3(x, y, z);
 }
 
 double SolarSystem::eccentricityAnomaly(double eccentricity, double M) {
