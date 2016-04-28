@@ -8,6 +8,7 @@
 #include <string>
 #include "CelestialObject.hpp"
 #include "PlanetID.hpp"
+#include "CelestialCameraManager.hpp"
 #include "engine/Mesh.hpp"
 #include "engine/MeshFabric.hpp"
 #include "engine/Scene.hpp"
@@ -41,6 +42,7 @@ class SolarSystem {
   void addPlanet(CelestialPtr);
   void updatePlanets(std::chrono::system_clock::time_point &);
   void setCurrentCelestial(const CelestialObject *);
+  void setupUniformUpdaters(const CelestialCameraManager *);
   const CelestialObject *getObjectOfInterest();
   const render::Scene *getScene();
   CelestialMapRef getPlanetMap() const;

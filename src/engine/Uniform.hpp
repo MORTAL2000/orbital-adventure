@@ -17,6 +17,14 @@ class Mat4Uniform : public Uniform {
   Mat4Uniform(glm::mat4 *);
 };
 
+class Mat4OwnerUniform : public Uniform {
+  glm::mat4 matrix;
+  void setup(GLuint);
+
+ public:
+  Mat4OwnerUniform(glm::mat4 &);
+};
+
 class TextureUniform : public Uniform {
   GLuint textureId;
   void setup(GLuint);

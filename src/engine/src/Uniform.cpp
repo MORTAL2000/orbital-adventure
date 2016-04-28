@@ -2,6 +2,12 @@
 #include "Uniform.hpp"
 namespace oa {
 namespace render {
+
+Mat4OwnerUniform::Mat4OwnerUniform(glm::mat4& m) : matrix(m) {}
+void Mat4OwnerUniform::setup(GLuint location) {
+  glUniformMatrix4fv(location, 1, GL_FALSE, &(matrix[0][0]));
+}
+
 Mat4Uniform::Mat4Uniform(glm::mat4* m) : matrix(m){};
 
 void Mat4Uniform::setup(GLuint location) {

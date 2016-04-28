@@ -21,6 +21,7 @@ class CelestialCameraManager {
   const CelestialObject *getCurrentCelestial();
   void setSolarSystem(SolarSystem *);
   const render::Camera *getCamera();
+  const render::Camera *getCamera() const;
 };
 }
 }

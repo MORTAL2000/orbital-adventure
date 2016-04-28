@@ -65,7 +65,6 @@ void SolarSystemCreator::parsePlanet(
   Orbit orbit(parentId, semiMajorAxis, eccentricity, glm::radians(inclination),
               glm::radians(longitudeOfAscendingNode),
               glm::radians(argumentOfPeriapsis), meanAnomalyAtJ200);
-  std::cout << name << "Mean anomaly " << meanAnomalyAtJ200 << "\n";
 
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
