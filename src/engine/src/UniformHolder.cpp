@@ -8,6 +8,7 @@ void UniformHolder::setUniformValue(std::string name, Uniform* u) {
 void UniformHolder::setupUniform(std::string& name, uint32_t location) {
   if (!uniforms.count(name)) {
     std::cerr << "No such uniform : " << name << "\n";
+    return;
   }
   uniforms[name]->setup(location);
 }

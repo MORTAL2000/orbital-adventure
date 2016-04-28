@@ -42,11 +42,9 @@ void CameraControlCommandProvider::createCommand() {
   glm::vec3 direction;
   auto l = glm::clamp(lat, 0.0, double(1_pi));
   auto b = std::fmod(lon, double(2_pi));
-  std::cout << "Lat" << l << " lon " << b << "\n";
   direction.x = std::sin(l) * std::cos(b);
   direction.y = std::sin(l) * std::sin(b);
   direction.z = std::cos(l);
-  std::cout << "dir " << direction << "\n";
 
   addCommand(new CameraRotationCommand(cameraMgr, direction, distance));
 }
@@ -59,7 +57,7 @@ void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
 
     if (len > 0) {
       double dlat = double(diff.y / 500.0);
-      double dlon = double(diff.x / 500.0);
+      double dlon = double(-diff.x / 500.0);
       mousePositionOnLeftButton = point;
 
       lat = glm::clamp(lat - dlat, 0.00001, double(1_pi - 0.0001));

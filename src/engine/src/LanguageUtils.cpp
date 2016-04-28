@@ -36,5 +36,10 @@ std::ostream &operator<<(std::ostream &s, const glm::vec3 &m) {
   s << m.x << ", " << m.y << ", " << m.z;
   return s;
 }
+
+std::ostream &operator<<(std::ostream &s, const glm::vec2 &m) {
+  s << m.x << ", " << m.y;
+  return s;
+}
 }
 }

@@ -50,6 +50,7 @@ void Game::initSolarSystem() {
   creator.createSolarSystem("../data/planets.json");
   solarSystem = creator.getSolarSystem();
   cameraManager.setSolarSystem(solarSystem.get());
+  solarSystem->setupUniformUpdaters(&cameraManager);
 }
 
 void Game::initPlayer() {

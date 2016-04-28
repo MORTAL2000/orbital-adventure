@@ -6,6 +6,7 @@
 #include "memory.h"
 namespace oa {
 namespace game {
+
 class CelestialCameraManager {
   std::unique_ptr<render::Camera> camera;
   SolarSystem *solarSystem;

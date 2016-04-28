@@ -8,13 +8,13 @@
 #include <string>
 #include "CelestialObject.hpp"
 #include "PlanetID.hpp"
-#include "CelestialCameraManager.hpp"
 #include "engine/Mesh.hpp"
 #include "engine/MeshFabric.hpp"
 #include "engine/Scene.hpp"
 
 namespace oa {
 namespace game {
+class CelestialCameraManager;
 
 typedef std::unique_ptr<CelestialObject> CelestialPtr;
 class SolarSystem {

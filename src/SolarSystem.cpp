@@ -2,6 +2,7 @@
 #include <ctime>
 #include <glm/gtx/transform.hpp>
 #include <iostream>
+#include "CelestialCameraManager.hpp"
 #include "Planet.hpp"
 #include "SolarSystem.hpp"
 #include "Star.hpp"
@@ -19,19 +20,36 @@ void SolarSystem::setupUniformUpdaters(
     const CelestialCameraManager *cameraMgr) {
   for (auto &pair : celestialsMap) {
     render::Mesh *mesh = pair.second->getMesh();
-    auto updater = [mesh, cameraMgr](render::UniformHolder *holder) {
+    auto updater = [mesh, cameraMgr](render::UniformHolder *holder, double) {
       auto position = cameraMgr->getCamera()->getPosition();
       auto direction = glm::normalize(mesh->getPosition() - position);
-      glm::vec4 north = glm::vec4(0.0, 0.0, 1.0, 0.0);
+      glm::vec4 north = glm::vec4(0.0, 0.0, 1.0, 1.0);
       auto meshMatrix = mesh->getMatrix();
       auto cameraMatrix = cameraMgr->getCamera()->getMatrix();
-      north = cameraMatrix * meshMatrix * north;
+      auto projectionMatrix = cameraMgr->getCamera()->getProjectionMatrix();
+      north = cameraMatrix * north;
       glm::vec3 axis = glm::normalize(glm::cross(glm::vec3(north), direction));
       float angle = std::acos(glm::dot(glm::normalize(glm::vec3(north)),
                                        glm::normalize(direction)));
       glm::mat4 rotation = glm::rotate(angle, axis);
+      direction = -direction;
+
+      auto ang = std::fmod(std::asin(direction.z) / 1_pi + 1.5, 1.0);
+      auto lon = std::fmod(atan2(direction.y, direction.x) / 2_pi + 1, 1);
+
+      // std::cout << "DIR " << ang << "\n";
+      glm::vec2 currentPosition(lon, ang);
+      // rotation = glm::translate(rotation, mesh->getPosition());
+      holder->setUniformValue("viewMatrix",
+                              new render::Mat4OwnerUniform(cameraMatrix));
+      holder->setUniformValue("projectionMatrix",
+                              new render::Mat4OwnerUniform(projectionMatrix));
+      holder->setUniformValue("modelMatrix",
+                              new render::Mat4OwnerUniform(meshMatrix));
       holder->setUniformValue("northPoleToCameraRotation",
                               new render::Mat4OwnerUniform(rotation));
+      holder->setUniformValue("currentCameraUV",
+                              new render::Vec2OwnerUniform(currentPosition));
 
     };
     mesh->addUniformUpdater(updater);
