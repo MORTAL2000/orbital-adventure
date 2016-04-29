@@ -11,7 +11,7 @@ out vec4 color;
 
 float d = 0.002;
 
-float PI = 3.1415926;
+float PI = 3.1415926535897932384626433832795;
 void main(){
     //vec2 nuv = vec2(uv.x - currentCameraUV.x, uv.y- currentCameraUV.y ); 
     //float red = length(uv - currentCameraUV) < d? 1.0: 0.0;
