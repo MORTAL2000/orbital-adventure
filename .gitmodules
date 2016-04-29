@@ -1,0 +1,4 @@
+[submodule "data"]
+	path = data
+	url = https://github.com/stavenko/orbital-adventure-data.git
+	branch = master
