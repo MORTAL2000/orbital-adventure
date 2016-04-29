@@ -34,6 +34,12 @@ void GLFWWrapper::initOpenGL() {
   glfwSetErrorCallback(this->errorCallback);
   determineOpenGLVersion();
   glew();
+  int max;
+  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
+  std::cout << "Max texture size " << max << "\n";
+  int texture_units;
+  glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
+  std::cout << "Max texture units per shader" << texture_units << "\n";
   glClearColor(0.0, 0.0, 0.4, 0.0);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);

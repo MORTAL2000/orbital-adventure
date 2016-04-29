@@ -34,8 +34,10 @@ class Mat4OwnerUniform : public Uniform {
 };
 
 class TextureUniform : public Uniform {
+  static int setupCounter;
   GLuint textureId;
   void setup(GLuint);
+  GLuint textureIdGetter();
 
  public:
   TextureUniform(GLuint);
