@@ -12,6 +12,8 @@ SolarSystemCreator::SolarSystemCreator() : solarSystem(new SolarSystem) {}
 std::unique_ptr<SolarSystem> SolarSystemCreator::getSolarSystem() {
   return std::move(solarSystem);
 }
+void SolarSystemCreator::setupUniformUpdaters(
+    const CelestialCameraManager *cameraMgr) {}
 void SolarSystemCreator::createSolarSystem(std::string filepath) {
   meshFabric.setRootDir(filepath);
   using boost::property_tree::ptree;

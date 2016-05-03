@@ -8,7 +8,8 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <iostream>
-#include <jpeglib.h> // jpeglib include is order-dependent, It MUST be included after <stdio.h>
+#include <thread>
+#include <jpeglib.h>
 #include "TextureManager.hpp"
 // clang-format on
 
@@ -16,19 +17,18 @@ namespace oa {
 namespace render {
 TextureManager::TextureManager() {}
 GLuint TextureManager::loadTexture(std::string filepath) {
+  if (loadedTextures.count(filepath)) return loadedTextures[filepath];
   auto p = boost::filesystem::path(filepath);
   std::string extension = p.extension().string();
-  if (isJpeg(extension)) {
-    return loadJpegTexture(filepath);
-  }
-  if (isPng(extension)) {
-    return loadPngTexture(filepath);
-  }
-
-  return 0;
+  GLuint id;
+  if (isJpeg(extension)) id = loadJpegTexture(filepath);
+  if (isPng(extension)) id = loadPngTexture(filepath);
+  loadedTextures[filepath] = id;
+  return id;
 }
 
 GLuint TextureManager::loadJpegTexture(std::string filename) {
+  std::cout << "let's create some texture " << filename << "\n";
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr emgr;
   struct stat file_info;

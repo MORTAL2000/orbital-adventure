@@ -48,9 +48,9 @@ void Game::initGLFW() { glfw->init(); }
 void Game::initSolarSystem() {
   SolarSystemCreator creator;
   creator.createSolarSystem("../data/planets.json");
+  creator.setupUniformUpdaters(&cameraManager);
   solarSystem = creator.getSolarSystem();
   cameraManager.setSolarSystem(solarSystem.get());
-  solarSystem->setupUniformUpdaters(&cameraManager);
 }
 
 void Game::initPlayer() {

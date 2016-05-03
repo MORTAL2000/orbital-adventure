@@ -8,6 +8,7 @@
 #include "ShaderProgam.hpp"
 #include "Uniform.hpp"
 #include "UniformHolder.hpp"
+#include "UniformInstaller.hpp"
 
 namespace oa {
 namespace render {
@@ -15,9 +16,9 @@ class Mesh : public render::Object, public render::UniformHolder {
   ShaderProgram *program;
   geometry::Geometry *geometry;
   glm::mat4 modelViewProjection;
+  std::vector<std::unique_ptr<UniformInstaller>> uniformInstallers;
+
   std::function<std::unique_ptr<Camera>(const Camera *)> cameraModifier;
-  typedef boost::signals2::signal<void(UniformHolder *, double)> SignalType;
-  SignalType uniformUpdaters;
 
  public:
   geometry::Geometry *getGeometry();
@@ -25,9 +26,9 @@ class Mesh : public render::Object, public render::UniformHolder {
   Mesh(ShaderProgram *, geometry::Geometry *);
   virtual uint32_t getProgramId();
   virtual void prerender(const UniformHolder *uniformSource);
-  virtual void addUniformUpdater(SignalType::slot_function_type fn);
-  virtual void setupUniforms(const Camera *);
-  virtual void updateUniforms(double t);
+  virtual void addUniformInstaller(UniformInstaller *);
+  virtual void setupUniforms(const Camera *, double t);
+  virtual void updateUniformInstallers(const Camera *, double t);
   virtual ~Mesh(){};
 };
 }

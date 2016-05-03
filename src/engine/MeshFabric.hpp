@@ -12,6 +12,8 @@ class MeshFabric {
 
  public:
   Uniform *createUniform(boost::property_tree::ptree &);
+  UniformInstaller *createUniformInstaller(boost::property_tree::ptree &,
+                                           Mesh *);
   Mesh *createMesh(boost::property_tree::ptree &);
   Mesh *meshOfType(std::string, ShaderProgram *, geometry::Geometry *);
   void setRootDir(std::string);

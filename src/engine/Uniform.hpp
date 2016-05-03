@@ -17,6 +17,13 @@ class Mat4Uniform : public Uniform {
   Mat4Uniform(glm::mat4 *);
 };
 
+class IntVec2OwnerUniform : public Uniform {
+  glm::ivec2 v2;
+  void setup(GLuint);
+
+ public:
+  IntVec2OwnerUniform(glm::ivec2 &);
+};
 class Vec2OwnerUniform : public Uniform {
   glm::vec2 v2;
   void setup(GLuint);

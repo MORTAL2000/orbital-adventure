@@ -14,7 +14,7 @@ void Renderer::render(const Scene *scene, const Camera *camera) {
       g->setBuffers();
       for (auto m : scene->getMeshes(g)) {
         m->prerender(scene);
-        m->setupUniforms(camera);
+        m->setupUniforms(camera, 0.0);
         g->render();
       }
       g->unsetBuffers();

@@ -42,7 +42,6 @@ class SolarSystem {
   void addPlanet(CelestialPtr);
   void updatePlanets(std::chrono::system_clock::time_point &);
   void setCurrentCelestial(const CelestialObject *);
-  void setupUniformUpdaters(const CelestialCameraManager *);
   const CelestialObject *getObjectOfInterest();
   const render::Scene *getScene();
   CelestialMapRef getPlanetMap() const;

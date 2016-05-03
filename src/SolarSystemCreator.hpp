@@ -13,6 +13,7 @@ class SolarSystemCreator {
  public:
   SolarSystemCreator();
   void createSolarSystem(std::string filepath);
+  void setupUniformUpdaters(const CelestialCameraManager *);
   std::unique_ptr<SolarSystem> getSolarSystem();
 };
 }

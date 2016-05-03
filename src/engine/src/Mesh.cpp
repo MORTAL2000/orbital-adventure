@@ -15,18 +15,16 @@ Mesh::Mesh(ShaderProgram *p, geometry::Geometry *g) : program(p), geometry(g) {
 
 uint32_t Mesh::getProgramId() { return program->getProgramId(); }
 
-void Mesh::addUniformUpdater(SignalType::slot_function_type fn){
-  uniformUpdaters.connect(fn);
-}
-void Mesh::updateUniforms(double t){
-  uniformUpdaters(this, t);
+void Mesh::updateUniformInstallers(const Camera *camera, double t) {
+  for (auto &installer : uniformInstallers) installer->install(this, camera, t);
 }
 
+void Mesh::addUniformInstaller(UniformInstaller *ui) {
+  uniformInstallers.push_back(std::unique_ptr<UniformInstaller>(ui));
+}
 void Mesh::prerender(const UniformHolder *) {}
-void Mesh::setupUniforms(const Camera *camera) {
-  auto &view = camera->getMatrix();
-  auto &projection = camera->getProjectionMatrix();
-  modelViewProjection = projection * view * this->getMatrix();
+void Mesh::setupUniforms(const Camera *camera, double t) {
+  updateUniformInstallers(camera, t);
 
   for (auto &pair : program->getUniformLocations()) {
     auto name = pair.first;

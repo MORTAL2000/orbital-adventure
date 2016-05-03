@@ -13,17 +13,8 @@ void PersonalClippingMesh::prerender(const UniformHolder *) {
   glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void PersonalClippingMesh::setupUniforms(const Camera *camera) {
-  auto scale = getScale();
-  auto accordingToCamera = camera->getPosition() - getPosition();
-  auto dir = camera->getDirection();
-
-  auto distance = glm::dot(glm::normalize(dir), accordingToCamera);
-  auto size = glm::max(scale.z, glm::max(scale.x, scale.y));
-  auto near = distance - size;
-  auto far = distance + size;
-  auto newCamera = camera->changeClipping(near, far);
-  Mesh::setupUniforms(newCamera);
+void PersonalClippingMesh::setupUniforms(const Camera *camera, double t) {
+  Mesh::setupUniforms(camera, t);
 }
 }
 }

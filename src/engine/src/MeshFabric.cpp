@@ -6,6 +6,9 @@
 #include "PersonalClippingMesh.hpp"
 #include "ShaderManager.hpp"
 #include "TextureManager.hpp"
+#include "LODInstaller.hpp"
+#include "PersonalClippingMatrixInstaller.hpp"
+#include "GeometryLODInstaller.hpp"
 
 namespace oa {
 namespace render {
@@ -40,9 +43,38 @@ Mesh *MeshFabric::createMesh(ptree &meshDescription) {
     ptree uniform = p.second;
     mesh->setUniformValue(p.first, createUniform(uniform));
   }
+  auto uInstallers = meshDescription.get_child("uniform-installers");
+  for (ptree::value_type &p : uInstallers) {
+    ptree ui = p.second;
+    mesh->addUniformInstaller(createUniformInstaller(ui, mesh));
+  }
   return mesh;
 }
 void MeshFabric::setRootDir(std::string r) { rootDir = r; }
+
+UniformInstaller *MeshFabric::createUniformInstaller(ptree &uniform,
+                                                     Mesh *mesh) {
+  std::string type = uniform.get("type", "");
+  std::cout << "Create installer " << type << "\n";
+  if (type == "GeometryLODInstaller") {
+    return new GeometryLODInstaller(mesh);
+  }
+  if (type == "PersonalClippingMatrixInstaller") {
+    return new PersonalClippingMatrixInstaller(mesh);
+  }
+  if (type == "LODInstaller") {
+    std::string root = uniform.get("root", "");
+    boost::filesystem::path path(rootDir);
+    path = path.parent_path() / root;
+
+    std::string ext = uniform.get("filetype", "");
+    int width = uniform.get("totalWidth", 0);
+    int height = uniform.get("totalHeight", 0);
+    return new LODInstaller(
+        mesh, LODTextureManager(path.string(), width, height, ext));
+  }
+}
+
 Uniform *MeshFabric::createUniform(ptree &uniform) {
   std::string type = uniform.get("type", "");
   if (type == "sampler2D") {
