@@ -3,6 +3,7 @@
 #include <thread>
 #include "Game.hpp"
 #include "SolarSystemCreator.hpp"
+#include "engine/LanguageUtils.hpp"
 #include "engine/PerspectiveCamera.hpp"
 
 #include <iostream>
@@ -10,6 +11,7 @@ namespace oa {
 namespace game {
 using namespace glm;
 using namespace std::chrono;
+using namespace utils;
 
 Game::Game()
     : simulatatedTime(std::chrono::system_clock::now()),
@@ -56,11 +58,7 @@ void Game::initSolarSystem() {
   });
 }
 
-void Game::initPlayer() {
-  // camera = new render::PerspectiveCamera(glm::radians(45.0f), 4.0f / 3.0f,
-  // 1.0f,
-  // 100.0f);
-}
+void Game::initPlayer() {}
 
 void Game::mainLoop() {
   while (isPlaying) {
@@ -74,11 +72,14 @@ void Game::mainLoop() {
     auto tm = localtime(&tt);
     solarSystem->updatePlanets(simulatatedTime);
     processCommands();
+    auto camera =
+        std::unique_ptr<render::Camera>(cameraManager.getCamera()->clone());
+    std::cout << std::setprecision(17);
 
     renderer.clearColor();
-    renderer.render(solarSystem->getSkyboxScene(), cameraManager.getCamera());
+    renderer.render(solarSystem->getSkyboxScene(), camera.get());
     renderer.clearDepth();
-    renderer.renderSorted(solarSystem->getScene(), cameraManager.getCamera());
+    renderer.renderSorted(solarSystem->getScene(), camera.get());
     glfw->endFrame();
     oldTimePoint = timePoint;
   }

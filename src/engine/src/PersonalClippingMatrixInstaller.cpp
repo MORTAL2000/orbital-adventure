@@ -1,7 +1,9 @@
-#include "PersonalClippingMatrixInstaller.hpp"
 #include <iostream>
+#include "LanguageUtils.hpp"
+#include "PersonalClippingMatrixInstaller.hpp"
 namespace oa {
 namespace render {
+using namespace utils;
 PersonalClippingMatrixInstaller::PersonalClippingMatrixInstaller(Mesh *m)
     : mesh(m) {}
 void PersonalClippingMatrixInstaller::install(UniformHolder *holder,
@@ -11,8 +13,8 @@ void PersonalClippingMatrixInstaller::install(UniformHolder *holder,
   auto dir = camera->getDirection();
 
   auto distance = glm::dot(glm::normalize(dir), accordingToCamera);
-  auto size = glm::max(scale.z, glm::max(scale.x, scale.y));
-  auto near = distance - size;
+  float size = glm::max(scale.z, glm::max(scale.x, scale.y)) * 1.0;
+  auto near = std::max(0.01f, distance - size);
   auto far = distance + size;
   auto newCamera = camera->changeClipping(near, far);
 

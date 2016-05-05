@@ -10,10 +10,12 @@ using namespace utils;
 
 glm::vec3 Camera::getDirection() { return direction; }
 glm::vec3 Camera::getDirection() const { return direction; }
+glm::vec3 Camera::getUp() { return up; }
+glm::vec3 Camera::getUp() const { return up; }
 void Camera::lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
   position = eye;
   direction = eye - center;
-  // std::cout << "EYE " << eye << "\n";
+  this->up = up;
   this->setMatrix(glm::lookAt(eye, center, up));
 }
 

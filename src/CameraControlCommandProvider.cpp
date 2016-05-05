@@ -50,26 +50,20 @@ void CameraControlCommandProvider::createCommand() {
 }
 
 void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
+  float size = cameraMgr->getCurrentCelestial()->getSize();
+  float distanceToSurface = distance - size;
   lastMousePosition = point;
   if (leftButtonPressed) {
     glm::fvec2 diff = lastMousePosition - mousePositionOnLeftButton;
     auto len = glm::length(diff);
 
     if (len > 0) {
-      double dlat = double(diff.y / 500.0);
-      double dlon = double(-diff.x / 500.0);
+      double dlat = double(diff.y * distanceToSurface / 1e10);
+      double dlon = double(-diff.x * distanceToSurface / 1e10);
       mousePositionOnLeftButton = point;
 
       lat = glm::clamp(lat - dlat, 0.00001, double(1_pi - 0.0001));
       lon = lon + dlon;
-
-      // currentRotation = glm::quat(1.0, 0, 0, 0);
-      // currentRotation =
-      // currentRotation *
-      // glm::angleAxis(diff.y / 100, glm::vec3(-1.0f, 0.0f, 0.0f));
-      // currentRotation =
-      // currentRotation *
-      // glm::angleAxis(diff.x / 100, glm::vec3(0.0f, -1.0f, 0.0f));
 
       createCommand();
     }
@@ -77,8 +71,9 @@ void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
 }
 
 void CameraControlCommandProvider::onScroll(double w, double v) {
-  std::cout << "DD " << distance << "\n";
-  distance += v * 0.01 * distance;
+  float size = cameraMgr->getCurrentCelestial()->getSize();
+  float distanceToSurface = distance - size;
+  distance += v * 0.01 * distanceToSurface;
   createCommand();
 }
 }
