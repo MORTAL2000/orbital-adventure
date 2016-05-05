@@ -15,7 +15,6 @@ class Geometry {
   virtual void render();
   virtual uint32_t getIndexAmount() = 0;
   virtual void prepareOpenglBuffers() = 0;
-  virtual void setupGeometry() = 0;
   virtual ~Geometry() {}
 };
 }

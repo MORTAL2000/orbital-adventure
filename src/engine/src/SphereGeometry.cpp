@@ -8,23 +8,6 @@ SphereGeometry::SphereGeometry(float r, int s, int rings)
 
 uint32_t SphereGeometry::getIndexAmount() { return indices.size(); }
 
-void SphereGeometry::setupGeometry() {
-  int attribLocation = 0;
-  glEnableVertexAttribArray(++attribLocation);
-  glBindBuffer(GL_ARRAY_BUFFER, positionsBufferId);
-  glVertexAttribPointer(attribLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-  glEnableVertexAttribArray(++attribLocation);
-  glBindBuffer(GL_ARRAY_BUFFER, normalsBufferId);
-  glVertexAttribPointer(attribLocation, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-  glEnableVertexAttribArray(++attribLocation);
-  glBindBuffer(GL_ARRAY_BUFFER, uvsBufferId);
-  glVertexAttribPointer(attribLocation, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, positionsBufferId);
-}
-
 void SphereGeometry::prepareOpenglBuffers() {
   createGeometry();
   GLuint buffers[4];

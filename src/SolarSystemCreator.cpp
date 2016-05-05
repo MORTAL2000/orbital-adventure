@@ -19,8 +19,26 @@ void SolarSystemCreator::createSolarSystem(std::string filepath) {
   using boost::property_tree::ptree;
   ptree planetsTree;
   read_json(filepath, planetsTree);
-  for (auto &v : planetsTree) parsePlanet(v);
+  boost::property_tree::ptree sb = planetsTree.get_child("skybox");
+  createSkyBox(sb);
+  for (auto &v : planetsTree.get_child("planets")) parsePlanet(v);
 }
+
+void SolarSystemCreator::createSkyBox(boost::property_tree::ptree &tree) {
+  std::vector<std::string> textures;
+  textures.push_back(tree.get<std::string>("px"));
+  textures.push_back(tree.get<std::string>("nx"));
+  textures.push_back(tree.get<std::string>("py"));
+  textures.push_back(tree.get<std::string>("ny"));
+  textures.push_back(tree.get<std::string>("pz"));
+  textures.push_back(tree.get<std::string>("nz"));
+  std::string vs = tree.get("vertexShader", "no shader");
+  std::string fs = tree.get("fragmentShader", "no shader");
+
+  render::Mesh *mesh = meshFabric.createSkyboxMesh(textures, vs, fs);
+  solarSystem->setSkybox(mesh);
+}
+
 void SolarSystemCreator::parsePlanet(
     boost::property_tree::ptree::value_type &value) {
   auto tree = value.second;

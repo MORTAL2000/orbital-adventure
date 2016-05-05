@@ -74,10 +74,11 @@ void Game::mainLoop() {
     auto tt = system_clock::to_time_t(simulatatedTime);
     auto tm = localtime(&tt);
     solarSystem->updatePlanets(simulatatedTime);
-    // std::cout << tm->tm_year << " " << tm->tm_mon << " " << tm->tm_mday <<
-    // "\n";
     processCommands();
 
+    renderer.clearColor();
+    renderer.render(solarSystem->getSkyboxScene(), cameraManager.getCamera());
+    renderer.clearDepth();
     renderer.render(solarSystem->getScene(), cameraManager.getCamera());
     glfw->endFrame();
     oldTimePoint = timePoint;

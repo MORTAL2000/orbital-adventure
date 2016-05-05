@@ -9,7 +9,6 @@
 #include "CelestialObject.hpp"
 #include "PlanetID.hpp"
 #include "engine/Mesh.hpp"
-#include "engine/MeshFabric.hpp"
 #include "engine/Scene.hpp"
 
 namespace oa {
@@ -29,6 +28,7 @@ class SolarSystem {
   std::chrono::system_clock::time_point epoch2000;
   CelestialMap celestialsMap;
   render::Scene scene;
+  render::Scene skyboxScene;
   const CelestialObject *objectOfIntrest;
 
   double trueAnomaly(double eccentricity, double E, double precision);
@@ -44,6 +44,8 @@ class SolarSystem {
   void setCurrentCelestial(const CelestialObject *);
   const CelestialObject *getObjectOfInterest();
   const render::Scene *getScene();
+  const render::Scene *getSkyboxScene();
+  void setSkybox(render::Mesh *m);
   CelestialMapRef getPlanetMap() const;
 };
 }

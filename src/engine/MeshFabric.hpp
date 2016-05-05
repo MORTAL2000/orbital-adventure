@@ -9,13 +9,15 @@ namespace oa {
 namespace render {
 class MeshFabric {
   std::string rootDir;
-
- public:
-  Uniform *createUniform(boost::property_tree::ptree &);
+  Mesh *meshOfType(std::string, ShaderProgram *, geometry::Geometry *);
   UniformInstaller *createUniformInstaller(boost::property_tree::ptree &,
                                            Mesh *);
+  Uniform *createUniform(boost::property_tree::ptree &);
+
+ public:
   Mesh *createMesh(boost::property_tree::ptree &);
-  Mesh *meshOfType(std::string, ShaderProgram *, geometry::Geometry *);
+  Mesh *createSkyboxMesh(std::vector<std::string> &textures, std::string,
+                         std::string);
   void setRootDir(std::string);
 };
 }

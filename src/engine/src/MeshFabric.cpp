@@ -1,18 +1,40 @@
 #include <iostream>
 #include "Geometry.hpp"
+#include "GeometryLODInstaller.hpp"
 #include "GeometryManager.hpp"
+#include "LODInstaller.hpp"
 #include "Mesh.hpp"
 #include "MeshFabric.hpp"
+#include "PersonalClippingMatrixInstaller.hpp"
 #include "PersonalClippingMesh.hpp"
 #include "ShaderManager.hpp"
+#include "SkyboxUniformInstaller.hpp"
 #include "TextureManager.hpp"
-#include "LODInstaller.hpp"
-#include "PersonalClippingMatrixInstaller.hpp"
-#include "GeometryLODInstaller.hpp"
 
 namespace oa {
 namespace render {
 using namespace boost::property_tree;
+
+Mesh *MeshFabric::createSkyboxMesh(std::vector<std::string> &textures,
+                                   std::string vertexShaderPath,
+                                   std::string fragmentShaderPath) {
+  boost::filesystem::path root(rootDir);
+  auto program = ShaderProgramManager::instance()->loadProgram(
+      (root.parent_path() / vertexShaderPath).string(),
+      (root.parent_path() / fragmentShaderPath).string());
+  float boxSize = 1e9;
+  auto geometry = GeometryManager::instance()->createSkyboxGeometry(boxSize);
+  Mesh *mesh = new Mesh(program, geometry);
+  for (auto &path : textures) {
+    path = (root.parent_path() / path).string();
+  }
+  auto u = new CubemapUniform(
+      TextureManager::instance()->loadCubemapTexture(textures));
+  auto installer = new SkyboxUniformInstaller(boxSize);
+  mesh->setUniformValue("CubeMap", u);
+  mesh->addUniformInstaller(installer);
+  return mesh;
+}
 
 Mesh *MeshFabric::meshOfType(std::string type, ShaderProgram *sp,
                              geometry::Geometry *geometry) {
@@ -20,6 +42,7 @@ Mesh *MeshFabric::meshOfType(std::string type, ShaderProgram *sp,
   if (type == "PersonalClippingMesh")
     return new PersonalClippingMesh(sp, geometry);
 }
+
 Mesh *MeshFabric::createMesh(ptree &meshDescription) {
   using namespace boost::filesystem;
   std::string meshType = meshDescription.get<std::string>("type");

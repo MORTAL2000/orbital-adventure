@@ -9,6 +9,8 @@ class Renderer {
  public:
   Renderer();
   void render(const Scene*, const Camera*);
+  void clearColor();
+  void clearDepth();
 };
 }
 }

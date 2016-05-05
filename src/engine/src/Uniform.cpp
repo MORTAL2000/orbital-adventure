@@ -7,6 +7,11 @@ void IntVec2OwnerUniform::setup(GLuint location) {
   glUniform2iv(location, 1, &(v2[0]));
 }
 
+Vec3OwnerUniform::Vec3OwnerUniform(glm::vec3& v) : v3(v) {}
+void Vec3OwnerUniform::setup(GLuint location) {
+  glUniform3fv(location, 1, &(v3[0]));
+}
+
 Vec2OwnerUniform::Vec2OwnerUniform(glm::vec2& v) : v2(v) {}
 void Vec2OwnerUniform::setup(GLuint location) {
   glUniform2fv(location, 1, &(v2[0]));
@@ -66,12 +71,18 @@ GLuint TextureUniform::textureIdGetter() {
   }
 }
 
+void TextureUniform::bindTexture(GLuint t) { glBindTexture(GL_TEXTURE_2D, t); }
+
 void TextureUniform::setup(GLuint location) {
   glActiveTexture(textureIdGetter());
-  glBindTexture(GL_TEXTURE_2D, textureId);
+  bindTexture(textureId);
   glUniform1i(location, setupCounter);
   ++setupCounter;
   if (setupCounter > 31) setupCounter = 0;
+}
+CubemapUniform::CubemapUniform(GLuint t) : TextureUniform(t) {}
+void CubemapUniform::bindTexture(GLuint t) {
+  glBindTexture(GL_TEXTURE_CUBE_MAP, t);
 }
 }
 }

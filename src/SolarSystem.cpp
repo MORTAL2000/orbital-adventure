@@ -14,6 +14,8 @@ using namespace std::chrono;
 using namespace std::chrono_literals;
 using namespace utils;
 const double SolarSystem::G = 6.67408e-11;
+const render::Scene *SolarSystem::getSkyboxScene() { return &skyboxScene; }
+void SolarSystem::setSkybox(render::Mesh *mesh) { skyboxScene.addMesh(mesh); }
 
 SolarSystem::SolarSystem() : objectOfIntrest(nullptr) {
   std::tm time;

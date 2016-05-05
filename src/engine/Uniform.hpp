@@ -1,5 +1,7 @@
 #pragma once
 #include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include "GLFWWrapper.hpp"
 namespace oa {
 namespace render {
@@ -24,6 +26,15 @@ class IntVec2OwnerUniform : public Uniform {
  public:
   IntVec2OwnerUniform(glm::ivec2 &);
 };
+
+class Vec3OwnerUniform : public Uniform {
+  glm::vec3 v3;
+  void setup(GLuint);
+
+ public:
+  Vec3OwnerUniform(glm::vec3 &);
+};
+
 class Vec2OwnerUniform : public Uniform {
   glm::vec2 v2;
   void setup(GLuint);
@@ -45,9 +56,17 @@ class TextureUniform : public Uniform {
   GLuint textureId;
   void setup(GLuint);
   GLuint textureIdGetter();
+  inline virtual void bindTexture(GLuint);
 
  public:
   TextureUniform(GLuint);
+};
+
+class CubemapUniform : public TextureUniform {
+  void bindTexture(GLuint);
+
+ public:
+  CubemapUniform(GLuint);
 };
 }
 }

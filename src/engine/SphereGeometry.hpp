@@ -1,8 +1,8 @@
 #pragma once
-#include "Geometry.hpp"
-#include <vector>
-#include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <vector>
+#include "Geometry.hpp"
 
 namespace oa {
 namespace geometry {
@@ -22,7 +22,6 @@ class SphereGeometry : public Geometry {
   uint32_t getIndexAmount();
   SphereGeometry(float radius = 0.1, int segments = 10, int rings = 10);
   void prepareOpenglBuffers();
-  void setupGeometry();
 };
 }
 }

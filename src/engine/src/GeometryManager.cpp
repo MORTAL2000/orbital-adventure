@@ -1,10 +1,17 @@
 #include "GeometryManager.hpp"
+#include "SkyboxGeometry.hpp"
 #include "SphereGeometry.hpp"
 
 namespace oa {
 namespace render {
 using namespace boost::property_tree;
 GeometryManager::GeometryManager() {}
+
+geometry::Geometry *GeometryManager::createSkyboxGeometry(float size) {
+  geometry::Geometry *ss = new geometry::SkyboxGeometry(size);
+  ss->prepareOpenglBuffers();
+  return ss;
+}
 
 geometry::Geometry *GeometryManager::createSphereGeometry(double radius,
                                                           int rings,
