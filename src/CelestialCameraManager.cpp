@@ -14,9 +14,16 @@ const render::Camera* CelestialCameraManager::getCamera() {
   return camera.get();
 }
 
+void CelestialCameraManager::setNewWindowDimensions(int w, int h) {
+  double maxClipping = 7e7;
+  camera = std::unique_ptr<render::Camera>(new render::PerspectiveCamera(
+      glm::radians(45.0f), float(w) / float(h), 2.0e3f, maxClipping * 2 * 10));
+  glm::vec3 zero(0.0, 0.0, 0.0);
+  camera->lookAt((dir * distance), zero, up);
+}
+
 void CelestialCameraManager::setCurrentCelestial(
     const CelestialObject* celestial) {
-  center = celestial->getPosition();
   glm::vec3 zero(0.0, 0.0, 0.0);
   camera->lookAt((dir * distance), zero, up);
   solarSystem->setCurrentCelestial(celestial);

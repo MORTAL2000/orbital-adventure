@@ -6,9 +6,7 @@ namespace gl {
 
 GLFWWrapper::GLFWWrapper() : title("Orbital adventure") {}
 GLFWWrapper::~GLFWWrapper() {
-  // if (glfwVersionMajor == 4) {
   glDeleteVertexArrays(1, &VertexArrayID);
-  //}
   glfwTerminate();
 }
 
@@ -18,12 +16,8 @@ void GLFWWrapper::init() {
 }
 
 void GLFWWrapper::genAttribArrays() {
-  // if (glfwVersionMajor == 4) {
-  std::cout << "gen Attrib arrays\n";
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
-  std::cout << "GGG " << VertexArrayID << "\n";
-  //}
 }
 
 void GLFWWrapper::initOpenGL() {
@@ -99,7 +93,9 @@ void GLFWWrapper::determineOpenGLVersion() {
         std::cout << "create window\n";
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
       }
-      if (!window) {
+      if (window) {
+        glfwSetWindowSizeCallback(window, GLFWWrapper::windowResizeCallbak);
+      } else {
         continue;
       }
 
@@ -113,10 +109,24 @@ void GLFWWrapper::determineOpenGLVersion() {
     }
   }
 }
+void GLFWWrapper::windowResizeCallbak(GLFWwindow *win, int width, int height) {
+  auto inst = GLFWWrapper::getInstance();
+  inst->width = width;
+  inst->height = height;
+  int fbWidth, fbHeight;
+  glfwGetFramebufferSize(win, &fbWidth, &fbHeight);
+  std::cout << "Window fb resized to " << fbWidth << "x" << fbHeight << "\n";
+  glViewport(0, 0, fbWidth, fbHeight);
+  inst->resolutionSlot(width, height);
+}
 void GLFWWrapper::errorCallback(int error, const char *description) {
   std::cerr << "[Error] " << error << " (" << description << ")\n";
 }
 
+void GLFWWrapper::addResolutionListener(
+    ResolutionSignal::slot_function_type fn) {
+  resolutionSlot.connect(fn);
+}
 void GLFWWrapper::keyCallback(GLFWwindow *, int key, int scan, int action,
                               int mods) {
   GLFWWrapper *instance = getInstance();

@@ -7,18 +7,22 @@
 #include <OpenGL/glext.h>
 #endif
 #include <GLFW/glfw3.h>
-#include <vector>
+#include <boost/signals2.hpp>
 #include <string>
+#include <vector>
 
 #include "InputListener.hpp"
 
 namespace oa {
 namespace gl {
 class GLFWWrapper final {
+  typedef boost::signals2::signal<void(int, int)> ResolutionSignal;
+
  public:
   void init();  // Init opengl, scene, and everything;
   static GLFWWrapper *getInstance();
   void registerInputListener(oa::input::InputListener *);
+  void addResolutionListener(ResolutionSignal::slot_function_type fn);
   void endFrame();
   ~GLFWWrapper();
 
@@ -34,6 +38,7 @@ class GLFWWrapper final {
   GLuint VertexArrayID;
   GLFWwindow *window = nullptr;
   std::vector<oa::input::InputListener *> inputListeners;
+  ResolutionSignal resolutionSlot;
   GLFWWrapper();
   void initOpenGL();
   void initInput();
@@ -48,6 +53,7 @@ class GLFWWrapper final {
   static void mouseMoveCallback(GLFWwindow *, double x, double y);
   static void mouseKeyCallback(GLFWwindow *, int key, int action, int mods);
   static void mouseScrollCallback(GLFWwindow *, double x, double y);
+  static void windowResizeCallbak(GLFWwindow *, int width, int height);
 };
 }
 }

@@ -17,6 +17,7 @@ class CelestialCameraManager {
 
  public:
   CelestialCameraManager();
+  void setNewWindowDimensions(int width, int height);
   void setRotationAndDistance(glm::vec3 r, float d);
   void setCurrentCelestial(const CelestialObject *object);
   const CelestialObject *getCurrentCelestial();

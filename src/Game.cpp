@@ -51,6 +51,9 @@ void Game::initSolarSystem() {
   creator.setupUniformUpdaters(&cameraManager);
   solarSystem = creator.getSolarSystem();
   cameraManager.setSolarSystem(solarSystem.get());
+  glfw->addResolutionListener([&](int width, int height) {
+    cameraManager.setNewWindowDimensions(width, height);
+  });
 }
 
 void Game::initPlayer() {
