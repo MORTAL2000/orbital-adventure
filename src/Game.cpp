@@ -66,8 +66,7 @@ void Game::mainLoop() {
   while (isPlaying) {
     auto timePoint = std::chrono::system_clock::now();
     auto timeDiff = timePoint - oldTimePoint;
-    if (timeMultiplier < 0.9e5) timeMultiplier = 60 * 60 * 24 * 7;
-    // std::cout << timeDiff.count() / 1000000 << "\n";
+    if (timeMultiplier < 0.9e5) timeMultiplier = 60 * 60;
 
     simulatatedTime +=
         system_clock::duration(uint64_t(timeDiff.count() * timeMultiplier));
@@ -79,7 +78,7 @@ void Game::mainLoop() {
     renderer.clearColor();
     renderer.render(solarSystem->getSkyboxScene(), cameraManager.getCamera());
     renderer.clearDepth();
-    renderer.render(solarSystem->getScene(), cameraManager.getCamera());
+    renderer.renderSorted(solarSystem->getScene(), cameraManager.getCamera());
     glfw->endFrame();
     oldTimePoint = timePoint;
   }
