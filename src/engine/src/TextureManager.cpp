@@ -80,10 +80,8 @@ void TextureManager::cubemap(int ix, int type, int w, int h, const char* data) {
 void TextureManager::texture(GLuint& id, int type, int width, int height,
                              const char* data) {
   GLuint textureId;
-  int num_mipmaps = 5;
   glGenTextures(1, &textureId);
   glBindTexture(GL_TEXTURE_2D, textureId);
-  glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, type, width, height);
   glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE,
                data);
   glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
