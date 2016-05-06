@@ -14,6 +14,7 @@ CameraControlCommandProvider::CameraControlCommandProvider(
       cameraMgr(c),
       quaternion(1.0f, 0.f, 0.f, 0.f),
       currentRotation(1.0f, 0.f, 0.f, 0.f),
+      cameraDirection(1.0f, 0.0f, 0.0f),
       distance(1.1 * c->getCurrentCelestial()->getSize()),
       lat(0.5_pi),
       lon(0),
@@ -29,6 +30,50 @@ void CameraControlCommandProvider::onMouseDown(int key, int mod) {
   }
 }
 
+void CameraControlCommandProvider::onKeyDown(int keyCode, int mod) {
+  std::cout << "key up  " << keyCode << "\n";
+  switch (keyCode) {
+    case 67: {  // c
+      dax += 0.1f;
+      createCommand();
+      break;
+    }
+    case 90: {  // z
+      dax -= 0.1f;
+      createCommand();
+      break;
+    }
+    case 264: {
+      day += 0.1f;
+      createCommand();
+      break;
+    }
+    case 265: {
+      day -= 0.1f;
+      createCommand();
+      break;
+    }
+    case 262: {
+      daz -= 0.1f;
+      createCommand();
+      break;
+    }
+    case 263: {
+      daz += 0.1f;
+      createCommand();
+      break;
+    }
+    case 76: {
+      lookAtPlanetCenter = !lookAtPlanetCenter;
+      createCommand();
+      return;
+    }
+  }
+}
+void CameraControlCommandProvider::onKeyUp(int keyCode, int mod) {
+  std::cout << "key up  " << keyCode << "\n";
+}
+
 void CameraControlCommandProvider::onMouseUp(int key, int mod) {
   if (key == 0) leftButtonPressed = false;
   quaternion = currentRotation * quaternion;
@@ -36,9 +81,6 @@ void CameraControlCommandProvider::onMouseUp(int key, int mod) {
 }
 
 void CameraControlCommandProvider::createCommand() {
-  // auto direction =
-  //((currentRotation * quaternion) * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-  // glm::vec3 dir3(direction.x, direction.y, direction.z);
   glm::vec3 direction;
   auto l = glm::clamp(lat, 0.0, double(1_pi));
   auto b = std::fmod(lon, double(2_pi));
@@ -46,7 +88,17 @@ void CameraControlCommandProvider::createCommand() {
   direction.y = std::sin(l) * std::sin(b);
   direction.z = std::cos(l);
 
-  addCommand(new CameraRotationCommand(cameraMgr, direction, distance));
+  glm::vec3 cd;
+  if (lookAtPlanetCenter)
+    cd = -direction;
+  else {
+    quaternion = glm::angleAxis(daz, glm::vec3(0.0, 0.0, 1.0)) *
+                 glm::angleAxis(day, glm::vec3(0.0, 1.0, 0.0)) *
+                 glm::angleAxis(dax, glm::vec3(1.0, 0.0, 0.0));
+    cd = quaternion * glm::vec3(1.0, 0.0, 0.0);
+  }
+
+  addCommand(new CameraRotationCommand(cameraMgr, direction, cd, distance));
 }
 
 void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {

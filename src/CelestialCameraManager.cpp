@@ -1,8 +1,10 @@
 #include <iostream>
 #include "CelestialCameraManager.hpp"
+#include "engine/LanguageUtils.hpp"
 #include "engine/PerspectiveCamera.hpp"
 namespace oa {
 namespace game {
+using namespace utils;
 CelestialCameraManager::CelestialCameraManager()
     : center(0.0, 0.0, 0.0), up(0.0, 0.0, 1.0) {}
 
@@ -18,14 +20,14 @@ void CelestialCameraManager::setNewWindowDimensions(int w, int h) {
   double maxClipping = 7e7;
   camera = std::unique_ptr<render::Camera>(new render::PerspectiveCamera(
       glm::radians(45.0f), float(w) / float(h), 2.0e3f, maxClipping * 2 * 10));
-  glm::vec3 zero(0.0, 0.0, 0.0);
-  camera->lookAt((dir * distance), zero, up);
+  glm::vec3 position = positionDirection * distance;
+  camera->lookAt(position, position + cameraDirection, up);
 }
 
 void CelestialCameraManager::setCurrentCelestial(
     const CelestialObject* celestial) {
-  glm::vec3 zero(0.0, 0.0, 0.0);
-  camera->lookAt((dir * distance), zero, up);
+  glm::vec3 position = positionDirection * distance;
+  camera->lookAt(position, position + cameraDirection, up);
   solarSystem->setCurrentCelestial(celestial);
 }
 
@@ -35,14 +37,21 @@ void CelestialCameraManager::setSolarSystem(SolarSystem* ss) {
   camera = std::unique_ptr<render::Camera>(new render::PerspectiveCamera(
       glm::radians(45.0f), 4.0f / 3.0f, 2.0e3f, maxClipping * 2 * 10));
 }
+
 const CelestialObject* CelestialCameraManager::getCurrentCelestial() {
   return solarSystem->getObjectOfInterest();
 }
-void CelestialCameraManager::setRotationAndDistance(glm::vec3 dir,
+
+void CelestialCameraManager::setRotationAndDistance(glm::vec3 cameraDir,
+                                                    glm::vec3 positionDir,
                                                     float distance) {
-  this->dir = dir, this->distance = distance;
-  glm::vec3 zero(0.0, 0.0, 0.0);
-  camera->lookAt((dir * distance), zero, up);
+  positionDirection = positionDir;
+  distance = distance;
+  cameraDirection = cameraDir;
+  glm::vec3 position = positionDirection * distance;
+  std::cout << "look at " << cameraDirection << " || "
+            << position + distance * cameraDirection << "\n";
+  camera->lookAt(position, position + distance * cameraDirection, up);
 }
 }
 }

@@ -1,4 +1,6 @@
+#include <iostream>
 #include "GeometryManager.hpp"
+#include "PlanetGeometry.hpp"
 #include "SkyboxGeometry.hpp"
 #include "SphereGeometry.hpp"
 
@@ -25,6 +27,16 @@ geometry::Geometry *GeometryManager::loadGeometry(ptree &geometryProps) {
   std::string geometryName = geometryProps.get("name", "no name");
   ptree options = geometryProps.get_child("options");
 
+  std::cout << "CREATE GEOM " << geometryName << "\n";
+  if (geometryName == "PlanetGeometry") {
+    std::cout << "PLAAAAAAAAANET\n";
+    int rings = options.get<int>("rings", 10);
+    int segments = options.get<int>("segments", 10);
+    double radius = options.get<double>("radius", 1.f);
+    auto g = new geometry::PlanetGeometry(radius, rings, segments);
+    g->prepareOpenglBuffers();
+    return g;
+  }
   if (geometryName == "SphereGeometry") {
     int rings = options.get<int>("rings", 10);
     int segments = options.get<int>("segments", 10);

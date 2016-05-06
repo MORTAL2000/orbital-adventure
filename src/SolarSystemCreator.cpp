@@ -2,6 +2,7 @@
 #include "Planet.hpp"
 #include "SolarSystemCreator.hpp"
 #include "Star.hpp"
+#include "SunDirectionUniformInstaller.hpp"
 #include "engine/LanguageUtils.hpp"
 
 namespace oa {
@@ -53,6 +54,7 @@ void SolarSystemCreator::parsePlanet(
     auto mesh = meshFabric.createMesh(meshProps);
     star->setMesh(mesh);
     solarSystem->addPlanet(std::move(star));
+    sunMesh = mesh;
     return;
   }
   auto meanAnomaly = tree.get_optional<double>("meanAnomaly");
@@ -90,6 +92,7 @@ void SolarSystemCreator::parsePlanet(
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
   planet->setOrbit(orbit);
   auto mesh = meshFabric.createMesh(tree.get_child("mesh"));
+  mesh->addUniformInstaller(new SunDirectionUniformInstaller(sunMesh, mesh));
   planet->setMesh(mesh);
   planet->setPosition(glm::vec3(random() * 10.f, 0.f, 0.f));
   solarSystem->addPlanet(std::move(planet));

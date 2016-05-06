@@ -143,6 +143,9 @@ GLuint TextureManager::loadJpegTexture(
   }
 
   int type = -1;
+  std::cout << "JPEG READ " << filename << " components "
+            << cinfo.output_components << "\n";
+  if (cinfo.output_components == 1) type = GL_RED;
   if (cinfo.output_components == 3) type = GL_RGB;
   if (cinfo.output_components == 4) type = GL_RGBA;
   GLuint textureId;

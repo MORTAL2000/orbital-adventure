@@ -10,6 +10,8 @@ void Renderer::clearColor() { glClear(GL_COLOR_BUFFER_BIT); }
 void Renderer::clearDepth() { glClear(GL_DEPTH_BUFFER_BIT); }
 void Renderer::renderSorted(const Scene *scene, const Camera *camera) {
   GLuint currentProgram = 0;
+
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   geometry::Geometry *currentGeometry = nullptr;
   for (auto m : scene->getSortedMeshes(camera->getPosition())) {
     clearDepth();

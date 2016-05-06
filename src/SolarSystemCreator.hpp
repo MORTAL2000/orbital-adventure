@@ -10,6 +10,7 @@ class SolarSystemCreator {
   void parsePlanet(boost::property_tree::ptree::value_type &);
   render::MeshFabric meshFabric;
   void createSkyBox(boost::property_tree::ptree &);
+  render::Mesh *sunMesh;
 
  public:
   SolarSystemCreator();

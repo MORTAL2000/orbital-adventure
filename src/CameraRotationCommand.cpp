@@ -2,10 +2,11 @@
 namespace oa {
 namespace game {
 CameraRotationCommand::CameraRotationCommand(CelestialCameraManager *c,
-                                             glm::vec3 dir, float distance)
-    : cameraMgrPtr(c), direction(dir), distance(distance) {}
+                                             glm::vec3 pd, glm::vec3 cd,
+                                             float distance)
+    : cameraMgrPtr(c), posDir(pd), camDir(cd), distance(distance) {}
 void CameraRotationCommand::execute() {
-  cameraMgrPtr->setRotationAndDistance(direction, distance);
+  cameraMgrPtr->setRotationAndDistance(camDir, posDir, distance);
 }
 }
 }

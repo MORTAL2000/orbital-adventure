@@ -11,14 +11,15 @@ class CelestialCameraManager {
   std::unique_ptr<render::Camera> camera;
   SolarSystem *solarSystem;
   glm::vec3 center;
-  glm::vec3 dir;
+  glm::vec3 positionDirection;
+  glm::vec3 cameraDirection;
   glm::vec3 up;
   float distance;
 
  public:
   CelestialCameraManager();
   void setNewWindowDimensions(int width, int height);
-  void setRotationAndDistance(glm::vec3 r, float d);
+  void setRotationAndDistance(glm::vec3 r, glm::vec3, float d);
   void setCurrentCelestial(const CelestialObject *object);
   const CelestialObject *getCurrentCelestial();
   void setSolarSystem(SolarSystem *);
