@@ -14,8 +14,9 @@ void PersonalClippingMatrixInstaller::install(UniformHolder *holder,
 
   auto distance = glm::dot(glm::normalize(dir), accordingToCamera);
   float size = glm::max(scale.z, glm::max(scale.x, scale.y)) * 1.0;
-  auto near = std::max(0.01f, distance - size);
-  auto far = distance + size;
+  float nearer = std::abs(distance - size) * 0.1f;  // one percent of distance
+  auto near = std::max(0.01f, distance - size - nearer);
+  auto far = distance;
   auto newCamera = camera->changeClipping(near, far);
 
   auto &view = newCamera->getMatrix();

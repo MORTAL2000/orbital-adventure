@@ -73,7 +73,9 @@ void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {
 void CameraControlCommandProvider::onScroll(double w, double v) {
   float size = cameraMgr->getCurrentCelestial()->getSize();
   float distanceToSurface = distance - size;
-  distance += v * 0.01 * distanceToSurface;
+  float delta = v * std::max(0.5, 0.01 * distanceToSurface);
+
+  distance += delta;
   createCommand();
 }
 }
