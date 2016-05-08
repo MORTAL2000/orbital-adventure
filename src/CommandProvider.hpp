@@ -10,6 +10,7 @@ class CommandProvider {
   void addCommand(Command *);
 
  public:
+  virtual void update(float t);
   CommandProvider(CommandAcceptor *);
   virtual ~CommandProvider(){};
 };

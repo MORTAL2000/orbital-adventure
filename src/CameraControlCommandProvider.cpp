@@ -13,9 +13,13 @@ CameraControlCommandProvider::CameraControlCommandProvider(
     : CommandProvider(a),
       cameraMgr(c),
       quaternion(1.0f, 0.f, 0.f, 0.f),
+      freeQuat(-0.55103671550750732, 0.43436530232429504, 0.10900701582431793,
+               0.43436530232429504),
       currentRotation(1.0f, 0.f, 0.f, 0.f),
+      cameraPosition(2068155.5, 4503610.5, 4025204.25),
       cameraDirection(1.0f, 0.0f, 0.0f),
-      distance(1.1 * c->getCurrentCelestial()->getSize()),
+      currentCameraSpeed(0.0),
+      distance(2.1 * c->getCurrentCelestial()->getSize()),
       lat(0.5_pi),
       lon(0),
       center(0.0f, 0.0f, 0.0f),
@@ -31,36 +35,56 @@ void CameraControlCommandProvider::onMouseDown(int key, int mod) {
 }
 
 void CameraControlCommandProvider::onKeyDown(int keyCode, int mod) {
-  std::cout << "key up  " << keyCode << "\n";
+  std::cout << "key down  " << keyCode << "\n";
   switch (keyCode) {
+    case 66:
+      currentCameraSpeed *= -1;
+      break;
+    case 49:
+    case 50:
+    case 51:
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
+    case 58:
+      currentCameraSpeed = std::pow(10, keyCode - 49);
+      std::cout << "current camera speed " << currentCameraSpeed << "\n";
+      break;
+    case 32: {
+      movementInProgress = true;
+      break;
+    }
     case 67: {  // c
-      dax += 0.1f;
-      createCommand();
+      currentAxis = glm::vec3(1., 0.0, .0);
+      rotationInProgress = true;
       break;
     }
     case 90: {  // z
-      dax -= 0.1f;
-      createCommand();
+      currentAxis = glm::vec3(-1., 0.0, .0);
+      rotationInProgress = true;
       break;
     }
     case 264: {
-      day += 0.1f;
-      createCommand();
+      currentAxis = glm::vec3(.0, 1.0, .0);
+      rotationInProgress = true;
       break;
     }
     case 265: {
-      day -= 0.1f;
-      createCommand();
-      break;
-    }
-    case 262: {
-      daz -= 0.1f;
-      createCommand();
+      currentAxis = glm::vec3(.0, -1.0, .0);
+      rotationInProgress = true;
       break;
     }
     case 263: {
-      daz += 0.1f;
-      createCommand();
+      currentAxis = glm::vec3(.0, 0.0, 1.0);
+      rotationInProgress = true;
+      break;
+    }
+    case 262: {
+      currentAxis = glm::vec3(.0, 0.0, -1.0);
+      rotationInProgress = true;
       break;
     }
     case 76: {
@@ -70,8 +94,35 @@ void CameraControlCommandProvider::onKeyDown(int keyCode, int mod) {
     }
   }
 }
+
+void CameraControlCommandProvider::update(float dt) {
+  if (movementInProgress) {
+    cameraPosition +=
+        freeQuat * glm::vec3(1.0, 0.0, 0.0) * dt * currentCameraSpeed;
+
+    createCommand();
+  }
+  if (rotationInProgress) {
+    freeQuat =
+        glm::angleAxis(1.0f * dt, glm::normalize(freeQuat * currentAxis)) *
+        glm::normalize(freeQuat);
+    createCommand();
+  }
+}
+
 void CameraControlCommandProvider::onKeyUp(int keyCode, int mod) {
-  std::cout << "key up  " << keyCode << "\n";
+  switch (keyCode) {
+    case 32:
+      movementInProgress = false;
+    case 90:
+    case 264:
+    case 265:
+    case 263:
+    case 262:
+    case 67:
+      rotationInProgress = false;
+      break;
+  }
 }
 
 void CameraControlCommandProvider::onMouseUp(int key, int mod) {
@@ -89,16 +140,16 @@ void CameraControlCommandProvider::createCommand() {
   direction.z = std::cos(l);
 
   glm::vec3 cd;
-  if (lookAtPlanetCenter)
+  glm::vec3 up(0.0, 0.0, 1.0);
+  if (lookAtPlanetCenter) {
     cd = -direction;
-  else {
-    quaternion = glm::angleAxis(daz, glm::vec3(0.0, 0.0, 1.0)) *
-                 glm::angleAxis(day, glm::vec3(0.0, 1.0, 0.0)) *
-                 glm::angleAxis(dax, glm::vec3(1.0, 0.0, 0.0));
-    cd = quaternion * glm::vec3(1.0, 0.0, 0.0);
+    cameraPosition = direction * distance;
+  } else {
+    cd = glm::vec3(freeQuat * glm::vec4(1.0, 0.0, 0.0, 0.0));
+    up = glm::vec3(freeQuat * glm::vec4(up, 0.0));
+    std::cout << "POSITION " << cameraPosition << " | " << freeQuat << "\n";
   }
-
-  addCommand(new CameraRotationCommand(cameraMgr, direction, cd, distance));
+  addCommand(new CameraRotationCommand(cameraMgr, cameraPosition, cd, up));
 }
 
 void CameraControlCommandProvider::onMouseMove(glm::vec2 point) {

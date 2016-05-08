@@ -15,11 +15,11 @@ void LODInstaller::install(render::UniformHolder *holder, const Camera *camera,
   auto meshMatrix = mesh->getMatrix();
   auto cameraMatrix = camera->getMatrix();
   auto projectionMatrix = camera->getProjectionMatrix();
-  north = cameraMatrix * north;
-  glm::vec3 axis = glm::normalize(glm::cross(glm::vec3(north), direction));
-  float angle = std::acos(
-      glm::dot(glm::normalize(glm::vec3(north)), glm::normalize(direction)));
-  glm::mat4 rotation = glm::rotate(angle, axis);
+  // north = cameraMatrix * north;
+  // glm::vec3 axis = glm::normalize(glm::cross(glm::vec3(north), direction));
+  // float angle = std::acos(
+  // glm::dot(glm::normalize(glm::vec3(north)), glm::normalize(direction)));
+  // glm::mat4 rotation = glm::rotate(angle, axis);
   direction = -direction;
 
   auto ang = std::fmod(std::asin(direction.z) / 1_pi + 1.5, 1.0);
@@ -43,8 +43,6 @@ void LODInstaller::install(render::UniformHolder *holder, const Camera *camera,
   holder->setUniformValue("finestSW",
                           lodManager.getTexture(wh[0] + 1, wh[1] + 1));
 
-  holder->setUniformValue("northPoleToCameraRotation",
-                          new render::Mat4OwnerUniform(rotation));
   holder->setUniformValue("currentGridCenter",
                           new render::IntVec2OwnerUniform(wh));
   holder->setUniformValue("lodGridDimention",

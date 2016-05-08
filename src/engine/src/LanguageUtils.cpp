@@ -27,6 +27,11 @@ std::ostream &operator<<(std::ostream &s, const glm::mat4 &m) {
   return s;
 }
 
+std::ostream &operator<<(std::ostream &s, const glm::quat &m) {
+  s << m.w << ", " << m.x << ", " << m.y << ", " << m.x;
+  return s;
+}
+
 std::ostream &operator<<(std::ostream &s, const glm::vec4 &m) {
   s << m.x << ", " << m.y << ", " << m.z << ", " << m.w;
   return s;

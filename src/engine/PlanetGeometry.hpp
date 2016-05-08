@@ -14,7 +14,7 @@ class PlanetGeometry : public Geometry {
   std::vector<glm::vec3> positions;
   std::vector<glm::vec3> normals;
   std::vector<glm::vec2> uvs;
-  std::vector<uint32_t> indices;
+  std::vector<GLuint> indices;
 
   void createGeometry();
 
@@ -25,4 +25,3 @@ class PlanetGeometry : public Geometry {
 };
 }
 }
-

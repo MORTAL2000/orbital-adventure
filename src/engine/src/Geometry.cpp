@@ -4,6 +4,7 @@ namespace oa {
 namespace geometry {
 
 void Geometry::render() {
+  // std::cout << "Number if indexes" << getIndexAmount() << "\n";
   glDrawElements(GL_TRIANGLES, getIndexAmount(), GL_UNSIGNED_INT, (void*)0);
 }
 void Geometry::unsetBuffers() {

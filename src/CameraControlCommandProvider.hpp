@@ -10,13 +10,19 @@ class CameraControlCommandProvider : public CommandProvider,
                                      public input::InputListener {
   CelestialCameraManager *cameraMgr;
   glm::quat quaternion;
+  glm::quat freeQuat;
   glm::quat currentRotation;
   glm::mat4 cm;
   glm::vec3 cameraDirection;
+  glm::vec3 cameraPosition;
+  glm::vec3 currentAxis;
+  bool rotationInProgress = false;
+  bool movementInProgress = false;
   float distance;
+  float currentCameraSpeed;
   double lat, lon;
   float dax = 0, day = 0, daz = 0;
-  bool lookAtPlanetCenter = true;
+  bool lookAtPlanetCenter = false;
   glm::vec3 center;
   glm::vec3 up;
 
@@ -33,6 +39,7 @@ class CameraControlCommandProvider : public CommandProvider,
   void onKeyUp(int keyCode, int mods);
 
   void createCommand();
+  void update(float);
 
  public:
   CameraControlCommandProvider(CommandAcceptor *, CelestialCameraManager *);

@@ -66,11 +66,14 @@ void Game::mainLoop() {
     auto timeDiff = timePoint - oldTimePoint;
     if (timeMultiplier < 0.9e5) timeMultiplier = 60 * 60;
 
+    float timeDifff = duration_cast<Duration>(timeDiff).count();
     simulatatedTime +=
         system_clock::duration(uint64_t(timeDiff.count() * timeMultiplier));
     auto tt = system_clock::to_time_t(simulatatedTime);
     auto tm = localtime(&tt);
     solarSystem->updatePlanets(simulatatedTime);
+    for (auto &p : providers) p->update(timeDifff);
+
     processCommands();
     auto camera =
         std::unique_ptr<render::Camera>(cameraManager.getCamera()->clone());

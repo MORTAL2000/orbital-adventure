@@ -20,14 +20,15 @@ void CelestialCameraManager::setNewWindowDimensions(int w, int h) {
   double maxClipping = 7e7;
   camera = std::unique_ptr<render::Camera>(new render::PerspectiveCamera(
       glm::radians(45.0f), float(w) / float(h), 2.0e3f, maxClipping * 2 * 10));
-  glm::vec3 position = positionDirection * distance;
-  camera->lookAt(position, position + cameraDirection, up);
+
+  auto d = glm::length(position);
+  camera->lookAt(position, position + d * cameraDirection, up);
 }
 
 void CelestialCameraManager::setCurrentCelestial(
     const CelestialObject* celestial) {
-  glm::vec3 position = positionDirection * distance;
-  camera->lookAt(position, position + cameraDirection, up);
+  auto d = glm::length(position);
+  camera->lookAt(position, position + d * cameraDirection, up);
   solarSystem->setCurrentCelestial(celestial);
 }
 
@@ -43,14 +44,12 @@ const CelestialObject* CelestialCameraManager::getCurrentCelestial() {
 }
 
 void CelestialCameraManager::setRotationAndDistance(glm::vec3 cameraDir,
-                                                    glm::vec3 positionDir,
-                                                    float distance) {
-  positionDirection = positionDir;
-  distance = distance;
+                                                    glm::vec3 position,
+                                                    glm::vec3 upDir) {
+  this->position = position;
+  distance = glm::length(position);
   cameraDirection = cameraDir;
-  glm::vec3 position = positionDirection * distance;
-  std::cout << "look at " << cameraDirection << " || "
-            << position + distance * cameraDirection << "\n";
+  up = upDir;
   camera->lookAt(position, position + distance * cameraDirection, up);
 }
 }
