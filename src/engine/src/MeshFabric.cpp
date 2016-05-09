@@ -80,7 +80,9 @@ UniformInstaller *MeshFabric::createUniformInstaller(ptree &uniform,
   std::string type = uniform.get("type", "");
   std::cout << "Create installer " << type << "\n";
   if (type == "GeometryLODInstaller") {
-    return new GeometryLODInstaller(mesh);
+    int width = uniform.get("totalWidth", 1);
+    int height = uniform.get("totalHeight", 1);
+    return new GeometryLODInstaller(mesh, glm::ivec2(width, height));
   }
   if (type == "PersonalClippingMatrixInstaller") {
     return new PersonalClippingMatrixInstaller(mesh);

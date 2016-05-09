@@ -42,18 +42,19 @@ void PlanetGeometry::createGeometry() {
   uint32_t index = 0;
   float widthSegments = segments;
   rings = 0;
-  double baseStep = 0.001_pi;  // 1e-2;
+  double baseStep = 0.01_pi;  // 1e-2;
+  // double baseStep = 0.0001_pi;  // 1e-2;
   double step = baseStep;
 
   for (double v = 0;; v += step) {
-    if (v < 0.125_pi)
+    if (v < 0.2_pi)
       step = baseStep;
-    else if (v >= 0.125_pi && v < 0.25_pi)
-      step = 3 * baseStep;
-    else if (v > 0.25_pi && v < 0.5_pi)
-      step = 6 * baseStep;
+    else if (v >= 0.2_pi && v < 0.6_pi)
+      step = 4 * baseStep;
+    else if (v > 0.6_pi && v < 0.8_pi)
+      step = 8 * baseStep;
     else
-      step = 12 * baseStep;
+      step = 16 * baseStep;
 
     std::vector<uint32_t> rowIxes;
     for (int x = 0; x <= widthSegments; ++x) {

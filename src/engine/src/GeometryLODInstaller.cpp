@@ -6,37 +6,34 @@
 namespace oa {
 namespace render {
 using namespace utils;
-GeometryLODInstaller::GeometryLODInstaller(Mesh *m) : mesh(m) {}
+GeometryLODInstaller::GeometryLODInstaller(Mesh *m, glm::ivec2 s)
+    : mesh(m), texturesAmount(s) {}
 void GeometryLODInstaller::install(UniformHolder *holder, const Camera *camera,
                                    double t) {
   auto position = camera->getPosition();
   auto direction = glm::normalize(mesh->getPosition() - position);
+  float lat = 1.0f - acos(direction.z) / 1_pi;
+  float lon =
+      std::fmod(std::atan2(direction.y, direction.x) / (2_pi) + 1.0, 1.0);
+
+  glm::vec2 texSize = 1.0f / glm::vec2(texturesAmount);
+  glm::vec2 duv = glm::mod(glm::vec2(lon, lat), texSize);
+  glm::vec2 tileCenter = glm::vec2(lon, lat) - duv + 0.5f * texSize;
+
+  auto l = (1.0f - tileCenter.y) * 1_pi;
+  direction.x = cos(tileCenter.x * 2_pi) * sin(l);
+  direction.y = sin(tileCenter.x * 2_pi) * sin(l);
+  direction.z = cos(l);
+
   glm::vec4 north = glm::vec4(0.0, 0.0, 1.0, 0.0);
   glm::vec3 axis = glm::normalize(glm::cross(glm::vec3(north), direction));
+
   float angle = std::acos(
       glm::dot(glm::normalize(glm::vec3(north)), glm::normalize(direction)));
   glm::mat4 rotation = glm::rotate(angle, axis);
-  glm::mat4 irotation = glm::inverse(rotation);
-  glm::mat4 viewMatrix = camera->getMatrix();
-  glm::mat4 iViewMatrix = glm::inverse(viewMatrix);
-  glm::vec3 pos, scale, skew;
-  glm::vec4 pers;
-  glm::quat rot;
-  glm::decompose(viewMatrix, pos, rot, scale, skew, pers);
-  glm::mat4 cameraRotation = glm::mat4_cast(rot);
-  glm::mat4 iCameraRotation = glm::inverse(cameraRotation);
-  holder->setUniformValue("inorthPoleToCameraRotation",
-                          new render::Mat4OwnerUniform(irotation));
+
   holder->setUniformValue("northPoleToCameraRotation",
                           new render::Mat4OwnerUniform(rotation));
-  holder->setUniformValue("viewMatrix",
-                          new render::Mat4OwnerUniform(viewMatrix));
-  holder->setUniformValue("iViewMatrix",
-                          new render::Mat4OwnerUniform(iViewMatrix));
-  holder->setUniformValue("iCameraRotation",
-                          new render::Mat4OwnerUniform(iCameraRotation));
-  holder->setUniformValue("cameraRotation",
-                          new render::Mat4OwnerUniform(cameraRotation));
 }
 }
 }

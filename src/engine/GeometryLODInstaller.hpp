@@ -5,10 +5,11 @@ namespace oa {
 namespace render {
 class GeometryLODInstaller : public UniformInstaller {
   Mesh *mesh;
+  glm::ivec2 texturesAmount;
   void install(UniformHolder *, const Camera *, double t);
 
  public:
-  GeometryLODInstaller(Mesh *);
+  GeometryLODInstaller(Mesh *, glm::ivec2);
 };
 }
 }

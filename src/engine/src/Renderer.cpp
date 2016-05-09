@@ -30,6 +30,7 @@ void Renderer::renderSorted(const Scene *scene, const Camera *camera) {
     currentGeometry->render();
   }
 }
+
 void Renderer::render(const Scene *scene, const Camera *camera) {
   for (auto sp : scene->getAllShaders()) {
     glUseProgram(sp->getProgramId());
