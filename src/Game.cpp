@@ -52,8 +52,9 @@ void Game::initGLFW() { glfw->init(); }
 void Game::initSolarSystem() {
   SolarSystemCreator creator;
   creator.createSolarSystem("../data/planets.json");
-  creator.setupUniformUpdaters(&cameraManager);
   solarSystem = creator.getSolarSystem();
+  for (auto *tc : creator.getTextureCreators())
+    textureCreators.push_back(std::unique_ptr<render::TextureCreator>(tc));
   cameraManager.setSolarSystem(solarSystem.get());
   glfw->addResolutionListener([&](int width, int height) {
     cameraManager.setNewWindowDimensions(width, height);

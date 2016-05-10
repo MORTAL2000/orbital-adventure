@@ -9,15 +9,27 @@
 namespace oa {
 namespace game {
 using namespace utils;
+using boost::property_tree::ptree;
 
 SolarSystemCreator::SolarSystemCreator() : solarSystem(new SolarSystem) {}
 std::unique_ptr<SolarSystem> SolarSystemCreator::getSolarSystem() {
   return std::move(solarSystem);
 }
+std::vector<render::TextureCreator *> SolarSystemCreator::getTextureCreators() {
+  return textureCreators;
+}
+void SolarSystemCreator::createTextureCreator(ptree &tCreator) {
+  render::TextureCreator *tc = textureCreatorFabric.make(tCreator);
+  if (tc)
+    textureCreators.push_back(tc);
+  else
+    std::cerr << "NO CREATOR\n";
+}
 void SolarSystemCreator::setupUniformUpdaters(
     const CelestialCameraManager *cameraMgr) {}
 void SolarSystemCreator::createSolarSystem(std::string filepath) {
   meshFabric.setRootDir(filepath);
+  textureCreatorFabric.setRootDir(filepath);
   auto uf = new render::UniformFabric;
   uf->setRootDir(filepath);
   meshFabric.setUniformFabric(uf);
@@ -25,11 +37,20 @@ void SolarSystemCreator::createSolarSystem(std::string filepath) {
   uif->setRootDir(filepath);
   meshFabric.setUniformInstallerFabric(uif);
 
-  using boost::property_tree::ptree;
+  uf = new render::UniformFabric;
+  uf->setRootDir(filepath);
+  textureCreatorFabric.setUniformFabric(uf);
+  uif = new OAUniformInstallerFabric;
+  uif->setRootDir(filepath);
+  textureCreatorFabric.setUniformInstallerFabric(uif);
+  textureCreatorFabric.setDefaultVertexShaderPath("shaders/screenVShader.glsl");
+
   ptree planetsTree;
   read_json(filepath, planetsTree);
   boost::property_tree::ptree sb = planetsTree.get_child("skybox");
   createSkyBox(sb);
+  for (auto &creator : planetsTree.get_child("texture-creators"))
+    createTextureCreator(creator.second);
   for (auto &v : planetsTree.get_child("planets")) parsePlanet(v);
 }
 

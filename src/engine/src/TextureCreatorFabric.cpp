@@ -7,6 +7,18 @@ namespace oa {
 namespace render {
 using namespace boost::property_tree;
 void TextureCreatorFabric::setRootDir(std::string r) { rootDir = r; }
+void TextureCreatorFabric::setUniformInstallerFabric(
+    UniformInstallerFabric *ptr) {
+  uniformInstallerFabric.reset(ptr);
+}
+void TextureCreatorFabric::setUniformFabric(UniformFabric *ptr) {
+  uniformFabric.reset(ptr);
+}
+void TextureCreatorFabric::setDefaultVertexShaderPath(std::string shp) {
+  boost::filesystem::path p(rootDir);
+  p = p.parent_path() / shp;
+  vShader = p.string();
+}
 TextureCreator *TextureCreatorFabric::make(ptree &tCreator) {
   using namespace boost::filesystem;
 
@@ -26,10 +38,12 @@ TextureCreator *TextureCreatorFabric::make(ptree &tCreator) {
   TextureCreator *tc =
       new TextureCreator(sp, target, needsDepthTest, width, height);
 
-  auto uniforms = tCreator.get_child("uniforms");
-  for (ptree::value_type &p : uniforms) {
-    ptree uniform = p.second;
-    tc->setUniformValue(p.first, uniformFabric->create(uniform));
+  auto uniforms = tCreator.get_child_optional("uniforms");
+  if (uniforms) {
+    for (ptree::value_type &p : *uniforms) {
+      ptree uniform = p.second;
+      tc->setUniformValue(p.first, uniformFabric->create(uniform));
+    }
   }
   auto uInstallers = tCreator.get_child("uniform-installers");
   if (!uniformInstallerFabric) {
@@ -40,8 +54,7 @@ TextureCreator *TextureCreatorFabric::make(ptree &tCreator) {
 
   for (ptree::value_type &p : uInstallers) {
     ptree ui = p.second;
-    tc->addUniformInstaller(
-        uniformInstallerFabric->createUniformInstaller(ui));
+    tc->addUniformInstaller(uniformInstallerFabric->createUniformInstaller(ui));
   }
   return tc;
 }

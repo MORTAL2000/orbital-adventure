@@ -3,16 +3,17 @@
 #include "PlanetGeometry.hpp"
 #include "SkyboxGeometry.hpp"
 #include "SphereGeometry.hpp"
+#include "PatchGeometry.hpp"
 
 namespace oa {
 namespace render {
 using namespace boost::property_tree;
 GeometryManager::GeometryManager() {}
 
-
-geometry::Geometry * GeometryManager::createPatchGeometry(){
-  std::cerr << "create Patch geometry is unimplemented";
-  return nullptr;
+geometry::Geometry *GeometryManager::createPatchGeometry() {
+  geometry::Geometry *ss = new geometry::PatchGeometry;
+  ss->prepareOpenglBuffers();
+  return ss;
 }
 
 geometry::Geometry *GeometryManager::createSkyboxGeometry(float size) {
@@ -33,9 +34,7 @@ geometry::Geometry *GeometryManager::loadGeometry(ptree &geometryProps) {
   std::string geometryName = geometryProps.get("name", "no name");
   ptree options = geometryProps.get_child("options");
 
-  std::cout << "CREATE GEOM " << geometryName << "\n";
   if (geometryName == "PlanetGeometry") {
-    std::cout << "PLAAAAAAAAANET\n";
     int rings = options.get<int>("rings", 10);
     int segments = options.get<int>("segments", 10);
     double radius = options.get<double>("radius", 1.f);

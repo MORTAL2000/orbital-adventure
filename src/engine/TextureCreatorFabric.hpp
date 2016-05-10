@@ -8,7 +8,7 @@ namespace render {
 class TextureCreatorFabric {
   std::string rootDir;
   std::string vShader;
-  UniformInstallerFabric* uniformInstallerFabric;
+  std::unique_ptr<UniformInstallerFabric> uniformInstallerFabric;
   std::unique_ptr<UniformFabric> uniformFabric;
 
  public:
