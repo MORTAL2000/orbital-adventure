@@ -16,6 +16,7 @@ class GeometryManager {
   geometry::Geometry* createSphereGeometry(double radius = 1.0f, int rings = 10,
                                            int segments = 10);
   geometry::Geometry* createSkyboxGeometry(float size);
+  geometry::Geometry* createPatchGeometry();
 };
 }
 }

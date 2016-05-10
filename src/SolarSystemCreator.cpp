@@ -1,4 +1,5 @@
 #include <iostream>
+#include "OAUniformInstallerFabric.hpp"
 #include "Planet.hpp"
 #include "SolarSystemCreator.hpp"
 #include "Star.hpp"
@@ -17,6 +18,13 @@ void SolarSystemCreator::setupUniformUpdaters(
     const CelestialCameraManager *cameraMgr) {}
 void SolarSystemCreator::createSolarSystem(std::string filepath) {
   meshFabric.setRootDir(filepath);
+  auto uf = new render::UniformFabric;
+  uf->setRootDir(filepath);
+  meshFabric.setUniformFabric(uf);
+  auto uif = new OAUniformInstallerFabric;
+  uif->setRootDir(filepath);
+  meshFabric.setUniformInstallerFabric(uif);
+
   using boost::property_tree::ptree;
   ptree planetsTree;
   read_json(filepath, planetsTree);

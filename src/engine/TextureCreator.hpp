@@ -3,21 +3,28 @@
 #include "Geometry.hpp"
 #include "ShaderProgam.hpp"
 #include "UniformHolder.hpp"
+#include "UniformInstaller.hpp"
 namespace oa {
 namespace render {
 class TextureCreator : public UniformHolder {
   std::string target;
+  bool needsDepthTest_;
+  int width, height;
   ShaderProgram* shaderProgram;
   geometry::Geometry* geometry;
+  std::vector<std::unique_ptr<UniformInstaller>> uniformInstallers;
 
  public:
-  virtual ~TextureCreator() {}
-  virtual std::string getTarget() = 0;
-  virtual bool needsDepthTest() = 0;
-  virtual size_t supposedWidth() = 0;
-  virtual size_t supposedHeight() = 0;
+  void addUniformInstaller(UniformInstaller*);
+
+  virtual std::string getTarget();
+  virtual bool needsDepthTest();
+  virtual size_t supposedWidth();
+  virtual size_t supposedHeight();
   TextureCreator(ShaderProgram*, std::string target);
-  virtual void render() = 0;
+  TextureCreator(ShaderProgram*, std::string target, bool needsDepthTest,
+                 int width, int height);
+  virtual void render();
 };
 }
 }

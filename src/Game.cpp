@@ -19,11 +19,13 @@ Game::Game()
       isPlaying(true),
       glfw(oa::gl::GLFWWrapper::getInstance()) {}
 
+void Game::initTextureCreators() {}
 void Game::init() {
   initGLFW();
   initSolarSystem();
   initPlayer();
   initCommandsInf();
+  initTextureCreators();
 }
 
 void Game::initCommandsInf() {
@@ -86,7 +88,6 @@ void Game::mainLoop() {
     glfw->endFrame();
     oldTimePoint = timePoint;
   }
-
   deinit();
 }
 

@@ -9,6 +9,12 @@ namespace render {
 using namespace boost::property_tree;
 GeometryManager::GeometryManager() {}
 
+
+geometry::Geometry * GeometryManager::createPatchGeometry(){
+  std::cerr << "create Patch geometry is unimplemented";
+  return nullptr;
+}
+
 geometry::Geometry *GeometryManager::createSkyboxGeometry(float size) {
   geometry::Geometry *ss = new geometry::SkyboxGeometry(size);
   ss->prepareOpenglBuffers();

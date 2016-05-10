@@ -1,12 +1,8 @@
 #include <iostream>
 #include "Geometry.hpp"
-#include "GeometryLODInstaller.hpp"
 #include "GeometryManager.hpp"
-#include "LODInstaller.hpp"
 #include "Mesh.hpp"
 #include "MeshFabric.hpp"
-#include "PersonalClippingMatrixInstaller.hpp"
-#include "PersonalClippingMesh.hpp"
 #include "ShaderManager.hpp"
 #include "SkyboxUniformInstaller.hpp"
 #include "TextureManager.hpp"
@@ -14,6 +10,14 @@
 namespace oa {
 namespace render {
 using namespace boost::property_tree;
+
+void MeshFabric::setUniformFabric(UniformFabric *uf){
+  uniformFabric = std::unique_ptr<UniformFabric>(uf);
+}
+
+void MeshFabric::setUniformInstallerFabric(UniformInstallerFabric *uif){
+  uniformInstallerFabric = std::unique_ptr<UniformInstallerFabric>(uif);
+}
 
 Mesh *MeshFabric::createSkyboxMesh(std::vector<std::string> &textures,
                                    std::string vertexShaderPath,
@@ -41,6 +45,7 @@ Mesh *MeshFabric::meshOfType(std::string type, ShaderProgram *sp,
   if (type == "Mesh") return new Mesh(sp, geometry);
   // if (type == "PersonalClippingMesh")
   // return new PersonalClippingMesh(sp, geometry);
+  return nullptr;
 }
 
 Mesh *MeshFabric::createMesh(ptree &meshDescription) {
@@ -64,53 +69,22 @@ Mesh *MeshFabric::createMesh(ptree &meshDescription) {
   auto uniforms = meshDescription.get_child("uniforms");
   for (ptree::value_type &p : uniforms) {
     ptree uniform = p.second;
-    mesh->setUniformValue(p.first, createUniform(uniform));
+    mesh->setUniformValue(p.first, uniformFabric->create(uniform));
   }
   auto uInstallers = meshDescription.get_child("uniform-installers");
+  if (!uniformInstallerFabric) {
+    std::cerr << "Uniform Instaleer fabric is not set\n";
+    exit(0);
+    return nullptr;
+  }
+
   for (ptree::value_type &p : uInstallers) {
     ptree ui = p.second;
-    mesh->addUniformInstaller(createUniformInstaller(ui, mesh));
+    mesh->addUniformInstaller(
+        uniformInstallerFabric->createUniformInstaller(ui, mesh));
   }
   return mesh;
 }
 void MeshFabric::setRootDir(std::string r) { rootDir = r; }
-
-UniformInstaller *MeshFabric::createUniformInstaller(ptree &uniform,
-                                                     Mesh *mesh) {
-  std::string type = uniform.get("type", "");
-  std::cout << "Create installer " << type << "\n";
-  if (type == "GeometryLODInstaller") {
-    int width = uniform.get("totalWidth", 1);
-    int height = uniform.get("totalHeight", 1);
-    return new GeometryLODInstaller(mesh, glm::ivec2(width, height));
-  }
-  if (type == "PersonalClippingMatrixInstaller") {
-    return new PersonalClippingMatrixInstaller(mesh);
-  }
-  if (type == "LODInstaller") {
-    std::string root = uniform.get("root", "");
-    boost::filesystem::path path(rootDir);
-    path = path.parent_path() / root;
-
-    std::string ext = uniform.get("filetype", "");
-    int width = uniform.get("totalWidth", 0);
-    int height = uniform.get("totalHeight", 0);
-    return new LODInstaller(
-        mesh, LODTextureManager(path.string(), width, height, ext));
-  }
-}
-
-Uniform *MeshFabric::createUniform(ptree &uniform) {
-  std::string type = uniform.get("type", "");
-  if (type == "sampler2D") {
-    std::string value = uniform.get("value", "");
-    boost::filesystem::path p(rootDir);
-    p = p.parent_path() / value;
-    auto textureId = TextureManager::instance()->loadTexture(p.string());
-    return new TextureUniform(textureId);
-  }
-  std::cerr << "returning null ptr";
-  return nullptr;
-}
 }
 }

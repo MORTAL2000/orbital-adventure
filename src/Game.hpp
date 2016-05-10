@@ -8,6 +8,7 @@
 #include "engine/Camera.hpp"
 #include "engine/GLFWWrapper.hpp"
 #include "engine/Renderer.hpp"
+#include "engine/TextureCreator.hpp"
 
 namespace oa {
 namespace game {
@@ -24,6 +25,7 @@ class Game : public CommandAcceptor {
   std::chrono::system_clock::time_point simulatatedTime;
   double timeMultiplier = 1.0;
   std::vector<std::unique_ptr<CommandProvider>> providers;
+  std::vector<std::unique_ptr<render::TextureCreator>> textureCreators;
   void initGLFW();
   void initSolarSystem();
   void initPlayer();
@@ -34,6 +36,7 @@ class Game : public CommandAcceptor {
   std::unique_ptr<SolarSystem> solarSystem;
   render::Renderer renderer;
   CelestialCameraManager cameraManager;
+  void initTextureCreators();
 };
 }
 }
