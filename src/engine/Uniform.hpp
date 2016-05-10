@@ -53,17 +53,25 @@ class Mat4OwnerUniform : public Uniform {
 
 class TextureUniform : public Uniform {
   static int setupCounter;
-  GLuint textureId;
   void setup(GLuint);
   GLuint textureIdGetter();
   inline virtual void bindTexture(GLuint);
+
+ protected:
+  GLuint textureId;
 
  public:
   TextureUniform(GLuint);
 };
 
+class TextureOwnerUniform : public TextureUniform {
+ public:
+  TextureOwnerUniform(GLuint);
+  ~TextureOwnerUniform();
+};
+
 class CubemapUniform : public TextureUniform {
-  void bindTexture(GLuint);
+  inline void bindTexture(GLuint);
 
  public:
   CubemapUniform(GLuint);

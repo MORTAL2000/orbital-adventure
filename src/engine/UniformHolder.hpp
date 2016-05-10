@@ -11,7 +11,7 @@ class UniformHolder {
 
  public:
   void setUniformValue(std::string, Uniform *);
-  void setupUniform(std::string &, uint32_t location);
+  bool setupUniform(std::string &, uint32_t location) const;
 };
 }
 }

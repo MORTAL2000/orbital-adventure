@@ -39,8 +39,8 @@ Mesh *MeshFabric::createSkyboxMesh(std::vector<std::string> &textures,
 Mesh *MeshFabric::meshOfType(std::string type, ShaderProgram *sp,
                              geometry::Geometry *geometry) {
   if (type == "Mesh") return new Mesh(sp, geometry);
-  if (type == "PersonalClippingMesh")
-    return new PersonalClippingMesh(sp, geometry);
+  // if (type == "PersonalClippingMesh")
+  // return new PersonalClippingMesh(sp, geometry);
 }
 
 Mesh *MeshFabric::createMesh(ptree &meshDescription) {

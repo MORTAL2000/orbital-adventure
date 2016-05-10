@@ -28,6 +28,9 @@ void Mat4Uniform::setup(GLuint location) {
   glUniformMatrix4fv(location, 1, GL_FALSE, &(*matrix)[0][0]);
 }
 
+TextureOwnerUniform::TextureOwnerUniform(GLuint i) : TextureUniform(i) {}
+TextureOwnerUniform::~TextureOwnerUniform() { glDeleteTextures(1, &textureId); }
+
 int TextureUniform::setupCounter = 0;
 TextureUniform::TextureUniform(GLuint texture) : textureId(texture) {}
 
