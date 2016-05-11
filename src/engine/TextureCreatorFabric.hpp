@@ -8,12 +8,14 @@ namespace render {
 class TextureCreatorFabric {
   std::string rootDir;
   std::string vShader;
+  std::string gShader;
   std::unique_ptr<UniformInstallerFabric> uniformInstallerFabric;
   std::unique_ptr<UniformFabric> uniformFabric;
 
  public:
   void setRootDir(std::string);
   void setDefaultVertexShaderPath(std::string);
+  void setDefaultGeometryShaderPath(std::string);
   void setUniformInstallerFabric(UniformInstallerFabric*);
   void setUniformFabric(UniformFabric*);
   TextureCreator* make(boost::property_tree::ptree&);

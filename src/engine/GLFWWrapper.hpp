@@ -24,6 +24,7 @@ class GLFWWrapper final {
   void registerInputListener(oa::input::InputListener *);
   void addResolutionListener(ResolutionSignal::slot_function_type fn);
   void endFrame();
+  void getWindowSize(int &width, int &height);
   ~GLFWWrapper();
 
  private:

@@ -109,5 +109,84 @@ void ShaderProgram::compile(std::string vs, std::string fs) {
   glDeleteShader(vShaderId);
   setupUniformLocations();
 }
+
+void ShaderProgram::compile(std::string vs, std::string fs, std::string gs) {
+  std::ifstream vsf(vs);
+  std::ifstream fsf(fs);
+  std::ifstream gsf(gs);
+  std::string vshader((std::istreambuf_iterator<char>(vsf)),
+                      std::istreambuf_iterator<char>());
+  std::string fshader((std::istreambuf_iterator<char>(fsf)),
+                      std::istreambuf_iterator<char>());
+  std::string gshader((std::istreambuf_iterator<char>(gsf)),
+                      std::istreambuf_iterator<char>());
+  GLuint vShaderId, fShaderId, gShaderId;
+  vShaderId = glCreateShader(GL_VERTEX_SHADER);
+  fShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+  gShaderId = glCreateShader(GL_GEOMETRY_SHADER);
+  GLint result = GL_FALSE;
+  int infoLogLength;
+
+  parseShader(vshader);
+  parseShader(fshader);
+  parseShader(gshader);
+
+  // vertex
+  char const *VertexSourcePointer = vshader.c_str();
+  glShaderSource(vShaderId, 1, &VertexSourcePointer, NULL);
+  glCompileShader(vShaderId);
+  glGetShaderiv(vShaderId, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(vShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 0) {
+    std::vector<char> VertexShaderErrorMessage(infoLogLength + 1);
+    glGetShaderInfoLog(vShaderId, infoLogLength, NULL,
+                       &VertexShaderErrorMessage[0]);
+    printf("%s\n", &VertexShaderErrorMessage[0]);
+  }
+
+  // geometry
+  char const *GeometrySourcePointer = gshader.c_str();
+  glShaderSource(gShaderId, 1, &GeometrySourcePointer, NULL);
+  glCompileShader(gShaderId);
+  glGetShaderiv(gShaderId, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(gShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 0) {
+    std::vector<char> GeometryShaderErrorMessage(infoLogLength + 1);
+    glGetShaderInfoLog(gShaderId, infoLogLength, NULL,
+                       &GeometryShaderErrorMessage[0]);
+    printf("%s\n", &GeometryShaderErrorMessage[0]);
+  }
+
+  // fragment
+
+  char const *FragmentSourcePointer = fshader.c_str();
+  glShaderSource(fShaderId, 1, &FragmentSourcePointer, NULL);
+  glCompileShader(fShaderId);
+  glGetShaderiv(fShaderId, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(fShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 0) {
+    std::vector<char> FragmentShaderErrorMessage(infoLogLength + 1);
+    glGetShaderInfoLog(fShaderId, infoLogLength, NULL,
+                       &FragmentShaderErrorMessage[0]);
+    printf("%s\n", &FragmentShaderErrorMessage[0]);
+  }
+
+  programId = glCreateProgram();
+  glAttachShader(programId, vShaderId);
+  glAttachShader(programId, fShaderId);
+  glAttachShader(programId, gShaderId);
+  glLinkProgram(programId);
+  glGetProgramiv(programId, GL_LINK_STATUS, &result);
+  glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 0) {
+    std::vector<char> ProgramErrorMessage(infoLogLength + 1);
+    glGetProgramInfoLog(programId, infoLogLength, NULL,
+                        &ProgramErrorMessage[0]);
+    printf("%s\n", &ProgramErrorMessage[0]);
+  }
+  glDeleteShader(fShaderId);
+  glDeleteShader(vShaderId);
+  setupUniformLocations();
+}
 }
 }

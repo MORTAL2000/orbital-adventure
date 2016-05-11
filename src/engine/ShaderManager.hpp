@@ -13,6 +13,9 @@ class ShaderProgramManager {
   ~ShaderProgramManager();
   static ShaderProgramManager *instance();
   ShaderProgram *loadProgram(std::string vertexShaderPath,
+                             std::string fragmentShaderPath,
+                             std::string geometryShaderPath);
+  ShaderProgram *loadProgram(std::string vertexShaderPath,
                              std::string fragmentShaderPath);
 };
 }

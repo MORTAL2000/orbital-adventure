@@ -44,6 +44,8 @@ void SolarSystemCreator::createSolarSystem(std::string filepath) {
   uif->setRootDir(filepath);
   textureCreatorFabric.setUniformInstallerFabric(uif);
   textureCreatorFabric.setDefaultVertexShaderPath("shaders/screenVShader.glsl");
+  textureCreatorFabric.setDefaultGeometryShaderPath(
+      "shaders/screenGShader.glsl");
 
   ptree planetsTree;
   read_json(filepath, planetsTree);

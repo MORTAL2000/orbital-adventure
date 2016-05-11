@@ -35,6 +35,15 @@ class Vec3OwnerUniform : public Uniform {
   Vec3OwnerUniform(glm::vec3 &);
   Vec3OwnerUniform(glm::vec3 &&);
 };
+
+class IntOwnerUniform : public Uniform {
+  int v;
+  void setup(GLuint);
+
+ public:
+  IntOwnerUniform(int);
+};
+
 class FloatOwnerUniform : public Uniform {
   float v;
   void setup(GLuint);
@@ -77,6 +86,14 @@ class TextureOwnerUniform : public TextureUniform {
  public:
   TextureOwnerUniform(GLuint);
   ~TextureOwnerUniform();
+};
+
+class Texture3DOwnerUniform : public TextureUniform {
+  inline void bindTexture(GLuint);
+
+ public:
+  Texture3DOwnerUniform(GLuint);
+  ~Texture3DOwnerUniform();
 };
 
 class CubemapUniform : public TextureUniform {

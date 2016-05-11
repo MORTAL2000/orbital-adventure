@@ -14,6 +14,7 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   std::vector<std::string> &targets = textureCreator->getTargets();
   auto width = textureCreator->supposedWidth();
   auto height = textureCreator->supposedHeight();
+  auto depth = textureCreator->supposedDepth();
   if (framebuffer == 0) createFrameBuffer(true);
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
   if (textureCreator->needsDepthTest()) {
@@ -33,19 +34,31 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   int ix = 0;
   for (auto target : targets) {
     glGenTextures(targets.size(), textures);
-    glBindTexture(GL_TEXTURE_2D, textures[ix]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGB,
-                 GL_FLOAT, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    if (depth == 1) {
+      glBindTexture(GL_TEXTURE_2D, textures[ix]);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
+                   GL_FLOAT, 0);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      holder->setUniformValue(targets[ix],
+                              new TextureOwnerUniform(textures[ix]));
+    } else {
+      std::cout << "3d tex " << width << "x" << height << "x" << depth << "\n";
+      glBindTexture(GL_TEXTURE_3D, textures[ix]);
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, width, height, depth, 0,
+                   GL_RGBA, GL_FLOAT, 0);
+      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      holder->setUniformValue(targets[ix],
+                              new Texture3DOwnerUniform(textures[ix]));
+    }
 
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + ix,
                          textures[ix], 0);
     buffers[ix] = GL_COLOR_ATTACHMENT0 + ix;
-    holder->setUniformValue(targets[ix], new TextureOwnerUniform(textures[ix]));
     ++ix;
   }
-  glDrawBuffers(1, buffers);
+  glDrawBuffers(targets.size(), buffers);
   auto res = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (res != GL_FRAMEBUFFER_COMPLETE) {
     std::cerr << "Was unable to setup framebuffer with target " << targets[0]
@@ -59,6 +72,10 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   glDisable(GL_DEPTH_TEST);
   textureCreator->render();
 
+  for (int ix = 0; ix < targets.size(); ++ix)
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + ix, 0, 0);
+
+  std::cout << "___________unbind____________\n";
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glEnable(GL_DEPTH_TEST);
 }

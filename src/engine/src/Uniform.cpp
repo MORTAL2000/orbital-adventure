@@ -2,6 +2,10 @@
 #include "Uniform.hpp"
 namespace oa {
 namespace render {
+
+IntOwnerUniform::IntOwnerUniform(int f) : v(f) {}
+void IntOwnerUniform::setup(GLuint l) { glUniform1i(l, v); }
+
 FloatOwnerUniform::FloatOwnerUniform(float f) : v(f) {}
 void FloatOwnerUniform::setup(GLuint l) { glUniform1f(l, v); }
 
@@ -33,8 +37,20 @@ void Mat4Uniform::setup(GLuint location) {
   glUniformMatrix4fv(location, 1, GL_FALSE, &(*matrix)[0][0]);
 }
 
+void Texture3DOwnerUniform::bindTexture(GLuint t) {
+  // std::cout << "bind 3d\n";
+  glBindTexture(GL_TEXTURE_3D, t);
+}
+Texture3DOwnerUniform::Texture3DOwnerUniform(GLuint i) : TextureUniform(i) {}
+Texture3DOwnerUniform::~Texture3DOwnerUniform() {
+  glDeleteTextures(1, &textureId);
+}
+
 TextureOwnerUniform::TextureOwnerUniform(GLuint i) : TextureUniform(i) {}
-TextureOwnerUniform::~TextureOwnerUniform() { glDeleteTextures(1, &textureId); }
+TextureOwnerUniform::~TextureOwnerUniform() {
+  std::cout << "TOUD\n";
+  glDeleteTextures(1, &textureId);
+}
 
 int TextureUniform::setupCounter = 0;
 TextureUniform::TextureUniform(GLuint texture) : textureId(texture) {}

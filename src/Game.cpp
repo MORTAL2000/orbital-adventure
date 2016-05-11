@@ -62,13 +62,18 @@ void Game::prerender() {
       tc->clearUniformInstallers();
       tc->addUniformInstaller(params);
       renderer.render(tc.get(), &uh);
-      targets.push_back(tc->getTarget());
+
+      targets.insert(targets.end(), tc->getTargets().begin(),
+                     tc->getTargets().end());
       std::cout << "------------Get rendered textures back to holder\n";
       uh.moveUniforms(targets, tc.get());
     }
     std::cout << "---------------save all rendered textures to mesh\n";
     cs.second->getMesh()->moveUniforms(&uh);
   }
+  int vpWidth, vpHeight;
+  glfw->getWindowSize(vpWidth, vpHeight);
+  glViewport(0, 0, vpWidth, vpHeight);
 }
 void Game::initSolarSystem() {
   SolarSystemCreator creator;

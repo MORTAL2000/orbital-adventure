@@ -20,6 +20,11 @@ void GLFWWrapper::genAttribArrays() {
   glBindVertexArray(VertexArrayID);
 }
 
+void GLFWWrapper::getWindowSize(int &w, int &h) {
+  w = width;
+  h = height;
+}
+
 void GLFWWrapper::initOpenGL() {
   if (!glfwInit()) {
     this->errorCallback(100501, "GLFW didn't initialized");
@@ -34,6 +39,9 @@ void GLFWWrapper::initOpenGL() {
   int texture_units;
   glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
   std::cout << "Max texture units per shader" << texture_units << "\n";
+  int layers;
+  glGetIntegerv(0x9317, &layers);
+  std::cout << "Max texture units per shader" << layers << "\n";
   glClearColor(0.0, 0.0, 0.0, 1.0);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);

@@ -17,6 +17,7 @@ class ShaderProgram {
 
  public:
   void compile(std::string vs, std::string fs);
+  void compile(std::string vs, std::string fs, std::string gs);
   std::map<std::string, GLuint> &getUniformLocations();
   void free();
   GLuint getProgramId();
