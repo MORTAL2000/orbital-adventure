@@ -49,16 +49,23 @@ void Game::stopGame() { isPlaying = false; }
 
 void Game::initGLFW() { glfw->init(); }
 
+void Game::prerender() {
+  for (auto &tc : textureCreators) {
+    renderer.render(tc.get(), solarSystem->getScene());
+  }
+}
 void Game::initSolarSystem() {
   SolarSystemCreator creator;
   creator.createSolarSystem("../data/planets.json");
   solarSystem = creator.getSolarSystem();
   for (auto *tc : creator.getTextureCreators())
     textureCreators.push_back(std::unique_ptr<render::TextureCreator>(tc));
+
   cameraManager.setSolarSystem(solarSystem.get());
   glfw->addResolutionListener([&](int width, int height) {
     cameraManager.setNewWindowDimensions(width, height);
   });
+  prerender();
 }
 
 void Game::initPlayer() {}

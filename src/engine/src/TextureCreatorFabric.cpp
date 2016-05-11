@@ -30,7 +30,7 @@ TextureCreator *TextureCreatorFabric::make(ptree &tCreator) {
       (root.parent_path() / shader).string());
 
   std::string target = tCreator.get<std::string>("target");
-  bool needsDepthTest = tCreator.get("needsDepthTest", false);
+  bool needsDepthTest = tCreator.get("needsDepthTest", true);
   int width = tCreator.get("width", 0);
   int height = tCreator.get("height", 0);
   geometry::Geometry *geometry =

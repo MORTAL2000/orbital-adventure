@@ -1,4 +1,5 @@
 #include <iostream>
+#include "GeometryManager.hpp"
 #include "TextureCreator.hpp"
 namespace oa {
 namespace render {
@@ -8,7 +9,9 @@ TextureCreator::TextureCreator(ShaderProgram *sp, std::string t,
       needsDepthTest_(needsDepthTest),
       width(width),
       height(height),
-      shaderProgram(sp) {}
+      shaderProgram(sp) {
+  geometry = GeometryManager::instance()->createPatchGeometry();
+}
 
 TextureCreator::TextureCreator(ShaderProgram *sp, std::string target)
     : target(target), shaderProgram(sp) {}
@@ -21,6 +24,8 @@ void TextureCreator::addUniformInstaller(UniformInstaller *ui) {
 }
 bool TextureCreator::needsDepthTest() { return needsDepthTest_; }
 void TextureCreator::render() {
+  GLuint program = shaderProgram->getProgramId();
+  glUseProgram(program);
   for (auto &pair : shaderProgram->getUniformLocations()) {
     auto name = pair.first;
     auto location = pair.second;

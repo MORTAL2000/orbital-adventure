@@ -37,7 +37,7 @@ void SolarSystem::setCurrentCelestial(const CelestialObject *ptr) {
   objectOfIntrest = ptr;
 }
 
-const render::Scene *SolarSystem::getScene() {
+render::Scene *SolarSystem::getScene() {
   if (!objectOfIntrest) return &scene;
   for (auto &p : celestialsMap) p.second->updateMesh(objectOfIntrest);
   return &scene;

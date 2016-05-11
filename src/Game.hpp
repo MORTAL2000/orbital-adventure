@@ -37,6 +37,7 @@ class Game : public CommandAcceptor {
   render::Renderer renderer;
   CelestialCameraManager cameraManager;
   void initTextureCreators();
+  void prerender();
 };
 }
 }
