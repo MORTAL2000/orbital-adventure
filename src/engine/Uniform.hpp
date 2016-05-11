@@ -33,6 +33,14 @@ class Vec3OwnerUniform : public Uniform {
 
  public:
   Vec3OwnerUniform(glm::vec3 &);
+  Vec3OwnerUniform(glm::vec3 &&);
+};
+class FloatOwnerUniform : public Uniform {
+  float v;
+  void setup(GLuint);
+
+ public:
+  FloatOwnerUniform(float);
 };
 
 class Vec2OwnerUniform : public Uniform {
@@ -41,6 +49,7 @@ class Vec2OwnerUniform : public Uniform {
 
  public:
   Vec2OwnerUniform(glm::vec2 &);
+  Vec2OwnerUniform(glm::vec2 &&);
 };
 
 class Mat4OwnerUniform : public Uniform {

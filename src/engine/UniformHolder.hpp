@@ -13,6 +13,10 @@ class UniformHolder {
   ~UniformHolder(){};
   void setUniformValue(std::string, Uniform *);
   bool setupUniform(std::string &, uint32_t location) const;
+  void moveUniforms(UniformHolder *from);
+  void moveUniforms(std::vector<std::string> &&name, UniformHolder *from);
+  void moveUniforms(std::vector<std::string> &name, UniformHolder *from);
+  const Uniform *operator[](std::string &);
 };
 }
 }

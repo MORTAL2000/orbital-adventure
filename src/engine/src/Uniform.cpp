@@ -2,17 +2,22 @@
 #include "Uniform.hpp"
 namespace oa {
 namespace render {
+FloatOwnerUniform::FloatOwnerUniform(float f) : v(f) {}
+void FloatOwnerUniform::setup(GLuint l) { glUniform1f(l, v); }
+
 IntVec2OwnerUniform::IntVec2OwnerUniform(glm::ivec2& v) : v2(v) {}
 void IntVec2OwnerUniform::setup(GLuint location) {
   glUniform2iv(location, 1, &(v2[0]));
 }
 
 Vec3OwnerUniform::Vec3OwnerUniform(glm::vec3& v) : v3(v) {}
+Vec3OwnerUniform::Vec3OwnerUniform(glm::vec3&& v) : v3(v) {}
 void Vec3OwnerUniform::setup(GLuint location) {
   glUniform3fv(location, 1, &(v3[0]));
 }
 
 Vec2OwnerUniform::Vec2OwnerUniform(glm::vec2& v) : v2(v) {}
+Vec2OwnerUniform::Vec2OwnerUniform(glm::vec2&& v) : v2(v) {}
 void Vec2OwnerUniform::setup(GLuint location) {
   glUniform2fv(location, 1, &(v2[0]));
 }

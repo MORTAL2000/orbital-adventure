@@ -1,6 +1,6 @@
 #include <boost/filesystem.hpp>
-#include "TextureManager.hpp"
 #include <iostream>
+#include "TextureManager.hpp"
 #include "UniformFabric.hpp"
 namespace oa {
 namespace render {
@@ -15,6 +15,23 @@ Uniform* UniformFabric::create(ptree& uniform) {
     auto textureId = TextureManager::instance()->loadTexture(p.string());
     return new TextureUniform(textureId);
   }
+
+  if (type == "vec2") {
+    float x = uniform.get("value.x", 0.0f);
+    float y = uniform.get("value.y", 0.0f);
+    return new Vec2OwnerUniform(glm::vec2(x, y));
+  }
+  if (type == "vec3") {
+    float x = uniform.get("value.x", 0.0f);
+    float y = uniform.get("value.y", 0.0f);
+    float z = uniform.get("value.z", 0.0f);
+    return new Vec3OwnerUniform(glm::vec3(z, y, z));
+  }
+  if (type == "float") {
+    float value = uniform.get("value", 0.0f);
+    return new FloatOwnerUniform(value);
+  }
+
   std::cerr << "WARNING! Could not create uniform returning null ptr\n";
   return nullptr;
 }
