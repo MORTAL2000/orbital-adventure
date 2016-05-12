@@ -18,11 +18,13 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   if (framebuffer == 0) createFrameBuffer(true);
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
   if (textureCreator->needsDepthTest()) {
-    if (!depthbuffer) glGenRenderbuffers(1, &depthbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                              GL_RENDERBUFFER, depthbuffer);
+    if (depth == 1) {
+      if (!depthbuffer) glGenRenderbuffers(1, &depthbuffer);
+      glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
+      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                GL_RENDERBUFFER, depthbuffer);
+    }
   } else {
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
@@ -32,8 +34,8 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   GLenum buffers[targets.size()];
   GLuint textures[targets.size()];
   int ix = 0;
-  for (auto target : targets) {
-    glGenTextures(targets.size(), textures);
+  glGenTextures(targets.size(), textures);
+  for (auto &target : targets) {
     if (depth == 1) {
       glBindTexture(GL_TEXTURE_2D, textures[ix]);
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
@@ -43,12 +45,12 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
       holder->setUniformValue(targets[ix],
                               new TextureOwnerUniform(textures[ix]));
     } else {
-      std::cout << "3d tex " << width << "x" << height << "x" << depth << "\n";
       glBindTexture(GL_TEXTURE_3D, textures[ix]);
-      glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, width, height, depth, 0,
-                   GL_RGBA, GL_FLOAT, 0);
       glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      // glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, width, height, depth, 0,
+                   GL_RGBA, GL_FLOAT, NULL);
       holder->setUniformValue(targets[ix],
                               new Texture3DOwnerUniform(textures[ix]));
     }
@@ -65,6 +67,7 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
               << "\n";
     std::cerr << std::hex << "RESULT " << res << "\n";
     std::cerr << std::dec;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return;
   }
   glViewport(0, 0, width, height);
@@ -75,8 +78,9 @@ void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   for (int ix = 0; ix < targets.size(); ++ix)
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + ix, 0, 0);
 
-  std::cout << "___________unbind____________\n";
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDeleteFramebuffers(1, &framebuffer);
+  framebuffer = 0;
   glEnable(GL_DEPTH_TEST);
 }
 
