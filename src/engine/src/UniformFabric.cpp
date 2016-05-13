@@ -27,6 +27,10 @@ Uniform* UniformFabric::create(ptree& uniform) {
     float z = uniform.get("value.z", 0.0f);
     return new Vec3OwnerUniform(glm::vec3(z, y, z));
   }
+  if (type == "int") {
+    int value = uniform.get("value", 0);
+    return new IntOwnerUniform(value);
+  }
   if (type == "float") {
     float value = uniform.get("value", 0.0f);
     return new FloatOwnerUniform(value);

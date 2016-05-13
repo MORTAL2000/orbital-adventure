@@ -13,15 +13,10 @@ void PatchGeometry::prepareOpenglBuffers() {
   glBindBuffer(GL_ARRAY_BUFFER, geometryBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 18, verticies,
                GL_STATIC_DRAW);
-  std::cout << "Prepared patch geometry \n";
 }
-void PatchGeometry::render() {
-  std::cout << "Render \n";
-  glDrawArrays(GL_TRIANGLES, 0, 6);
-}
+void PatchGeometry::render() { glDrawArrays(GL_TRIANGLES, 0, 6); }
 void PatchGeometry::unsetBuffers() { glDisableVertexAttribArray(0); }
 void PatchGeometry::setBuffers() {
-  std::cout << "Set up buffers \n";
   int attib = 0;
   glEnableVertexAttribArray(attib);
   glBindBuffer(GL_ARRAY_BUFFER, geometryBuffer);

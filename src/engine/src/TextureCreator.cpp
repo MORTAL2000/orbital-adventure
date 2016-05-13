@@ -52,7 +52,6 @@ void TextureCreator::render() {
     for (auto &pair : shaderProgram->getUniformLocations()) {
       auto name = pair.first;
       auto location = pair.second;
-      std::cout << "<-- U: " << name << "\n";
       if (!setupUniform(name, location)) {
         std::cerr << "Target " << targets[0] << " has no uniform " << name
                   << "\n";

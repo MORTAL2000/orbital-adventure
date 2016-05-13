@@ -4,6 +4,7 @@
 #include "LODInstaller.hpp"
 #include "OAUniformInstallerFabric.hpp"
 #include "PersonalClippingMatrixInstaller.hpp"
+#include "TimeInstaller.hpp"
 
 namespace oa {
 namespace game {
@@ -12,7 +13,7 @@ using namespace render;
 
 void OAUniformInstallerFabric::setRootDir(std::string s) { rootDir = s; }
 
-UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(ptree&){
+UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(ptree &) {
   std::cerr << "WARNING createUniformInstaller is not implementeD\n";
   return nullptr;
 }
@@ -20,11 +21,13 @@ UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(ptree&){
 UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(
     ptree &uInstaller, Mesh *mesh) {
   std::string type = uInstaller.get("type", "");
-  std::cout << "Create installer " << type << "\n";
   if (type == "GeometryLODInstaller") {
     int width = uInstaller.get("totalWidth", 1);
     int height = uInstaller.get("totalHeight", 1);
     return new GeometryLODInstaller(mesh, glm::ivec2(width, height));
+  }
+  if (type == "TimeInstaller") {
+    return new TimeInstaller;
   }
   if (type == "PersonalClippingMatrixInstaller") {
     return new PersonalClippingMatrixInstaller(mesh);
