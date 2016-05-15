@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 2.8.0)
 project(OA C CXX)
 
 
@@ -30,10 +30,11 @@ add_executable(orbital-adventure
     ${OA_SOURCE_FILES}
     )
 set(libs ${OPENGL_LIBRARY} 
-    ${GLFW_LIBRARIES} 
     ${Boost_LIBRARIES}
     ${PNG_LIBRARIES} 
+    ${JPEG_LIBRARIES}
     ${GLEW_LIBRARIES} 
-    ${JPEG_LIBRARIES})
+    ${GLFW_STATIC_LIBRARIES} 
+)
 target_link_libraries(orbital-adventure ${libs})
 
