@@ -12,7 +12,7 @@
 
 namespace oa {
 namespace render {
-class Mesh : public render::Object, public render::UniformHolder {
+class Mesh : public render::Object, public render::UniformOwner {
   ShaderProgram *program;
   geometry::Geometry *geometry;
   glm::mat4 modelViewProjection;

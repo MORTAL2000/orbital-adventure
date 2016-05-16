@@ -72,7 +72,8 @@ void ShaderProgram::compile(std::string vs, std::string fs) {
   glCompileShader(vShaderId);
   glGetShaderiv(vShaderId, GL_COMPILE_STATUS, &result);
   glGetShaderiv(vShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling " << vs << "\n";
     std::vector<char> VertexShaderErrorMessage(infoLogLength + 1);
     glGetShaderInfoLog(vShaderId, infoLogLength, NULL,
                        &VertexShaderErrorMessage[0]);
@@ -86,7 +87,8 @@ void ShaderProgram::compile(std::string vs, std::string fs) {
   glCompileShader(fShaderId);
   glGetShaderiv(fShaderId, GL_COMPILE_STATUS, &result);
   glGetShaderiv(fShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling " << fs << "\n";
     std::vector<char> FragmentShaderErrorMessage(infoLogLength + 1);
     glGetShaderInfoLog(fShaderId, infoLogLength, NULL,
                        &FragmentShaderErrorMessage[0]);
@@ -99,7 +101,7 @@ void ShaderProgram::compile(std::string vs, std::string fs) {
   glLinkProgram(programId);
   glGetProgramiv(programId, GL_LINK_STATUS, &result);
   glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
     std::vector<char> ProgramErrorMessage(infoLogLength + 1);
     glGetProgramInfoLog(programId, infoLogLength, NULL,
                         &ProgramErrorMessage[0]);
@@ -137,7 +139,8 @@ void ShaderProgram::compile(std::string vs, std::string fs, std::string gs) {
   glCompileShader(vShaderId);
   glGetShaderiv(vShaderId, GL_COMPILE_STATUS, &result);
   glGetShaderiv(vShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling " << vs << "\n";
     std::vector<char> VertexShaderErrorMessage(infoLogLength + 1);
     glGetShaderInfoLog(vShaderId, infoLogLength, NULL,
                        &VertexShaderErrorMessage[0]);
@@ -150,7 +153,8 @@ void ShaderProgram::compile(std::string vs, std::string fs, std::string gs) {
   glCompileShader(gShaderId);
   glGetShaderiv(gShaderId, GL_COMPILE_STATUS, &result);
   glGetShaderiv(gShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling " << gs << "\n";
     std::vector<char> GeometryShaderErrorMessage(infoLogLength + 1);
     glGetShaderInfoLog(gShaderId, infoLogLength, NULL,
                        &GeometryShaderErrorMessage[0]);
@@ -164,7 +168,8 @@ void ShaderProgram::compile(std::string vs, std::string fs, std::string gs) {
   glCompileShader(fShaderId);
   glGetShaderiv(fShaderId, GL_COMPILE_STATUS, &result);
   glGetShaderiv(fShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling " << fs << "\n";
     std::vector<char> FragmentShaderErrorMessage(infoLogLength + 1);
     glGetShaderInfoLog(fShaderId, infoLogLength, NULL,
                        &FragmentShaderErrorMessage[0]);
@@ -178,7 +183,7 @@ void ShaderProgram::compile(std::string vs, std::string fs, std::string gs) {
   glLinkProgram(programId);
   glGetProgramiv(programId, GL_LINK_STATUS, &result);
   glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoLogLength);
-  if (infoLogLength > 0) {
+  if (infoLogLength > 1) {
     std::vector<char> ProgramErrorMessage(infoLogLength + 1);
     glGetProgramInfoLog(programId, infoLogLength, NULL,
                         &ProgramErrorMessage[0]);

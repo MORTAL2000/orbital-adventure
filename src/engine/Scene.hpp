@@ -8,7 +8,7 @@
 #include "UniformHolder.hpp"
 namespace oa {
 namespace render {
-class Scene : public UniformHolder {
+class Scene : public UniformOwner {
   std::vector<Mesh *> meshes;
   std::map<const ShaderProgram *, std::set<geometry::Geometry *>>
       materialGeometryMap;

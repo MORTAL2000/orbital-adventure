@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/property_tree/ptree.hpp>
+#include "IterativeTextureCreator.hpp"
 #include "TextureCreator.hpp"
 #include "UniformFabric.hpp"
 #include "UniformInstallerFabric.hpp"
@@ -11,6 +12,8 @@ class TextureCreatorFabric {
   std::string gShader;
   std::unique_ptr<UniformInstallerFabric> uniformInstallerFabric;
   std::unique_ptr<UniformFabric> uniformFabric;
+  GLenum getBlend(std::string);
+  GLenum getBlendFunc(std::string);
 
  public:
   void setRootDir(std::string);

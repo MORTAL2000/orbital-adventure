@@ -52,20 +52,18 @@ void Game::initGLFW() { glfw->init(); }
 
 void Game::prerender() {
   for (auto &cs : solarSystem->getPlanetMap()) {
-    render::UniformHolder uh;
-    std::vector<std::string> targets;
+    render::UniformPtrHolder uh;
     for (auto &tc : textureCreators) {
       auto *params = new CurrentPlanetParams(cs.second.get());
-      tc->moveUniforms(targets, &uh);
+
       tc->clearUniformInstallers();
       tc->addUniformInstaller(params);
       renderer.render(tc.get(), &uh);
-
-      targets.insert(targets.end(), tc->getTargets().begin(),
-                     tc->getTargets().end());
-      uh.moveUniforms(targets, tc.get());
     }
-    cs.second->getMesh()->moveUniforms(&uh);
+    for (auto uname : uh.getUniformNames()) {  // transfer ownership
+      std::cout << "<---- transferring uniforms: " << uname << "\n";
+      cs.second->getMesh()->setUniformValue(uname, uh[uname]);
+    }
   }
   int vpWidth, vpHeight;
   glfw->getWindowSize(vpWidth, vpHeight);

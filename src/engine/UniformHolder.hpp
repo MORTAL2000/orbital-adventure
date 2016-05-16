@@ -7,16 +7,29 @@
 namespace oa {
 namespace render {
 class UniformHolder {
+ public:
+  virtual ~UniformHolder(){};
+  virtual void setUniformValue(std::string, Uniform *) = 0;
+  virtual bool setupUniform(std::string &, uint32_t location) const = 0;
+  virtual const Uniform *operator[](std::string &) = 0;
+};
+
+class UniformOwner : public UniformHolder {
   std::map<std::string, std::unique_ptr<Uniform>> uniforms;
 
  public:
-  ~UniformHolder(){};
-  void setUniformValue(std::string, Uniform *);
-  bool setupUniform(std::string &, uint32_t location) const;
-  void moveUniforms(UniformHolder *from);
-  void moveUniforms(std::vector<std::string> &&name, UniformHolder *from);
-  void moveUniforms(std::vector<std::string> &name, UniformHolder *from);
-  const Uniform *operator[](std::string &);
+  virtual void setUniformValue(std::string, Uniform *);
+  virtual bool setupUniform(std::string &, uint32_t location) const;
+  virtual const Uniform *operator[](std::string &);
+};
+class UniformPtrHolder : public UniformHolder {
+  std::map<std::string, Uniform *> uniforms;
+  virtual void setUniformValue(std::string, Uniform *);
+  virtual bool setupUniform(std::string &, uint32_t location) const;
+
+ public:
+  Uniform *operator[](std::string &);
+  std::vector<std::string> getUniformNames();
 };
 }
 }

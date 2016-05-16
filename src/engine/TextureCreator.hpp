@@ -6,29 +6,46 @@
 #include "UniformInstaller.hpp"
 namespace oa {
 namespace render {
-class TextureCreator : public UniformHolder {
+class TextureCreator : public UniformOwner {
   std::vector<std::string> targets;
+  bool useBlending = false;
+  GLenum blendSrc, blengDst;
+  glm::ivec4 blendFuncSep;
   bool needsDepthTest_;
   int width, height, depth;
+  GLuint depthbuffer;
   ShaderProgram* shaderProgram;
   geometry::Geometry* geometry;
+  virtual bool needsDepthTest();
+
+  struct FB2DTexture : public TextureOwnerUniform {
+    FB2DTexture(GLuint);
+    GLuint getTextureId() const;
+  };
+
+  struct FB3DTexture : public Texture3DOwnerUniform {
+    FB3DTexture(GLuint);
+    GLuint getTextureId() const;
+  };
+
+ protected:
   std::vector<std::unique_ptr<UniformInstaller>> uniformInstallers;
 
  public:
-  void addUniformInstaller(UniformInstaller*);
-  void clearUniformInstallers();
+  void blend();
+  void setBlending(GLenum src, GLenum dst);
+  void setBlendFunc(glm::ivec4);
+  virtual void addUniformInstaller(UniformInstaller*);
+  virtual void clearUniformInstallers();
+  virtual void prepareFramebuffer(GLuint, UniformHolder* out);
+  virtual void cleanFramebuffer(GLuint);
 
-  virtual std::vector<std::string>& getTargets();
-  virtual bool needsDepthTest();
-  virtual size_t supposedWidth();
-  virtual size_t supposedHeight();
-  virtual size_t supposedDepth();
   TextureCreator(ShaderProgram*, std::string target);
   TextureCreator(ShaderProgram*, std::string target, bool needsDepthTest,
                  int width, int height, int depth);
   TextureCreator(ShaderProgram*, std::vector<std::string>& target,
                  bool needsDepthTest, int width, int height, int depth);
-  virtual void render();
+  virtual void render(const UniformHolder* h = nullptr);
 };
 }
 }
