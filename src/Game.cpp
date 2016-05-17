@@ -4,6 +4,7 @@
 #include "CurrentPlanetParams.hpp"
 #include "Game.hpp"
 #include "SolarSystemCreator.hpp"
+#include "engine/Filter.hpp"
 #include "engine/LanguageUtils.hpp"
 #include "engine/PerspectiveCamera.hpp"
 
@@ -67,7 +68,8 @@ void Game::prerender() {
   }
   int vpWidth, vpHeight;
   glfw->getWindowSize(vpWidth, vpHeight);
-  glViewport(0, 0, vpWidth, vpHeight);
+  renderer.setViewportDimentions(vpWidth, vpHeight);
+  // glViewport(0, 0, vpWidth, vpHeight);
 }
 void Game::initSolarSystem() {
   SolarSystemCreator creator;
@@ -78,14 +80,17 @@ void Game::initSolarSystem() {
 
   cameraManager.setSolarSystem(solarSystem.get());
   glfw->addResolutionListener([&](int width, int height) {
+    renderer.setViewportDimentions(width, height);
     cameraManager.setNewWindowDimensions(width, height);
   });
-  prerender();
+  // prerender();
 }
 
 void Game::initPlayer() {}
 
 void Game::mainLoop() {
+  auto f = new render::Filter("../data/shaders/atmosphere/testFilter.glsl");
+  renderer.pushFilter(f);
   while (isPlaying) {
     auto timePoint = std::chrono::system_clock::now();
     auto timeDiff = timePoint - oldTimePoint;

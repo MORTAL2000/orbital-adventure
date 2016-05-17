@@ -5,6 +5,7 @@
 #include "ShaderProgam.hpp"
 namespace oa {
 namespace render {
+
 void ShaderProgram::setupUniformLocations() {
   for (auto &p : uniformTypes) {
     uniformLocations[p.first] =
@@ -18,12 +19,19 @@ std::regex ShaderProgram::getUniformRegex(int) {
   return std::regex("^uniform (\\w+) (\\w+);");
 }
 
+std::regex ShaderProgram::getTargetsRegex(int version) {
+  return std::regex("^layout(.*)\\s+out\\s+(\\w+)\\s+(\\w+);");
+}
+
 std::regex ShaderProgram::getAttributeRegex(int version) {
   if (version >= 330)
     return std::regex("^layout(.*)\\s+in\\s+(\\w+)\\s+(\\w+);");
   return std::regex("^attribute\\s+(\\w+)\\s+(\\w+);");
 }
 
+std::map<std::string, std::string> &ShaderProgram::getFragmentOutTypes() {
+  return fragmentOut;
+}
 void ShaderProgram::parseShader(std::string shader) {
   std::vector<std::string> lines;
   boost::split(lines, shader, boost::is_any_of("\n"));
@@ -34,7 +42,8 @@ void ShaderProgram::parseShader(std::string shader) {
   int version;
   std::stringstream(m[0]) >> version;
   std::regex uniformRegex = getUniformRegex(version),
-             attributeRegex = getAttributeRegex(version);
+             attributeRegex = getAttributeRegex(version),
+             targetRegex = getTargetsRegex(version);
 
   for (auto &line : lines) {
     std::smatch umatch;
@@ -45,11 +54,75 @@ void ShaderProgram::parseShader(std::string shader) {
     std::regex_match(line, amatch, attributeRegex);
     if (amatch.size() > 0)
       attributeTypes.insert(std::make_pair(amatch[3], amatch[2]));
+
+    std::smatch tmatch;
+    std::regex_match(line, tmatch, targetRegex);
+    if (tmatch.size() > 0)
+      fragmentOut.insert(std::make_pair(tmatch[3], tmatch[2]));
   }
 }
 
 GLuint ShaderProgram::getProgramId() { return programId; }
 void ShaderProgram::free() { glDeleteProgram(programId); }
+void ShaderProgram::compileFilter(std::string vshader, std::string fs) {
+  std::ifstream fsf(fs);
+  std::string fshader((std::istreambuf_iterator<char>(fsf)),
+                      std::istreambuf_iterator<char>());
+  GLuint vShaderId, fShaderId;
+  vShaderId = glCreateShader(GL_VERTEX_SHADER);
+  fShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+  GLint result = GL_FALSE;
+  int infoLogLength;
+
+  parseShader(vshader);
+  parseShader(fshader);
+
+  // vertex
+  char const *VertexSourcePointer = vshader.c_str();
+  glShaderSource(vShaderId, 1, &VertexSourcePointer, NULL);
+  glCompileShader(vShaderId);
+  glGetShaderiv(vShaderId, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(vShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling default vertex shader"
+              << "\n";
+    std::vector<char> VertexShaderErrorMessage(infoLogLength + 1);
+    glGetShaderInfoLog(vShaderId, infoLogLength, NULL,
+                       &VertexShaderErrorMessage[0]);
+    printf("%s\n", &VertexShaderErrorMessage[0]);
+  }
+
+  // fragment
+
+  char const *FragmentSourcePointer = fshader.c_str();
+  glShaderSource(fShaderId, 1, &FragmentSourcePointer, NULL);
+  glCompileShader(fShaderId);
+  glGetShaderiv(fShaderId, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(fShaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 1) {
+    std::cout << "ERRORS While compiling " << fs << "\n";
+    std::vector<char> FragmentShaderErrorMessage(infoLogLength + 1);
+    glGetShaderInfoLog(fShaderId, infoLogLength, NULL,
+                       &FragmentShaderErrorMessage[0]);
+    printf("%s\n", &FragmentShaderErrorMessage[0]);
+  }
+
+  programId = glCreateProgram();
+  glAttachShader(programId, vShaderId);
+  glAttachShader(programId, fShaderId);
+  glLinkProgram(programId);
+  glGetProgramiv(programId, GL_LINK_STATUS, &result);
+  glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &infoLogLength);
+  if (infoLogLength > 1) {
+    std::vector<char> ProgramErrorMessage(infoLogLength + 1);
+    glGetProgramInfoLog(programId, infoLogLength, NULL,
+                        &ProgramErrorMessage[0]);
+    printf("%s\n", &ProgramErrorMessage[0]);
+  }
+  glDeleteShader(fShaderId);
+  glDeleteShader(vShaderId);
+  setupUniformLocations();
+}
 void ShaderProgram::compile(std::string vs, std::string fs) {
   std::ifstream vsf(vs);
   std::ifstream fsf(fs);

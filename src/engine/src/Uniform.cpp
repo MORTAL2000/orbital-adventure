@@ -83,6 +83,8 @@ int TextureUniform::setupCounter = 0;
 TextureUniform::TextureUniform(GLuint texture) : textureId(texture) {}
 
 GLuint TextureUniform::textureIdGetter() {
+  return GL_TEXTURE0 + setupCounter;
+  /*
   switch (setupCounter) {
     // clang-format off
     case 0: return GL_TEXTURE0;
@@ -119,7 +121,7 @@ GLuint TextureUniform::textureIdGetter() {
     case 31: return GL_TEXTURE31;
     default :return GL_TEXTURE0;
       // clang-format on
-  }
+  }*/
 }
 
 void TextureUniform::bindTexture(GLuint t) { glBindTexture(GL_TEXTURE_2D, t); }

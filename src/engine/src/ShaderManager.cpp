@@ -5,7 +5,29 @@
 #include "ShaderManager.hpp"
 namespace oa {
 namespace render {
+const std::string ShaderProgramManager::filterVertexShader = R"(
+#version 330 core
+
+layout(location = 0) in vec3 position;
+
+out vec3 ray;
+void main() {
+  gl_Position = vec4(position, 1.0);
+}
+)";
+
 ShaderProgramManager::ShaderProgramManager() {}
+
+ShaderProgram *ShaderProgramManager::loadProgram(std::string fs) {
+  std::string identity = fs;
+  if (loadedPrograms.count(identity) > 0) {
+    return loadedPrograms[identity].get();
+  }
+  ShaderProgram *sp = new ShaderProgram;
+  sp->compileFilter(filterVertexShader, fs);
+  loadedPrograms[identity] = std::unique_ptr<ShaderProgram>(sp);
+  return sp;
+}
 
 ShaderProgram *ShaderProgramManager::loadProgram(std::string vs,
                                                  std::string fs) {

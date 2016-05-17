@@ -6,17 +6,23 @@ namespace render {
 void UniformOwner::setUniformValue(std::string name, Uniform* u) {
   uniforms[name] = std::unique_ptr<Uniform>(u);
 }
-bool UniformOwner::setupUniform(std::string& name, uint32_t location) const {
+bool UniformOwner::setupUniform(const std::string& name,
+                                uint32_t location) const {
   if (!uniforms.count(name)) return false;
   uniforms.at(name)->setup(location);
   return true;
+}
+
+Uniform* UniformOwner::copy(std::string& name) {
+  if (!uniforms.count(name)) return nullptr;
+  return uniforms[name]->clone();
 }
 
 void UniformPtrHolder::setUniformValue(std::string name, Uniform* u) {
   uniforms[name] = u;
 }
 
-bool UniformPtrHolder::setupUniform(std::string& name,
+bool UniformPtrHolder::setupUniform(const std::string& name,
                                     uint32_t location) const {
   if (!uniforms.count(name)) return false;
   uniforms.at(name)->setup(location);
@@ -33,5 +39,9 @@ std::vector<std::string> UniformPtrHolder::getUniformNames() {
 }
 
 Uniform* UniformPtrHolder::operator[](std::string& s) { return uniforms[s]; }
+Uniform* UniformPtrHolder::copy(std::string& name) {
+  if (!uniforms.count(name)) return nullptr;
+  return uniforms[name]->clone();
+}
 }
 }
