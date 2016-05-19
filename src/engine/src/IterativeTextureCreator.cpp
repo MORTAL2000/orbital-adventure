@@ -12,15 +12,15 @@ void IterativeTextureCreator::FirstInstaller::install(UniformHolder *h,
                                                       const Camera *, double) {
   if (isFirst == nullptr) return;
   bool i = *isFirst;
-  h->setUniformValue(
-      "first", i ? new FloatOwnerUniform(1.0) : new FloatOwnerUniform(0.0));
+
+  h->setUniformValue("first",
+                     i ? new IntOwnerUniform(1) : new IntOwnerUniform(0));
 }
 void IterativeTextureCreator::render(const UniformHolder *user) {
   bool isFirst = true;
   auto fi = new FirstInstaller(&isFirst);
 
   for (int counter = 0; counter < count; ++counter) {
-    std::cout << "sample " << counter << "\n";
     for (auto creator : creators) {
       for (auto &ui : uniformInstallers) ui->install(creator, nullptr, 0);
       creator->addUniformInstaller(fi);

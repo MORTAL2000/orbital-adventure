@@ -25,7 +25,6 @@ Uniform* UniformFabric::create(ptree& uniform) {
     float x = uniform.get("value.x", 0.0f);
     float y = uniform.get("value.y", 0.0f);
     float z = uniform.get("value.z", 0.0f);
-    std::cout << "U3: " << x << " . " << y << " . " << z << "\n";
     return new Vec3OwnerUniform(glm::vec3(x, y, z));
   }
   if (type == "int") {

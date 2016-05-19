@@ -1,5 +1,6 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include "CurrentPlanetAtmosphere.hpp"
 #include "GeometryLODInstaller.hpp"
 #include "LODInstaller.hpp"
 #include "OAUniformInstallerFabric.hpp"
@@ -11,10 +12,17 @@ namespace game {
 using namespace boost::property_tree;
 using namespace render;
 
+OAUniformInstallerFabric::OAUniformInstallerFabric(
+    const SolarSystem *s, const CelestialCameraManager *mgr)
+    : solarSystem(s), cameraManager(mgr) {}
 void OAUniformInstallerFabric::setRootDir(std::string s) { rootDir = s; }
 
-UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(ptree &) {
-  std::cerr << "WARNING createUniformInstaller is not implementeD\n";
+UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(
+    ptree &uInstaller) {
+  std::string type = uInstaller.get("type", "");
+  if (type == "CurrentPlanetAtmosphere")
+    return new CurrentPlanetAtmosphere(solarSystem, cameraManager);
+  std::cerr << "WARNING! Uniform installer not found: " << type << "\n";
   return nullptr;
 }
 
@@ -43,7 +51,7 @@ UniformInstaller *OAUniformInstallerFabric::createUniformInstaller(
     return new LODInstaller(
         mesh, LODTextureManager(path.string(), width, height, ext));
   }
-  std::cerr << "WARNING! Uniform installer not found!";
+  std::cerr << "WARNING! Uniform installer not found: " << type << "\n";
   return nullptr;
 }
 }

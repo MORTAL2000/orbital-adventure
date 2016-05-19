@@ -16,7 +16,7 @@ std::map<std::string, GLuint> &ShaderProgram::getUniformLocations() {
   return uniformLocations;
 }
 std::regex ShaderProgram::getUniformRegex(int) {
-  return std::regex("^uniform (\\w+) (\\w+);");
+  return std::regex("^uniform (\\w+) (\\w+);\\s*.*");
 }
 
 std::regex ShaderProgram::getTargetsRegex(int version) {

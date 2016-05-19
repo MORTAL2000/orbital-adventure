@@ -11,11 +11,11 @@ namespace oa {
 namespace render {
 using namespace boost::property_tree;
 
-void MeshFabric::setUniformFabric(UniformFabric *uf){
+void MeshFabric::setUniformFabric(UniformFabric *uf) {
   uniformFabric = std::unique_ptr<UniformFabric>(uf);
 }
 
-void MeshFabric::setUniformInstallerFabric(UniformInstallerFabric *uif){
+void MeshFabric::setUniformInstallerFabric(UniformInstallerFabric *uif) {
   uniformInstallerFabric = std::unique_ptr<UniformInstallerFabric>(uif);
 }
 
@@ -51,8 +51,6 @@ Mesh *MeshFabric::meshOfType(std::string type, ShaderProgram *sp,
 Mesh *MeshFabric::createMesh(ptree &meshDescription) {
   using namespace boost::filesystem;
   std::string meshType = meshDescription.get<std::string>("type");
-
-  std::cout << meshType << "\n";
 
   boost::filesystem::path root(rootDir);
   std::string vertexShaderPath = meshDescription.get("vertexShader", "no");

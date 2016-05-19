@@ -3,6 +3,15 @@
 
 namespace oa {
 namespace game {
+void CelestialObject::setHM(float v) { HM = v; }
+float CelestialObject::getHM() const { return HM; }
+void CelestialObject::setHR(float v) { HR = v; }
+float CelestialObject::getHR() const { return HR; }
+void CelestialObject::setBetaMSca(glm::vec3 v) { betaMSca = v; }
+glm::vec3 CelestialObject::getBetaMSca() const { return betaMSca; }
+void CelestialObject::setBetaR(glm::vec3 v) { betaR = v; }
+glm::vec3 CelestialObject::getBetaR() const { return betaR; }
+
 double CelestialObject::getSize() { return size; }
 double CelestialObject::getSize() const { return size; }
 void CelestialObject::updateMesh(const CelestialObject* celestial) {
@@ -19,6 +28,7 @@ void CelestialObject::updateMesh(const CelestialObject* celestial) {
 std::string CelestialObject::getName() { return name; }
 std::string CelestialObject::getName() const { return name; }
 render::Mesh* CelestialObject::getMesh() { return mesh; }
+const render::Mesh* CelestialObject::getMesh() const { return mesh; }
 
 const Orbit& CelestialObject::getOrbit() { return orbit; }
 double CelestialObject::getMass() { return mass; }

@@ -104,7 +104,7 @@ class Texture3DUniform : public TextureUniform {
 };
 
 class TextureOwnerUniform : public TextureUniform {
-  Uniform* clone();
+  virtual Uniform* clone();
 
  public:
   TextureOwnerUniform(GLuint);
@@ -113,7 +113,7 @@ class TextureOwnerUniform : public TextureUniform {
 
 class Texture3DOwnerUniform : public TextureUniform {
   inline void bindTexture(GLuint);
-  Uniform* clone();
+  virtual Uniform* clone();
 
  public:
   Texture3DOwnerUniform(GLuint);

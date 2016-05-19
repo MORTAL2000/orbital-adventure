@@ -9,13 +9,17 @@ void UniformOwner::setUniformValue(std::string name, Uniform* u) {
 bool UniformOwner::setupUniform(const std::string& name,
                                 uint32_t location) const {
   if (!uniforms.count(name)) return false;
-  uniforms.at(name)->setup(location);
+  Uniform* u = uniforms.at(name).get();
+  u->setup(location);
   return true;
 }
 
-Uniform* UniformOwner::copy(std::string& name) {
-  if (!uniforms.count(name)) return nullptr;
-  return uniforms[name]->clone();
+Uniform* UniformOwner::copy(std::string& name) const {
+  if (!uniforms.count(name)) {
+    std::cerr << "cannot copy uniform " << name << ", it's not exists \n";
+    return nullptr;
+  }
+  return uniforms.at(name)->clone();
 }
 
 void UniformPtrHolder::setUniformValue(std::string name, Uniform* u) {
@@ -39,9 +43,9 @@ std::vector<std::string> UniformPtrHolder::getUniformNames() {
 }
 
 Uniform* UniformPtrHolder::operator[](std::string& s) { return uniforms[s]; }
-Uniform* UniformPtrHolder::copy(std::string& name) {
+Uniform* UniformPtrHolder::copy(std::string& name) const {
   if (!uniforms.count(name)) return nullptr;
-  return uniforms[name]->clone();
+  return uniforms.at(name)->clone();
 }
 }
 }

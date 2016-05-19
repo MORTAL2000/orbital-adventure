@@ -16,6 +16,9 @@ using namespace utils;
 const double SolarSystem::G = 6.67408e-11;
 const render::Scene *SolarSystem::getSkyboxScene() { return &skyboxScene; }
 void SolarSystem::setSkybox(render::Mesh *mesh) { skyboxScene.addMesh(mesh); }
+const CelestialObject *SolarSystem::getSun() const {
+  return celestialsMap.at(PlanetID("Sun")).get();
+}
 
 SolarSystem::SolarSystem() : objectOfIntrest(nullptr) {
   std::tm time;
@@ -30,6 +33,9 @@ SolarSystem::SolarSystem() : objectOfIntrest(nullptr) {
   epoch2000 = system_clock::from_time_t(tm);
 }
 
+const CelestialObject *SolarSystem::getObjectOfInterest() const {
+  return objectOfIntrest;
+}
 const CelestialObject *SolarSystem::getObjectOfInterest() {
   return objectOfIntrest;
 }
@@ -54,6 +60,7 @@ void SolarSystem::addPlanet(CelestialPtr planet) {
 
   scene.addMesh(planet->getMesh());
   celestialsMap.insert(std::make_pair(id, std::move(planet)));
+  objectOfIntrest = celestialsMap.begin()->second.get();
 }
 double SolarSystem::getMoment(system_clock::time_point &timePoint) {
   return duration_cast<FloatDuration>(timePoint - epoch2000).count();

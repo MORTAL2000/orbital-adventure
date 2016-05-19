@@ -30,12 +30,6 @@ void TextureCreator::clearUniformInstallers() { uniformInstallers.clear(); }
 TextureCreator::TextureCreator(ShaderProgram *sp, std::string target)
     : targets({target}), shaderProgram(sp) {}
 
-// std::vector<std::string> &TextureCreator::getTargets() { return targets; }
-
-// size_t TextureCreator::supposedDepth() { return depth; }
-// size_t TextureCreator::supposedWidth() { return width; }
-// size_t TextureCreator::supposedHeight() { return height; }
-
 void TextureCreator::addUniformInstaller(UniformInstaller *ui) {
   uniformInstallers.push_back(std::unique_ptr<UniformInstaller>(ui));
 }
@@ -54,6 +48,7 @@ void TextureCreator::render(const UniformHolder *holder) {
     for (auto &pair : shaderProgram->getUniformLocations()) {
       auto name = pair.first;
       auto location = pair.second;
+
       if (!setupUniform(name, location)) {
         if (!(holder && holder->setupUniform(name, location)))
           std::cerr << "Target " << targets[0] << " has no uniform " << name
@@ -85,14 +80,13 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
   int ix = 0;
   glGenTextures(targets.size(), textures);
   for (std::string &target : targets) {
+    std::cout << "TARTGET " << target << "\n";
     if (depth == 1) {
       auto uptr = (*holder)[target];
       if (uptr) {
         auto tu = dynamic_cast<const FB2DTexture *>(uptr);
         glDeleteTextures(1, textures + ix);
         textures[ix] = tu->getTextureId();
-        std::cout << "---using old texture as fbo target " << target << " "
-                  << textures[ix] << "\n";
       } else {
         glBindTexture(GL_TEXTURE_2D, textures[ix]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
@@ -102,8 +96,6 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         holder->setUniformValue(targets[ix], new FB2DTexture(textures[ix]));
-        std::cout << "+++create new texture for target " << targets[ix] << " "
-                  << textures[ix] << "\n";
       }
     } else {
       auto uptr = (*holder)[target];
@@ -111,8 +103,6 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
         auto tu = dynamic_cast<const FB3DTexture *>(uptr);
         glDeleteTextures(1, textures + ix);
         textures[ix] = tu->getTextureId();
-        std::cout << "---using old 3d texture as fbo target " << target << " "
-                  << textures[ix] << "\n";
       } else {
         glBindTexture(GL_TEXTURE_3D, textures[ix]);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -123,8 +113,6 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
         glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, width, height, depth, 0,
                      GL_RGBA, GL_FLOAT, NULL);
         holder->setUniformValue(targets[ix], new FB3DTexture(textures[ix]));
-        std::cout << "+++create new 3d texture for target " << targets[ix]
-                  << " " << textures[ix] << "\n";
       }
     }
 
@@ -143,12 +131,11 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return;
   }
-  std::cout << " * Framebuffer created for " << targets[0] << "\n";
   glViewport(0, 0, width, height);
   glClearColor(0.0, 1.0, 1.0, 1.0);
   glDisable(GL_DEPTH_TEST);
   if (useBlending) {
-    std::cout << "turn blend on \n";
+    std::cout << "use blending\n";
     glEnable(GL_BLEND);
     glBlendEquationSeparate(blendSrc, blengDst);
     glBlendFuncSeparate(blendFuncSep.x, blendFuncSep.y, blendFuncSep.z,
@@ -167,5 +154,11 @@ TextureCreator::FB2DTexture::FB2DTexture(GLuint i) : TextureOwnerUniform(i) {}
 GLuint TextureCreator::FB2DTexture::getTextureId() const { return textureId; }
 TextureCreator::FB3DTexture::FB3DTexture(GLuint i) : Texture3DOwnerUniform(i) {}
 GLuint TextureCreator::FB3DTexture::getTextureId() const { return textureId; }
+Uniform *TextureCreator::FB2DTexture::clone() {
+  return new TextureUniform(textureId);
+}
+Uniform *TextureCreator::FB3DTexture::clone() {
+  return new Texture3DUniform(textureId);
+}
 }
 }

@@ -21,11 +21,13 @@ class TextureCreator : public UniformOwner {
   struct FB2DTexture : public TextureOwnerUniform {
     FB2DTexture(GLuint);
     GLuint getTextureId() const;
+    Uniform* clone();
   };
 
   struct FB3DTexture : public Texture3DOwnerUniform {
     FB3DTexture(GLuint);
     GLuint getTextureId() const;
+    Uniform* clone();
   };
 
  protected:

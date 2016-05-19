@@ -25,22 +25,28 @@ void SolarSystemCreator::createTextureCreator(ptree &tCreator) {
   else
     std::cerr << "NO CREATOR\n";
 }
-void SolarSystemCreator::setupUniformUpdaters(
-    const CelestialCameraManager *cameraMgr) {}
+void SolarSystemCreator::withCamerManager(
+    const CelestialCameraManager *cameraMgr) {
+  cameraManager = cameraMgr;
+}
+
+std::vector<render::Filter *> &&SolarSystemCreator::getRenderFilters() {
+  return std::move(renderFilters);
+}
 void SolarSystemCreator::createSolarSystem(std::string filepath) {
   meshFabric.setRootDir(filepath);
   textureCreatorFabric.setRootDir(filepath);
   auto uf = new render::UniformFabric;
   uf->setRootDir(filepath);
   meshFabric.setUniformFabric(uf);
-  auto uif = new OAUniformInstallerFabric;
+  auto uif = new OAUniformInstallerFabric(solarSystem.get(), cameraManager);
   uif->setRootDir(filepath);
   meshFabric.setUniformInstallerFabric(uif);
 
   uf = new render::UniformFabric;
   uf->setRootDir(filepath);
   textureCreatorFabric.setUniformFabric(uf);
-  uif = new OAUniformInstallerFabric;
+  uif = new OAUniformInstallerFabric(solarSystem.get(), cameraManager);
   uif->setRootDir(filepath);
   textureCreatorFabric.setUniformInstallerFabric(uif);
   textureCreatorFabric.setDefaultVertexShaderPath("shaders/screenVShader.glsl");
@@ -54,6 +60,32 @@ void SolarSystemCreator::createSolarSystem(std::string filepath) {
   for (auto &creator : planetsTree.get_child("texture-creators"))
     createTextureCreator(creator.second);
   for (auto &v : planetsTree.get_child("planets")) parsePlanet(v);
+
+  auto filters = planetsTree.get_child_optional("renderingFilters");
+  if (filters) createFilters(*filters, filepath);
+}
+
+void SolarSystemCreator::createFilters(boost::property_tree::ptree &tree,
+                                       std::string filepath) {
+  using namespace render;
+  std::unique_ptr<UniformInstallerFabric> fabric(
+      new OAUniformInstallerFabric(solarSystem.get(), cameraManager));
+  auto root = boost::filesystem::path(filepath);
+  root = root.parent_path();
+  for (auto &val : tree) {
+    auto shader = val.second.get<std::string>("shader");
+    auto shPath = root / shader;
+    auto *f = new render::Filter(shPath.string());
+    auto maybeUis = val.second.get_child_optional("uniform-installers");
+    if (maybeUis) {
+      auto &uis = *maybeUis;
+      for (auto &ui : uis) {
+        auto u = fabric->createUniformInstaller(ui.second);
+        f->addUniformInstaller(u);
+      }
+    }
+    renderFilters.push_back(f);
+  }
 }
 
 void SolarSystemCreator::createSkyBox(boost::property_tree::ptree &tree) {
@@ -98,6 +130,15 @@ void SolarSystemCreator::parsePlanet(
   double eccentricity = tree.get<double>("eccentricity");
   double semiMajorAxis = tree.get<double>("semiMajorAxis");
   double surfacePressure = tree.get<double>("surfacePressure");
+  float HR = tree.get<double>("HR");
+  float HM = tree.get<double>("HM");
+  float betaRx = tree.get<double>("betaR.x");
+  float betaRy = tree.get<double>("betaR.y");
+  float betaRz = tree.get<double>("betaR.z");
+  float betaMScax = tree.get<double>("betaMSca.x");
+  float betaMScay = tree.get<double>("betaMSca.y");
+  float betaMScaz = tree.get<double>("betaMSca.z");
+
   std::string parentName = tree.get<std::string>("orbitOn");
   double meanAnomalyAtJ200 = 0;
   if (meanAnomaly)
@@ -121,6 +162,10 @@ void SolarSystemCreator::parsePlanet(
 
   auto planet =
       CelestialPtr(new Planet(mass, radius, surfacePressure, orbit, name));
+  planet->setHM(HM);
+  planet->setHR(HR);
+  planet->setBetaR(glm::vec3(betaRx, betaRy, betaRz));
+  planet->setBetaMSca(glm::vec3(betaMScax, betaMScay, betaMScaz));
   planet->setOrbit(orbit);
   auto mesh = meshFabric.createMesh(tree.get_child("mesh"));
   mesh->addUniformInstaller(new SunDirectionUniformInstaller(sunMesh, mesh));

@@ -43,6 +43,8 @@ class SolarSystem {
   void updatePlanets(std::chrono::system_clock::time_point &);
   void setCurrentCelestial(const CelestialObject *);
   const CelestialObject *getObjectOfInterest();
+  const CelestialObject *getObjectOfInterest() const;
+  const CelestialObject *getSun() const;
   render::Scene *getScene();
   const render::Scene *getSkyboxScene();
   void setSkybox(render::Mesh *m);

@@ -7,6 +7,7 @@ uint32_t PatchGeometry::getIndexAmount() { return 0; }
 void PatchGeometry::prepareOpenglBuffers() {
   static const GLfloat verticies[] = {
       -1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+
       -1.0f, 1.0f,  0.0f, 1.0f, -1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
   };
   glGenBuffers(1, &geometryBuffer);

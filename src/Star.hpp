@@ -7,6 +7,7 @@ class Star : public CelestialObject {
   Star(double m, double r, std::string n);
   glm::vec3 getPoint();
   glm::vec3 getVelocity();
+  bool hasAtmosphere();
 
  private:
   bool hasOrbit();

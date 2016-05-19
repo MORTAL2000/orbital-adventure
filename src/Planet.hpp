@@ -10,6 +10,7 @@ class Planet : public CelestialObject {
   ~Planet();
   glm::vec3 getPoint();
   glm::vec3 getVelocity();
+  bool hasAtmosphere();
 
  private:
   Orbit orbit;

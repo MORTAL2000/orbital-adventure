@@ -53,6 +53,7 @@ void Game::initGLFW() { glfw->init(); }
 
 void Game::prerender() {
   for (auto &cs : solarSystem->getPlanetMap()) {
+    if (!cs.second->hasAtmosphere()) continue;
     render::UniformPtrHolder uh;
     for (auto &tc : textureCreators) {
       auto *params = new CurrentPlanetParams(cs.second.get());
@@ -62,17 +63,16 @@ void Game::prerender() {
       renderer.render(tc.get(), &uh);
     }
     for (auto uname : uh.getUniformNames()) {  // transfer ownership
-      std::cout << "<---- transferring uniforms: " << uname << "\n";
       cs.second->getMesh()->setUniformValue(uname, uh[uname]);
     }
   }
   int vpWidth, vpHeight;
   glfw->getWindowSize(vpWidth, vpHeight);
   renderer.setViewportDimentions(vpWidth, vpHeight);
-  // glViewport(0, 0, vpWidth, vpHeight);
 }
 void Game::initSolarSystem() {
   SolarSystemCreator creator;
+  creator.withCamerManager(&cameraManager);
   creator.createSolarSystem("../data/planets.json");
   solarSystem = creator.getSolarSystem();
   for (auto *tc : creator.getTextureCreators())
@@ -83,14 +83,17 @@ void Game::initSolarSystem() {
     renderer.setViewportDimentions(width, height);
     cameraManager.setNewWindowDimensions(width, height);
   });
-  // prerender();
+  for (auto f : creator.getRenderFilters()) {
+    renderer.pushFilter(f);
+  }
+  prerender();
 }
 
 void Game::initPlayer() {}
 
 void Game::mainLoop() {
-  auto f = new render::Filter("../data/shaders/atmosphere/testFilter.glsl");
-  renderer.pushFilter(f);
+  // auto f = new render::Filter("../data/shaders/atmosphere/testFilter.glsl");
+  // renderer.pushFilter(f);
   while (isPlaying) {
     auto timePoint = std::chrono::system_clock::now();
     auto timeDiff = timePoint - oldTimePoint;
