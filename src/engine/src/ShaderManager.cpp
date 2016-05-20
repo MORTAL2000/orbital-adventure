@@ -18,7 +18,7 @@ out vec3 coordsVS;
 out vec3 ray;
 void main() {
   coordsVS = position;
-  rayVS = normalize((viewInverse * vec4((projectionInverse * vec4(position, 0.0)).xyz, 0.0)).xyz);
+  rayVS = normalize((viewInverse * vec4((projectionInverse * vec4(position, 0.0)).xy,-1.0, 0.0)).xyz);
   gl_Position = vec4(position, 1.0);
 }
 )";

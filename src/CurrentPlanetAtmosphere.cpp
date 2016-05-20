@@ -52,16 +52,12 @@ void CurrentPlanetAtmosphere::install(render::UniformHolder *holder,
       holder->setUniformValue(t, u);
     }
   }
-  // std::cout << "PI" << projectionInverse;
-  //
-  std::cout << "Camera position" << pos << " camera leng " << glm::length(pos)
-            << "\n";
 
   holder->setUniformValue("Rg", new FloatOwnerUniform(planetRadius * 1e-3));
   holder->setUniformValue(
       "Rt", new FloatOwnerUniform(planetRadius * 1e-3 + atmosphereHeight));
-  holder->setUniformValue(
-      "HM", new FloatOwnerUniform(planetRadius * 1e-3 + atmosphereHeight + 1));
+  holder->setUniformValue("HM", new FloatOwnerUniform(HM));
+  holder->setUniformValue("HR", new FloatOwnerUniform(HR));
 
   holder->setUniformValue(
       "RL", new FloatOwnerUniform(planetRadius * 1e-3 + atmosphereHeight + 1));
