@@ -81,7 +81,9 @@ Uniform* TextureOwnerUniform::clone() {
 int TextureUniform::setupCounter = 0;
 TextureUniform::TextureUniform(GLuint texture) : textureId(texture) {}
 
-GLuint TextureUniform::textureIdGetter() { return GL_TEXTURE0 + setupCounter; }
+GLuint TextureUniform::textureIdGetter() { 
+  return GL_TEXTURE0 + setupCounter; 
+}
 
 void TextureUniform::bindTexture(GLuint t) { glBindTexture(GL_TEXTURE_2D, t); }
 

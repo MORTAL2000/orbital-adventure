@@ -18,7 +18,9 @@ namespace render {
 TextureManager::TextureManager() {}
 
 GLuint TextureManager::loadTexture(std::string filepath) {
-  if (loadedTextures.count(filepath)) return loadedTextures[filepath];
+  if (loadedTextures.count(filepath)) {
+    return loadedTextures[filepath];
+  }
   auto p = boost::filesystem::path(filepath);
   std::string extension = p.extension().string();
   GLuint id;

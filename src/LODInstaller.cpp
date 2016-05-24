@@ -15,11 +15,6 @@ void LODInstaller::install(render::UniformHolder *holder, const Camera *camera,
   auto meshMatrix = mesh->getMatrix();
   auto cameraMatrix = camera->getMatrix();
   auto projectionMatrix = camera->getProjectionMatrix();
-  // north = cameraMatrix * north;
-  // glm::vec3 axis = glm::normalize(glm::cross(glm::vec3(north), direction));
-  // float angle = std::acos(
-  // glm::dot(glm::normalize(glm::vec3(north)), glm::normalize(direction)));
-  // glm::mat4 rotation = glm::rotate(angle, axis);
   direction = -direction;
 
   auto ang = std::fmod(std::asin(direction.z) / 1_pi + 1.5, 1.0);
@@ -28,7 +23,7 @@ void LODInstaller::install(render::UniformHolder *holder, const Camera *camera,
   currentPosition = glm::vec2(lon, 1.0 - ang);
   glm::ivec2 wh = lodManager.getWH(currentPosition);
   glm::ivec2 dimension = lodManager.getDimensions();
-  holder->setUniformValue("finest", lodManager.getTexture(wh[0], wh[1]));
+   holder->setUniformValue("finest", lodManager.getTexture(wh[0], wh[1]));
   holder->setUniformValue("finestN", lodManager.getTexture(wh[0] - 1, wh[1]));
   holder->setUniformValue("finestS", lodManager.getTexture(wh[0] + 1, wh[1]));
   holder->setUniformValue("finestE", lodManager.getTexture(wh[0], wh[1] - 1));

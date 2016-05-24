@@ -72,7 +72,9 @@ void Renderer::unbindFramebuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 void Renderer::bindTargets(std::vector<std::string> &ts) {
   GLuint textures[ts.size()];
   GLuint buffers[ts.size()];
+  std::cout << "targets to setup " << ts.size() << " first "  << ts[0] << "\n";
   for (size_t i = 0; i < ts.size(); ++i) {
+    std::cout << "attach texture " << ts[i] << " " << targets[ts[i]] << "\n";
     textures[i] = targets[ts[i]];
     buffers[i] = GL_COLOR_ATTACHMENT0 + i;
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, textures[i],
@@ -96,10 +98,6 @@ void Renderer::initFBOTargets(Filter *f) {
   if (!framebuffer) glGenFramebuffers(1, &framebuffer);
   for (std::string &target : f->getTargets()) {
     if (!targets.count(target)) setupTarget(target);
-  }
-  if (filters.size() > 0 && targets.count(mainTarget) > 0) {
-    std::cout << "SETUP MAIN!\n";
-    setupTarget(mainTarget);
   }
 }
 
@@ -169,6 +167,7 @@ void Renderer::reinitFBOTargetTextures() {
   for (auto &t : targets) {
     glDeleteTextures(1, &t.second);
   }
+  setupTarget(mainTarget);
   for (auto &f : filters) {
     initFBOTargets(f.get());
   }
