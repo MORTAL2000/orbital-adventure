@@ -2,11 +2,11 @@
 #include <ctime>
 #include <iostream>
 #include "CelestialCameraManager.hpp"
+#include "LanguageUtils.hpp"
 #include "Planet.hpp"
 #include "SolarSystem.hpp"
 #include "Star.hpp"
-#include "engine/LanguageUtils.hpp"
-#include "engine/UniformHolder.hpp"
+#include "UniformHolder.hpp"
 
 namespace oa {
 namespace game {

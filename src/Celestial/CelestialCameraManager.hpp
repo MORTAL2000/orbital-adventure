@@ -1,6 +1,6 @@
 #pragma once
+#include "../engine/Camera.hpp"
 #include "SolarSystem.hpp"
-#include "engine/Camera.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/vec3.hpp"
 #include "memory.h"

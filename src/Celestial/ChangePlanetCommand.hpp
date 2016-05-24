@@ -1,6 +1,6 @@
-#include "CelestialObject.hpp"
+#include "../Command.hpp"
 #include "CelestialCameraManager.hpp"
-#include "Command.hpp"
+#include "CelestialObject.hpp"
 namespace oa {
 namespace game {
 class ChangePlanetCommand : public Command {

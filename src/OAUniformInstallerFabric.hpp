@@ -1,6 +1,6 @@
 #pragma once
-#include "CelestialCameraManager.hpp"
-#include "SolarSystem.hpp"
+#include "Celestial/CelestialCameraManager.hpp"
+#include "Celestial/SolarSystem.hpp"
 #include "engine/UniformInstallerFabric.hpp"
 
 namespace oa {

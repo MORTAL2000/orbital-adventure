@@ -1,8 +1,8 @@
 #pragma once
-#include "CommandProvider.hpp"
-#include "engine/InputListener.hpp"
-#include "SolarSystem.hpp"
+#include "../CommandProvider.hpp"
 #include "CelestialCameraManager.hpp"
+#include "InputListener.hpp"
+#include "SolarSystem.hpp"
 
 namespace oa {
 namespace game {

@@ -17,6 +17,7 @@ FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
 file(GLOB OA_SOURCE_FILES ${OA_SOURCES}/*.cpp) 
 file(GLOB ENGINE_SOURCE_FILES ${OA_SOURCES}/engine/src/*.cpp) 
+file(GLOB Celestial_SOURCE_FILES ${OA_SOURCES}/Celestial/*.cpp) 
 set(EngineIncludes ${OA_SOURCES}/engine/)
 include_directories(
     ${GLFW_INCLUDE_DIRS}
@@ -27,6 +28,7 @@ include_directories(
 
 add_executable(orbital-adventure 
     ${ENGINE_SOURCE_FILES}
+    ${Celestial_SOURCE_FILES}
     ${OA_SOURCE_FILES}
     )
 set(libs ${OPENGL_LIBRARY} 

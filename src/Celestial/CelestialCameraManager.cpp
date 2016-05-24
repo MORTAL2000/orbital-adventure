@@ -1,7 +1,7 @@
 #include <iostream>
 #include "CelestialCameraManager.hpp"
-#include "engine/LanguageUtils.hpp"
-#include "engine/PerspectiveCamera.hpp"
+#include "LanguageUtils.hpp"
+#include "PerspectiveCamera.hpp"
 namespace oa {
 namespace game {
 using namespace utils;

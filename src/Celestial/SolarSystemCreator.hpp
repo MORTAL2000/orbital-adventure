@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
-#include "Filter.hpp"
+#include "../engine/Filter.hpp"
+#include "../engine/MeshFabric.hpp"
+#include "../engine/TextureCreator.hpp"
+#include "../engine/TextureCreatorFabric.hpp"
 #include "SolarSystem.hpp"
-#include "engine/MeshFabric.hpp"
-#include "engine/TextureCreator.hpp"
-#include "engine/TextureCreatorFabric.hpp"
 
 namespace oa {
 namespace game {

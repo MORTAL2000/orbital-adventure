@@ -1,6 +1,6 @@
 #pragma once
-#include "engine/Mesh.hpp"
-#include "engine/UniformInstaller.hpp"
+#include "Mesh.hpp"
+#include "UniformInstaller.hpp"
 namespace oa {
 namespace game {
 class SunDirectionUniformInstaller : public render::UniformInstaller {

@@ -1,7 +1,7 @@
 #pragma once
+#include "../CommandProvider.hpp"
+#include "../engine/InputListener.hpp"
 #include "CelestialCameraManager.hpp"
-#include "CommandProvider.hpp"
-#include "engine/InputListener.hpp"
 #include "glm/vec2.hpp"
 
 namespace oa {

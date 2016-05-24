@@ -1,6 +1,6 @@
 #pragma once
+#include "../engine/UniformInstaller.hpp"
 #include "CelestialObject.hpp"
-#include "engine/UniformInstaller.hpp"
 
 namespace oa {
 namespace game {

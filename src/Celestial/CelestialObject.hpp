@@ -1,8 +1,8 @@
 #pragma once
 #include <glm/vec3.hpp>
 #include <string>
+#include "../engine/Mesh.hpp"
 #include "Orbit.hpp"
-#include "engine/Mesh.hpp"
 namespace oa {
 namespace game {
 class CelestialObject {

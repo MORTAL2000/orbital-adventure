@@ -1,9 +1,9 @@
 #include <chrono>
 #include <memory>
 #include <thread>
-#include "CurrentPlanetParams.hpp"
+#include "Celestial/CurrentPlanetParams.hpp"
+#include "Celestial/SolarSystemCreator.hpp"
 #include "Game.hpp"
-#include "SolarSystemCreator.hpp"
 #include "engine/Filter.hpp"
 #include "engine/LanguageUtils.hpp"
 #include "engine/PerspectiveCamera.hpp"

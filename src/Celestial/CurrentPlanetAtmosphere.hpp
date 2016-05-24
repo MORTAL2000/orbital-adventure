@@ -1,7 +1,7 @@
 #pragma once
+#include "../engine/UniformInstaller.hpp"
 #include "CelestialCameraManager.hpp"
 #include "SolarSystem.hpp"
-#include "engine/UniformInstaller.hpp"
 
 namespace oa {
 namespace game {

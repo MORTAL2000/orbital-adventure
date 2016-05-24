@@ -1,8 +1,8 @@
 #pragma once
-#include "UniformHolder.hpp"
 #include "Camera.hpp"
 #include "LODTextureManager.hpp"
 #include "Mesh.hpp"
+#include "UniformHolder.hpp"
 #include "UniformInstaller.hpp"
 
 namespace oa {

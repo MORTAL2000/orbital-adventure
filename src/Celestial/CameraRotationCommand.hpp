@@ -1,6 +1,6 @@
 #pragma once
+#include "../Command.hpp"
 #include "CelestialCameraManager.hpp"
-#include "Command.hpp"
 namespace oa {
 namespace game {
 class CameraRotationCommand : public Command {

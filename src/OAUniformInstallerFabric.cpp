@@ -1,10 +1,10 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
-#include "CurrentPlanetAtmosphere.hpp"
-#include "GeometryLODInstaller.hpp"
-#include "LODInstaller.hpp"
+#include "Celestial/CurrentPlanetAtmosphere.hpp"
+#include "Celestial/GeometryLODInstaller.hpp"
+#include "Celestial/LODInstaller.hpp"
+#include "Celestial/PersonalClippingMatrixInstaller.hpp"
 #include "OAUniformInstallerFabric.hpp"
-#include "PersonalClippingMatrixInstaller.hpp"
 #include "TimeInstaller.hpp"
 
 namespace oa {
