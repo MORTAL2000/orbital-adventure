@@ -45,6 +45,11 @@ void Game::initCommandsInf() {
   auto cm = new CameraControlCommandProvider(this, &this->cameraManager);
   glfw->registerInputListener(cm);
   providers.push_back(std::unique_ptr<CommandProvider>(cm));
+
+  glfw->registerInputListener(&guiListener);
+  gui.setRenderer(&renderer);
+  gui.load();
+  guiListener.setContext(gui.getContext());
 }
 
 void Game::stopGame() { isPlaying = false; }
