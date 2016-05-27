@@ -24,6 +24,7 @@ class TextureManager {
 
   GLuint loadTexture(std::string filepath);
   GLuint loadCubemapTexture(std::vector<std::string>& files);
+  GLuint createTexture(const unsigned char*, int, int);
 };
 }
 }

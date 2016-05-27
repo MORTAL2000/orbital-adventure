@@ -19,8 +19,8 @@ void Renderer::startFBORendering() {
   }
 }
 
-void Renderer::unbindTargets(int amount) {
-  for (size_t i = 0; i < amount; ++i) {
+void Renderer::unbindTargets() {
+  for (size_t i = 0; i < lastTargetsAmount; ++i) {
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, 0, 0);
   }
 }
@@ -39,6 +39,7 @@ void Renderer::RenderTargetsUniformInstaller::install(UniformHolder *holder,
     holder->setUniformValue("viewportResolution", new IntVec2OwnerUniform(res));
   }
 }
+
 void Renderer::renderFilters() {
   geometry::Geometry *currentGeometry = nullptr;
   GLuint currentProgram;
@@ -64,22 +65,40 @@ void Renderer::renderFilters() {
     }
     f->updateUniforms();
     currentGeometry->render();
-    unbindTargets(f->getTargets().size());
+    unbindTargets();
   }
 }
 
 void Renderer::unbindFramebuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+void Renderer::bindTarget(const std::string &target) {
+  // std::cout << "do we have fb? " << framebuffer << "\n";
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+  // std::cout << "let's bind " << target << "\n";
+  GLuint texture;
+  GLuint buffers[1];
+  if (targets.count(target) == 0) {
+    std::cout << "ERROR: " << target << " No such texture\n";
+    return;
+  }
+  texture = targets[target];
+  // std::cout << "let's bind T" << texture << "\n";
+  buffers[0] = GL_COLOR_ATTACHMENT0;
+  glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
+  lastTargetsAmount = 1;
+  glDrawBuffers(1, buffers);
+  // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Renderer::bindTargets(std::vector<std::string> &ts) {
   GLuint textures[ts.size()];
   GLuint buffers[ts.size()];
-  std::cout << "targets to setup " << ts.size() << " first "  << ts[0] << "\n";
   for (size_t i = 0; i < ts.size(); ++i) {
-    std::cout << "attach texture " << ts[i] << " " << targets[ts[i]] << "\n";
     textures[i] = targets[ts[i]];
     buffers[i] = GL_COLOR_ATTACHMENT0 + i;
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, textures[i],
                          0);
   }
+  lastTargetsAmount = ts.size();
   glDrawBuffers(ts.size(), buffers);
 }
 void Renderer::bindTargets(std::vector<std::string> &&ts) {
@@ -97,21 +116,27 @@ void Renderer::bindTargets(std::vector<std::string> &&ts) {
 void Renderer::initFBOTargets(Filter *f) {
   if (!framebuffer) glGenFramebuffers(1, &framebuffer);
   for (std::string &target : f->getTargets()) {
-    if (!targets.count(target)) setupTarget(target);
+    if (!targets.count(target)) setupTarget(target, 4);
   }
 }
 
-void Renderer::setupTarget(std::string &name) {
+void Renderer::setupTarget(const std::string &name, int componentSize) {
+  if (targets.count(name) > 0) glDeleteTextures(1, &targets[name]);
+  std::cout << name << " :Setting up target\n";
+  int type;
+  if (componentSize == 1) type = GL_RGBA;
+  if (componentSize == 2) type = GL_RGBA16F;
+  if (componentSize == 4) type = GL_RGBA32F;
   GLuint texture;
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
-               GL_FLOAT, 0);
+  glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, GL_RGBA, GL_FLOAT, 0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   targets[name] = texture;
+  updateUniformHolder();
 }
 
 void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
@@ -163,19 +188,24 @@ void Renderer::pushFilter(Filter *f) {
   reinitFBOTargetTextures();
 }
 
-void Renderer::reinitFBOTargetTextures() {
-  for (auto &t : targets) {
-    glDeleteTextures(1, &t.second);
-  }
-  setupTarget(mainTarget);
-  for (auto &f : filters) {
-    initFBOTargets(f.get());
-  }
+void Renderer::updateUniformHolder() {
   texturesUpdated = true;
   for (auto &f : filters) {
     f->updateUniforms();
   }
   texturesUpdated = false;
+}
+void Renderer::reinitFBOTargetTextures() {
+  for (auto &t : targets) {
+    std::cout << "remove " << t.first << "\n";
+    glDeleteTextures(1, &t.second);
+  }
+  targets.clear();
+  setupTarget(mainTarget, 1);
+  for (auto &f : filters) {
+    initFBOTargets(f.get());
+  }
+  updateUniformHolder();
 }
 
 void Renderer::setViewportDimentions(int width, int height) {

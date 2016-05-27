@@ -12,6 +12,15 @@ class Uniform {
   virtual ~Uniform(){};
 };
 
+class Vec2Uniform : public Uniform {
+  glm::vec2* v;
+  void setup(GLuint);
+  Uniform* clone();
+
+ public:
+  Vec2Uniform(glm::vec2*);
+};
+
 class Mat4Uniform : public Uniform {
   glm::mat4* matrix;
   void setup(GLuint);
@@ -90,6 +99,15 @@ class TextureUniform : public Uniform {
  public:
   TextureUniform(GLuint);
   virtual ~TextureUniform(){};
+};
+
+class TexturePtrUniform : public TextureUniform {
+  GLuint* ptr;
+  Uniform* clone();
+  inline void bindTexture(GLuint);
+
+ public:
+  TexturePtrUniform(GLuint* ptr);
 };
 
 class Texture3DUniform : public TextureUniform {

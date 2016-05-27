@@ -1,11 +1,23 @@
 #pragma once
 #include <Rocket/Core.h>
 #include "../engine/Renderer.hpp"
+#include "../engine/ShaderProgam.hpp"
 
 namespace oa {
 namespace gui {
 class GuiRenderer : public Rocket::Core::RenderInterface {
+  struct geom {
+    geometry::Geometry *geometry;
+    GLuint texture;
+  };
+
   render::Renderer *renderer;
+  render::ShaderProgram *shader;
+  glm::vec2 translation;
+  GLuint currentTexture;
+  std::map<std::string, std::unique_ptr<render::Uniform>> uniforms;
+  glm::vec2 dimentions;
+
   void RenderGeometry(Rocket::Core::Vertex *vertices, int num_verticies,
                       int *indices, int num_indices,
                       Rocket::Core::TextureHandle texture,
@@ -41,8 +53,11 @@ class GuiRenderer : public Rocket::Core::RenderInterface {
   //    /// Called by Rocket when a loaded texture is no longer required.
   void ReleaseTexture(Rocket::Core::TextureHandle texture_handle) override;
 
+  void initProgram();
+
  public:
   void setRenderer(render::Renderer *);
+  void setDimentions(int w, int h);
 };
 }
 }

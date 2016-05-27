@@ -25,6 +25,7 @@ class Renderer {
   // renderer owns all textures.
   std::map<std::string, GLuint> targets;
   std::string mainTarget = "mainRender";
+  int lastTargetsAmount;
 
   void createFrameBuffer(bool);
   void startFBORendering();
@@ -33,14 +34,17 @@ class Renderer {
 
   void reinitFBOTargetTextures();
   void initFBOTargets(Filter *);
-  void setupTarget(std::string &name);
   void bindTargets(std::vector<std::string> &&ts);
   void bindTargets(std::vector<std::string> &ts);
-  void unbindTargets(int amount);
+  void updateUniformHolder();
   // void bindTargets(std::vector<std::string> &);
 
  public:
   Renderer();
+  void setupTarget(const std::string &name, int);
+  void bindTarget(const std::string &name);
+  void unbindTargets();
+
   void pushFilter(Filter *);
   void setViewportDimentions(int width, int height);
   void render(TextureCreator *, UniformHolder *);

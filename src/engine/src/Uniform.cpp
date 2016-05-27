@@ -3,6 +3,12 @@
 namespace oa {
 namespace render {
 
+Vec2Uniform::Vec2Uniform(glm::vec2* v) : v(v) {}
+void Vec2Uniform::setup(GLuint l) {
+  // std::cout << "X " << v->x << "\n";
+  glUniform2fv(l, 1, &(*v)[0]);
+}
+Uniform* Vec2Uniform::clone() { return new Vec2Uniform(v); }
 // Int owner
 IntOwnerUniform::IntOwnerUniform(int f) : v(f) {}
 void IntOwnerUniform::setup(GLuint l) { glUniform1i(l, v); }
@@ -71,6 +77,14 @@ Uniform* Texture3DOwnerUniform::clone() {
 }
 
 // texture owner
+TexturePtrUniform::TexturePtrUniform(GLuint* i) : TextureUniform(0), ptr(i) {}
+Uniform* TexturePtrUniform::clone() {
+  return new TexturePtrUniform(ptr);  // prevent deletion
+}
+void TexturePtrUniform::bindTexture(GLuint) {
+  glBindTexture(GL_TEXTURE_2D, *ptr);
+}
+// texture owner
 TextureOwnerUniform::TextureOwnerUniform(GLuint i) : TextureUniform(i) {}
 TextureOwnerUniform::~TextureOwnerUniform() { glDeleteTextures(1, &textureId); }
 Uniform* TextureOwnerUniform::clone() {
@@ -81,9 +95,7 @@ Uniform* TextureOwnerUniform::clone() {
 int TextureUniform::setupCounter = 0;
 TextureUniform::TextureUniform(GLuint texture) : textureId(texture) {}
 
-GLuint TextureUniform::textureIdGetter() { 
-  return GL_TEXTURE0 + setupCounter; 
-}
+GLuint TextureUniform::textureIdGetter() { return GL_TEXTURE0 + setupCounter; }
 
 void TextureUniform::bindTexture(GLuint t) { glBindTexture(GL_TEXTURE_2D, t); }
 

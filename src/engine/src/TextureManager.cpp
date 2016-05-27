@@ -79,6 +79,12 @@ void TextureManager::cubemap(int ix, int type, int w, int h, const char* data) {
   glTexImage2D(ix, 0, type, w, h, 0, type, GL_UNSIGNED_BYTE, data);
 }
 
+GLuint TextureManager::createTexture(const unsigned char* data, int width,
+                                     int height) {
+  GLuint ret = -1;
+  texture(ret, GL_RGBA8, width, height, reinterpret_cast<const char*>(data));
+  return ret;
+}
 void TextureManager::texture(GLuint& id, int type, int width, int height,
                              const char* data) {
   GLuint textureId;
@@ -92,6 +98,7 @@ void TextureManager::texture(GLuint& id, int type, int width, int height,
   glGenerateMipmap(GL_TEXTURE_2D);
   id = textureId;
 }
+
 TextureManager* TextureManager::instance() {
   static TextureManager inst;
   return &inst;
