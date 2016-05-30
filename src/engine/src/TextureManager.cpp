@@ -82,8 +82,27 @@ void TextureManager::cubemap(int ix, int type, int w, int h, const char* data) {
 GLuint TextureManager::createTexture(const unsigned char* data, int width,
                                      int height) {
   GLuint ret = -1;
-  texture(ret, GL_RGBA8, width, height, reinterpret_cast<const char*>(data));
+  texture(ret, GL_RGBA8, width, height, reinterpret_cast<const char*>(data),
+          GL_RGBA);
   return ret;
+}
+void TextureManager::texture(GLuint& id, int type, int width, int height,
+                             const char* data, int innerType) {
+  GLuint textureId;
+  glGenTextures(1, &textureId);
+  glBindTexture(GL_TEXTURE_2D, textureId);
+  glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, innerType,
+               GL_UNSIGNED_BYTE, data);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  // glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  // glGenerateMipmap(GL_TEXTURE_2D);
+  id = textureId;
 }
 void TextureManager::texture(GLuint& id, int type, int width, int height,
                              const char* data) {

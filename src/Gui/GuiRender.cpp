@@ -63,7 +63,7 @@ Rocket::Core::CompiledGeometryHandle GuiRenderer::CompileGeometry(
   // g->addIndex((char *)inds, 6, sizeof(int));
 
   geom *gg = new geom;
-  gg->geometry = new geometry::PatchGeometry();
+  gg->geometry = g;  // new geometry::PatchGeometry();
   gg->geometry->prepareOpenglBuffers();
   gg->texture = texture;
 
@@ -137,7 +137,24 @@ bool GuiRenderer::GenerateTexture(
     const Rocket::Core::Vector2i &source_dimensions) {
   texture_handle = render::TextureManager::instance()->createTexture(
       source, source_dimensions.x, source_dimensions.y);
-  std::cout << "Created texture with num " << texture_handle << "\n";
+  std::cout << "Created texture with num " << texture_handle << "dim "
+            << source_dimensions.x << " " << source_dimensions.y << " "
+            << "\n";
+  int t = 0;
+  for (size_t i = 0; i < source_dimensions.y; ++i) {
+    for (size_t j = 0; j < source_dimensions.x; ++j) {
+      size_t ix = (i * source_dimensions.x + j) * 4;
+      if (source[ix + 3] != 0) {
+        // std::cout << std::hex << "C: " << int(source[ix]) << ", "
+        //<< int(source[ix + 1]) << ", " << int(source[ix + 2]) << ", "
+        //<< int(source[ix + 3]) << "   ";
+        // if (++t > 5) {
+        // t = 0;
+        // std::cout << "\n";
+        //}
+      }
+    }
+  }
   if (texture_handle != -1) {
     return true;
   }

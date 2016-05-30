@@ -54,7 +54,7 @@ void Gui::load() {
   Rocket::Core::SetRenderInterface(&rendererIface);
   Rocket::Core::Initialise();
   Rocket::Core::FontDatabase::LoadFontFace(
-      "../data/gui/fonts/Delicious-Bold.otf");
+      "../data/gui/fonts/Leto-One-Defect.otf");
   context =
       Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(400, 400));
   if (!context) {

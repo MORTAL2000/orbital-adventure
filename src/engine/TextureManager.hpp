@@ -17,6 +17,8 @@ class TextureManager {
   bool isJpeg(std::string);
 
   void texture(GLuint&, int, int, int, const char*);
+  void texture(GLuint& id, int type, int width, int height, const char* data,
+               int innerType);
   void cubemap(int, int, int, int, const char*);
 
  public:
