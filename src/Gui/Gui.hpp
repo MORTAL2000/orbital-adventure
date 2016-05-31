@@ -7,6 +7,14 @@
 namespace oa {
 namespace gui {
 class Gui {
+  struct EventListener : public Rocket::Core::EventListener {
+    std::string eventName;
+    void ProcessEvent(Rocket::Core::Event&);
+    EventListener(std::string);
+  };
+
+  std::unique_ptr<EventListener> science, design;
+
   Rocket::Core::Context* context;
   render::Renderer* renderer;
   Rocket::Core::ElementDocument* currentView;
