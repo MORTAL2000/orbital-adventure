@@ -9,8 +9,9 @@ namespace gui {
 class Gui {
   struct EventListener : public Rocket::Core::EventListener {
     std::string eventName;
+    Gui* gui;
     void ProcessEvent(Rocket::Core::Event&);
-    EventListener(std::string);
+    EventListener(Gui*, std::string);
   };
 
   std::unique_ptr<EventListener> science, design;

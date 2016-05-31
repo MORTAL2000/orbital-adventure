@@ -19,17 +19,27 @@ Gui::Gui()
       currentView(nullptr),
       guiRendererTarget("gui") {
   viewMap["main"] = "../data/gui/main.rml";
-  science = std::unique_ptr<EventListener>(new EventListener("show-science"));
-  design = std::unique_ptr<EventListener>(new EventListener("design-button"));
+  viewMap["science"] = "../data/gui/science-tree-view.rml";
+  viewMap["design"] = "../data/gui/rocket-design-view.rml";
+  science =
+      std::unique_ptr<EventListener>(new EventListener(this, "show-science"));
+  design =
+      std::unique_ptr<EventListener>(new EventListener(this, "design-button"));
 }
 
-Gui::EventListener::EventListener(std::string s) : eventName(s) {}
+Gui::EventListener::EventListener(Gui *g, std::string s)
+    : eventName(s), gui(g) {}
 void Gui::EventListener::ProcessEvent(Rocket::Core::Event &evt) {
   std::cout << "Got event " << eventName << "\n";
+  if (eventName == "show-science") gui->showView("science");
 }
 
 void Gui::showView(std::string name) {
   std::string path = viewMap[name];
+  if (currentView) {
+    std::cout << "remove current main\n";
+    context->UnloadDocument(currentView);
+  }
   currentView = context->LoadDocument(path.c_str());
 
   Rocket::Core::Element *scienceButton =
