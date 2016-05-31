@@ -23,6 +23,31 @@ void GuiRenderer::RenderGeometry(Rocket::Core::Vertex *vertices,
                                  Rocket::Core::TextureHandle texture,
                                  const Rocket::Core::Vector2f &translation) {
   std::cout << "GUI: render geometry\n";
+  ROCKET_UNUSED(num_vertices);
+
+  glPushMatrix();
+  glTranslatef(translation.x, translation.y, 0);
+
+  glVertexPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex),
+                  &vertices[0].position);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Rocket::Core::Vertex),
+                 &vertices[0].colour);
+
+  if (!texture) {
+    glDisable(GL_TEXTURE_2D);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  } else {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, (GLuint)texture);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex),
+                      &vertices[0].tex_coord);
+  }
+
+  glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
+
+  glPopMatrix();
 };
 Rocket::Core::CompiledGeometryHandle GuiRenderer::CompileGeometry(
     Rocket::Core::Vertex *vertices, int num_vertices, int *indices,
@@ -59,14 +84,12 @@ Rocket::Core::CompiledGeometryHandle GuiRenderer::CompileGeometry(
   g->addBuffer((char *)colors, num_vertices, 4, sizeof(float));
   g->addIndex((char *)indices, num_indices, sizeof(int));
 
-  // g->addBuffer((char *)verts, 4, 3, sizeof(float));
-  // g->addIndex((char *)inds, 6, sizeof(int));
-
   geom *gg = new geom;
   gg->geometry = g;  // new geometry::PatchGeometry();
   gg->geometry->prepareOpenglBuffers();
   gg->texture = texture;
 
+  // return (unsigned long)nullptr;
   return (unsigned long)gg;
 };
 void GuiRenderer::initProgram() {
@@ -112,15 +135,18 @@ void GuiRenderer::ReleaseCompiledGeometry(
 //
 //        /// Called by Rocket when it wants to enable or disable scissoring
 //        to clip content.
-void GuiRenderer::EnableScissorRegion(bool enable) {
-  if (enable)
-    glEnable(GL_SCISSOR_TEST);
-  else
-    glDisable(GL_SCISSOR_TEST);
+void GuiRenderer::EnableScissorRegion(bool enable){
+    /*
+    if (enable)
+      glEnable(GL_SCISSOR_TEST);
+    else
+      glDisable(GL_SCISSOR_TEST);
+      */
 };
 /// Called by Rocket when it wants to change the scissor region.
-void GuiRenderer::SetScissorRegion(int x, int y, int width, int height){
-    // glScissor(x, y, width, height);
+void GuiRenderer::SetScissorRegion(int x, int y, int width, int height) {
+  // glScissor(x, y, width, height);
+  glScissor(x, dimentions.y - (y + height), width, height);
 };
 
 bool GuiRenderer::LoadTexture(Rocket::Core::TextureHandle &texture_handle,

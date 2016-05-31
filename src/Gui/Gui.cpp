@@ -18,7 +18,7 @@ Gui::Gui()
       renderer(nullptr),
       currentView(nullptr),
       guiRendererTarget("gui") {
-  viewMap["main"] = "../data/gui/firstView.rml";
+  viewMap["main"] = "../data/gui/main.rml";
 }
 
 void Gui::showView(std::string name) {
@@ -37,7 +37,10 @@ Rocket::Core::Context *Gui::getContext() { return context; }
 void Gui::render(float td) {
   systemIface.time += td;
   renderer->bindTarget(guiRendererTarget);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   context->Render();
+  glDisable(GL_BLEND);
   renderer->unbindTargets();
 }
 
@@ -55,6 +58,10 @@ void Gui::load() {
   Rocket::Core::Initialise();
   Rocket::Core::FontDatabase::LoadFontFace(
       "../data/gui/fonts/Leto-One-Defect.otf");
+  Rocket::Core::FontDatabase::LoadFontFace(
+      "../data/gui/fonts/Delicious-Bold.otf");
+  Rocket::Core::FontDatabase::LoadFontFace(
+      "../data/gui/fonts/ArialRegular.woff");
   context =
       Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(400, 400));
   if (!context) {
