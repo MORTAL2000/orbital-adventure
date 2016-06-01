@@ -24,14 +24,15 @@ Gui::Gui()
   science =
       std::unique_ptr<EventListener>(new EventListener(this, "show-science"));
   design =
-      std::unique_ptr<EventListener>(new EventListener(this, "design-button"));
+      std::unique_ptr<EventListener>(new EventListener(this, "show-design"));
 }
 
 Gui::EventListener::EventListener(Gui *g, std::string s)
     : eventName(s), gui(g) {}
 void Gui::EventListener::ProcessEvent(Rocket::Core::Event &evt) {
-  std::cout << "Got event " << eventName << "\n";
+  // std::cout << "Got event " << eventName << "\n";
   if (eventName == "show-science") gui->showView("science");
+  if (eventName == "show-design") gui->showView("design");
 }
 
 void Gui::showView(std::string name) {
@@ -43,9 +44,12 @@ void Gui::showView(std::string name) {
   currentView = context->LoadDocument(path.c_str());
 
   Rocket::Core::Element *scienceButton =
-      currentView->GetElementById("science-button");
+                            currentView->GetElementById("science-button"),
+                        *designButton =
+                            currentView->GetElementById("design-button");
 
   scienceButton->AddEventListener("click", science.get(), true);
+  designButton->AddEventListener("click", design.get(), true);
 
   currentView->Show();
   currentView->RemoveReference();
@@ -80,6 +84,7 @@ void Gui::load() {
   Rocket::Core::SetSystemInterface(&systemIface);
   Rocket::Core::SetRenderInterface(&rendererIface);
   Rocket::Core::Initialise();
+  Rocket::Controls::Initialise();
   Rocket::Core::FontDatabase::LoadFontFace(
       "../data/gui/fonts/Leto-One-Defect.otf");
   Rocket::Core::FontDatabase::LoadFontFace(
