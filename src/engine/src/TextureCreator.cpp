@@ -39,6 +39,7 @@ bool TextureCreator::needsDepthTest() { return needsDepthTest_; }
 void TextureCreator::render(const UniformHolder *holder) {
   GLuint program = shaderProgram->getProgramId();
   glUseProgram(program);
+  //glDisable(GL_CULL_FACE);
   geometry->setBuffers();
   for (int layer = 0; layer < depth; ++layer) {
     this->setUniformValue("textureLayer", new render::IntOwnerUniform(layer));
@@ -80,14 +81,21 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
   int ix = 0;
   glGenTextures(targets.size(), textures);
   for (std::string &target : targets) {
-    std::cout << "TARTGET " << target << "\n";
+    std::cout << target << " render target\n";
     if (depth == 1) {
+      std::cout << " ---- bind 2d texture\n";
       auto uptr = (*holder)[target];
       if (uptr) {
+        std::cout << " ----- holder already has uniform \n";
         auto tu = dynamic_cast<const FB2DTexture *>(uptr);
+
+        //deleting freshly created texture
         glDeleteTextures(1, textures + ix);
         textures[ix] = tu->getTextureId();
+        std::cout << " puttin it to binded textures \n";
       } else {
+        std::cout << "===== bind and setup texture and uniform\n";
+
         glBindTexture(GL_TEXTURE_2D, textures[ix]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
                      GL_FLOAT, 0);
@@ -118,9 +126,11 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
 
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + ix,
                          textures[ix], 0);
+    std::cout << "bind texture " << textures[ix] << "\n";
     buffers[ix] = GL_COLOR_ATTACHMENT0 + ix;
     ++ix;
   }
+  std::cout << "draw buffers " << targets.size() << "\n";
   glDrawBuffers(targets.size(), buffers);
   auto res = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (res != GL_FRAMEBUFFER_COMPLETE) {
@@ -131,11 +141,11 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return;
   }
+  std::cout << "WxH" << width << "x "<< height << "\n";
   glViewport(0, 0, width, height);
-  glClearColor(0.0, 1.0, 1.0, 1.0);
+  glClearColor(0.0, 0.0, 0.0, 1.0);
   glDisable(GL_DEPTH_TEST);
   if (useBlending) {
-    std::cout << "use blending\n";
     glEnable(GL_BLEND);
     glBlendEquationSeparate(blendSrc, blengDst);
     glBlendFuncSeparate(blendFuncSep.x, blendFuncSep.y, blendFuncSep.z,

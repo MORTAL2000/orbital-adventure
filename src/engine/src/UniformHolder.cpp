@@ -16,7 +16,7 @@ bool UniformOwner::setupUniform(const std::string& name,
 
 Uniform* UniformOwner::copy(std::string& name) const {
   if (!uniforms.count(name)) {
-    std::cerr << "cannot copy uniform " << name << ", it's not exists \n";
+    //std::cerr << "cannot copy uniform " << name << ", it's not exists \n";
     return nullptr;
   }
   return uniforms.at(name)->clone();

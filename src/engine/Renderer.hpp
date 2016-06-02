@@ -17,29 +17,34 @@ class Renderer {
     int *width, *height;
     void install(UniformHolder *, const Camera *, double);
   };
-  GLuint framebuffer;
-  GLuint depthbuffer;
+  GLuint framebuffer=0;
+  GLuint depthbuffer=0;
+  GLuint stencilbuffer;
+  GLuint VertexArrayID = 0;
   int width, height;
   bool texturesUpdated;
   std::vector<std::unique_ptr<Filter>> filters;
   // renderer owns all textures.
   std::map<std::string, GLuint> targets;
+  std::map<std::string, std::pair<GLuint, int>> additionalBuffers;
   std::string mainTarget = "mainRender";
   int lastTargetsAmount;
 
   void createFrameBuffer(bool);
   void startFBORendering();
   void renderFilters();
-  void unbindFramebuffer();
 
   void reinitFBOTargetTextures();
   void initFBOTargets(Filter *);
   void bindTargets(std::vector<std::string> &&ts);
   void bindTargets(std::vector<std::string> &ts);
   void updateUniformHolder();
+  void bindVertexArrayBuffer();
+
   // void bindTargets(std::vector<std::string> &);
 
  public:
+  void resetRenderState();
   Renderer();
   void setupTarget(const std::string &name, int);
   void bindTarget(const std::string &name);
@@ -52,6 +57,8 @@ class Renderer {
   void renderSorted(const Scene *, const Camera *);
   void clearColor();
   void clearDepth();
+  void addStencilBufferFor(const std::string &);
+  void unbindFramebuffer();
 };
 }
 }

@@ -16,8 +16,6 @@ void GLFWWrapper::init() {
 }
 
 void GLFWWrapper::genAttribArrays() {
-  glGenVertexArrays(1, &VertexArrayID);
-  glBindVertexArray(VertexArrayID);
 }
 
 void GLFWWrapper::getWindowSize(int &w, int &h) {
@@ -40,8 +38,6 @@ void GLFWWrapper::initOpenGL() {
   glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
   std::cout << "Max texture units per shader" << texture_units << "\n";
   int layers;
-  glGetIntegerv(0x9317, &layers);
-  std::cout << "Max texture units per shader" << layers << "\n";
   glClearColor(0.0, 0.0, 0.0, 1.0);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -50,6 +46,8 @@ void GLFWWrapper::initOpenGL() {
   glDepthRange(0, 1000);
   genAttribArrays();
   printf("Shader lang: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+  int error = glGetError();
+  std::cout <<std:: hex<< error << "got error ibefore \n" ; 
 }
 
 void GLFWWrapper::glew() {

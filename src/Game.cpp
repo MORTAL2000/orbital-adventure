@@ -24,6 +24,7 @@ Game::Game()
 void Game::initTextureCreators() {}
 void Game::init() {
   initGLFW();
+  gui.init();
   initSolarSystem();
   initPlayer();
   initCommandsInf();
@@ -49,7 +50,7 @@ void Game::initCommandsInf() {
   glfw->registerInputListener(&guiListener);
   gui.setRenderer(&renderer);
   gui.load();
-  guiListener.setContext(gui.getContext());
+  //guiListener.setContext(gui.getContext());
   gui.showView("main");
 }
 
@@ -98,9 +99,14 @@ void Game::initSolarSystem() {
 
 void Game::initPlayer() {}
 
+int getI(int a){
+  int r;
+  glGetIntegerv(a, &r);
+  return r;
+}
+
+
 void Game::mainLoop() {
-  // auto f = new render::Filter("../data/shaders/atmosphere/testFilter.glsl");
-  // renderer.pushFilter(f);
   while (isPlaying) {
     auto timePoint = std::chrono::system_clock::now();
     auto timeDiff = timePoint - oldTimePoint;
@@ -115,17 +121,28 @@ void Game::mainLoop() {
     for (auto &p : providers) p->update(timeDifff);
 
     processCommands();
-    gui.render(timeDifff);
     auto camera =
         std::unique_ptr<render::Camera>(cameraManager.getCamera()->clone());
     std::cout << std::setprecision(17);
 
+    renderer.unbindFramebuffer();
     renderer.clearColor();
-    renderer.render(solarSystem->getSkyboxScene(), camera.get());
+
+    //renderer.render(solarSystem->getSkyboxScene(), camera.get());
     renderer.clearDepth();
+
+
     renderer.renderSorted(solarSystem->getScene(), camera.get());
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    gui.render(timeDifff);
+    glDisable(GL_BLEND);
+
+
     glfw->endFrame();
     oldTimePoint = timePoint;
+    //std::this_thread::sleep_for(2s);
   }
   deinit();
 }

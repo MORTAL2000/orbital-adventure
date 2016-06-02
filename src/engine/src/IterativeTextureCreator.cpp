@@ -12,7 +12,6 @@ void IterativeTextureCreator::FirstInstaller::install(UniformHolder *h,
                                                       const Camera *, double) {
   if (isFirst == nullptr) return;
   bool i = *isFirst;
-
   h->setUniformValue("first",
                      i ? new IntOwnerUniform(1) : new IntOwnerUniform(0));
 }

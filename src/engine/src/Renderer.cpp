@@ -5,11 +5,17 @@
 namespace oa {
 namespace render {
 using namespace utils;
-Renderer::Renderer() : framebuffer(0), depthbuffer(0) {}
+Renderer::Renderer() : framebuffer(0), depthbuffer(0) {
+}
 
 void Renderer::clearColor() { glClear(GL_COLOR_BUFFER_BIT); }
 void Renderer::clearDepth() { glClear(GL_DEPTH_BUFFER_BIT); }
 
+void Renderer::resetRenderState(){
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
+  glEnable(GL_CULL_FACE);
+}
 void Renderer::startFBORendering() {
   if (filters.size() > 0) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -18,6 +24,7 @@ void Renderer::startFBORendering() {
     unbindFramebuffer();
   }
 }
+
 
 void Renderer::unbindTargets() {
   for (size_t i = 0; i < lastTargetsAmount; ++i) {
@@ -50,6 +57,7 @@ void Renderer::renderFilters() {
       bindTargets(f->getTargets());
     } else {
       unbindFramebuffer();
+      lastTargetsAmount = 0;
     }
     f->setupRenderingMode();
     GLuint program = f->getProgramId();
@@ -69,11 +77,11 @@ void Renderer::renderFilters() {
   }
 }
 
-void Renderer::unbindFramebuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+void Renderer::unbindFramebuffer() { 
+  glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+}
 void Renderer::bindTarget(const std::string &target) {
-  // std::cout << "do we have fb? " << framebuffer << "\n";
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-  // std::cout << "let's bind " << target << "\n";
   GLuint texture;
   GLuint buffers[1];
   if (targets.count(target) == 0) {
@@ -81,12 +89,19 @@ void Renderer::bindTarget(const std::string &target) {
     return;
   }
   texture = targets[target];
-  // std::cout << "let's bind T" << texture << "\n";
   buffers[0] = GL_COLOR_ATTACHMENT0;
   glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
   lastTargetsAmount = 1;
   glDrawBuffers(1, buffers);
-  // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  auto res = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  if (res != GL_FRAMEBUFFER_COMPLETE) {
+    std::cerr << "Was unable to setup framebuffer with target " << target
+              << "\n";
+    std::cerr << std::hex << "RESULT " << res << "\n";
+    std::cerr << std::dec;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return;
+  }
 }
 
 void Renderer::bindTargets(std::vector<std::string> &ts) {
@@ -110,6 +125,7 @@ void Renderer::bindTargets(std::vector<std::string> &&ts) {
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, textures[i],
                          0);
   }
+  lastTargetsAmount = ts.size();
   glDrawBuffers(ts.size(), buffers);
 }
 
@@ -120,9 +136,25 @@ void Renderer::initFBOTargets(Filter *f) {
   }
 }
 
+void Renderer::addStencilBufferFor(const std::string &target){
+  if(depthbuffer) glDeleteRenderbuffers(1, &depthbuffer);
+  if(stencilbuffer) glDeleteRenderbuffers(1, &stencilbuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+  glGenRenderbuffers(1, &stencilbuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER, stencilbuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilbuffer);
+
+  glGenRenderbuffers(1, &depthbuffer);
+  glBindRenderbuffer(GL_RENDERBUFFER, depthbuffer);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthbuffer);
+
+}
+
+
 void Renderer::setupTarget(const std::string &name, int componentSize) {
   if (targets.count(name) > 0) glDeleteTextures(1, &targets[name]);
-  std::cout << name << " :Setting up target\n";
   int type;
   if (componentSize == 1) type = GL_RGBA;
   if (componentSize == 2) type = GL_RGBA16F;
@@ -136,12 +168,20 @@ void Renderer::setupTarget(const std::string &name, int componentSize) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   targets[name] = texture;
+
   updateUniformHolder();
+}
+
+void Renderer::bindVertexArrayBuffer(){
+  if(VertexArrayID == 0) glGenVertexArrays(1, &VertexArrayID);
+  glBindVertexArray(VertexArrayID);
 }
 
 void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
   // holder is the source of uniforms and destinations of them at the same
   // time;
+  bindVertexArrayBuffer();
+  resetRenderState();
   if (!framebuffer) glGenFramebuffers(1, &framebuffer);
   textureCreator->prepareFramebuffer(framebuffer, holder);
   textureCreator->render(holder);
@@ -154,10 +194,32 @@ void Renderer::createFrameBuffer(bool needsDepth) {
   glGenFramebuffers(1, &framebuffer);
 }
 
+void Renderer::render(const Scene *scene, const Camera *camera) {
+  bindVertexArrayBuffer();
+  resetRenderState();
+  startFBORendering();
+  for (auto sp : scene->getAllShaders()) {
+    glUseProgram(sp->getProgramId());
+    for (auto g : scene->getGeometries(sp)) {
+      g->setBuffers();
+      for (auto m : scene->getMeshes(g)) {
+        m->prerender(scene);
+        m->setupUniforms(camera, scene, 0.0);
+        g->render();
+      }
+      g->unsetBuffers();
+    }
+  }
+  renderFilters();
+}
+
 void Renderer::renderSorted(const Scene *scene, const Camera *camera) {
+  bindVertexArrayBuffer();
+  resetRenderState();
   GLuint currentProgram = 0;
 
   startFBORendering();
+  glViewport(0,0, width, height);
 
   geometry::Geometry *currentGeometry = nullptr;
   for (auto m : scene->getSortedMeshes(camera->getPosition())) {
@@ -197,7 +259,6 @@ void Renderer::updateUniformHolder() {
 }
 void Renderer::reinitFBOTargetTextures() {
   for (auto &t : targets) {
-    std::cout << "remove " << t.first << "\n";
     glDeleteTextures(1, &t.second);
   }
   targets.clear();
@@ -213,22 +274,6 @@ void Renderer::setViewportDimentions(int width, int height) {
   this->height = height;
   reinitFBOTargetTextures();
   glViewport(0, 0, width, height);
-}
-void Renderer::render(const Scene *scene, const Camera *camera) {
-  startFBORendering();
-  for (auto sp : scene->getAllShaders()) {
-    glUseProgram(sp->getProgramId());
-    for (auto g : scene->getGeometries(sp)) {
-      g->setBuffers();
-      for (auto m : scene->getMeshes(g)) {
-        m->prerender(scene);
-        m->setupUniforms(camera, scene, 0.0);
-        g->render();
-      }
-      g->unsetBuffers();
-    }
-  }
-  renderFilters();
 }
 }
 }

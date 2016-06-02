@@ -43,6 +43,7 @@ flags = [
     '-I/home/vstavenko/projects/orbital-adventure/external/libRocket/Build/../Include',
     '-I/home/vstavenko/projects/orbital-adventure/external/libRocket/Include',
     '-I/home/vstavenko/projects/orbital-adventure/src/engine',
+    '-I/home/vstavenko/projects/orbital-adventure/external/nanovg/src',
     '-I/usr/include/freetype2',
     '-I/usr/include/libdrm',
     '-I/usr/local/include',
