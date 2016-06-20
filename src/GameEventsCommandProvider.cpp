@@ -1,6 +1,6 @@
+#include "Game.hpp"
 #include <iostream>
 #include "ExitCommand.hpp"
-#include "Game.hpp"
 #include "GameEventsCommandProvider.hpp"
 
 namespace oa {
@@ -11,7 +11,7 @@ GameEventsCommandProvider::GameEventsCommandProvider(CommandAcceptor* acceptor,
   std::cout << "GECP\n";
 }
 
-void GameEventsCommandProvider::onKeyDown(int key, int) {
+void GameEventsCommandProvider::onKeyDown(int key, int, int) {
   std::cout << "on key down\n";
   switch (key) {
     case GLFW_KEY_ESCAPE:

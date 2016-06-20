@@ -1,9 +1,9 @@
+#include "Game.hpp"
 #include <chrono>
 #include <memory>
 #include <thread>
 #include "Celestial/CurrentPlanetParams.hpp"
 #include "Celestial/SolarSystemCreator.hpp"
-#include "Game.hpp"
 #include "engine/Filter.hpp"
 #include "engine/LanguageUtils.hpp"
 #include "engine/PerspectiveCamera.hpp"
@@ -46,6 +46,8 @@ void Game::initCommandsInf() {
   glfw->registerInputListener(cm);
   providers.push_back(std::unique_ptr<CommandProvider>(cm));
 
+  gui.init();
+  glfw->registerInputListener(gui.getInputListener());
 }
 
 void Game::stopGame() { isPlaying = false; }
@@ -81,6 +83,7 @@ void Game::initSolarSystem() {
 
   cameraManager.setSolarSystem(solarSystem.get());
   glfw->addResolutionListener([&](int width, int height) {
+    std::cout << "RESOLUTION" << width << "x" << height << "\n";
     renderer.setViewportDimentions(width, height);
     cameraManager.setNewWindowDimensions(width, height);
   });
@@ -113,10 +116,17 @@ void Game::mainLoop() {
         std::unique_ptr<render::Camera>(cameraManager.getCamera()->clone());
     std::cout << std::setprecision(17);
 
+    // renderer.unbindFramebuffer();
+    // renderer.render(solarSystem->getSkyboxScene(), camera.get());
     renderer.clearColor();
-    renderer.render(solarSystem->getSkyboxScene(), camera.get());
-    renderer.clearDepth();
     renderer.renderSorted(solarSystem->getScene(), camera.get());
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+     gui.render(timeDifff);
+    glDisable(GL_BLEND);
+    //std::cout << timeDifff << "sec " << (1.f / timeDifff) << "fps\n";
+
     glfw->endFrame();
     oldTimePoint = timePoint;
   }

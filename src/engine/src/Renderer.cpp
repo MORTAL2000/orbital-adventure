@@ -1,14 +1,19 @@
+#include "Renderer.hpp"
 #include <iostream>
 #include "LanguageUtils.hpp"
-#include "Renderer.hpp"
 #include "Uniform.hpp"
 namespace oa {
 namespace render {
 using namespace utils;
-Renderer::Renderer() : framebuffer(0), depthbuffer(0) {}
+Renderer::Renderer() : framebuffer(0), depthbuffer(0), VertexArrayID(0) {}
 
 void Renderer::clearColor() { glClear(GL_COLOR_BUFFER_BIT); }
 void Renderer::clearDepth() { glClear(GL_DEPTH_BUFFER_BIT); }
+void Renderer::resetRenderState() {
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
+  glEnable(GL_CULL_FACE);
+}
 
 void Renderer::startFBORendering() {
   if (filters.size() > 0) {
@@ -17,6 +22,11 @@ void Renderer::startFBORendering() {
   } else {
     unbindFramebuffer();
   }
+}
+
+void Renderer::bindVertexArrayBuffer() {
+  if (VertexArrayID == 0) glGenVertexArrays(1, &VertexArrayID);
+  glBindVertexArray(VertexArrayID);
 }
 
 void Renderer::unbindTargets() {
@@ -64,16 +74,16 @@ void Renderer::renderFilters() {
       currentGeometry->setBuffers();
     }
     f->updateUniforms();
+    glDisable(GL_DEPTH_TEST);
     currentGeometry->render();
+    glEnable(GL_DEPTH_TEST);
     unbindTargets();
   }
 }
 
 void Renderer::unbindFramebuffer() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 void Renderer::bindTarget(const std::string &target) {
-  // std::cout << "do we have fb? " << framebuffer << "\n";
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-  // std::cout << "let's bind " << target << "\n";
   GLuint texture;
   GLuint buffers[1];
   if (targets.count(target) == 0) {
@@ -81,12 +91,10 @@ void Renderer::bindTarget(const std::string &target) {
     return;
   }
   texture = targets[target];
-  // std::cout << "let's bind T" << texture << "\n";
   buffers[0] = GL_COLOR_ATTACHMENT0;
   glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
   lastTargetsAmount = 1;
   glDrawBuffers(1, buffers);
-  // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::bindTargets(std::vector<std::string> &ts) {
@@ -122,7 +130,6 @@ void Renderer::initFBOTargets(Filter *f) {
 
 void Renderer::setupTarget(const std::string &name, int componentSize) {
   if (targets.count(name) > 0) glDeleteTextures(1, &targets[name]);
-  std::cout << name << " :Setting up target\n";
   int type;
   if (componentSize == 1) type = GL_RGBA;
   if (componentSize == 2) type = GL_RGBA16F;
@@ -140,6 +147,8 @@ void Renderer::setupTarget(const std::string &name, int componentSize) {
 }
 
 void Renderer::render(TextureCreator *textureCreator, UniformHolder *holder) {
+  bindVertexArrayBuffer();
+  resetRenderState();
   // holder is the source of uniforms and destinations of them at the same
   // time;
   if (!framebuffer) glGenFramebuffers(1, &framebuffer);
@@ -157,6 +166,8 @@ void Renderer::createFrameBuffer(bool needsDepth) {
 void Renderer::renderSorted(const Scene *scene, const Camera *camera) {
   GLuint currentProgram = 0;
 
+  bindVertexArrayBuffer();
+  resetRenderState();
   startFBORendering();
 
   geometry::Geometry *currentGeometry = nullptr;
@@ -197,7 +208,6 @@ void Renderer::updateUniformHolder() {
 }
 void Renderer::reinitFBOTargetTextures() {
   for (auto &t : targets) {
-    std::cout << "remove " << t.first << "\n";
     glDeleteTextures(1, &t.second);
   }
   targets.clear();
@@ -215,6 +225,8 @@ void Renderer::setViewportDimentions(int width, int height) {
   glViewport(0, 0, width, height);
 }
 void Renderer::render(const Scene *scene, const Camera *camera) {
+  bindVertexArrayBuffer();
+  resetRenderState();
   startFBORendering();
   for (auto sp : scene->getAllShaders()) {
     glUseProgram(sp->getProgramId());

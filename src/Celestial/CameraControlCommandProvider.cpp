@@ -1,8 +1,8 @@
+#include "CameraControlCommandProvider.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <iostream>
-#include "CameraControlCommandProvider.hpp"
 #include "CameraRotationCommand.hpp"
 #include "LanguageUtils.hpp"
 namespace oa {
@@ -34,7 +34,7 @@ void CameraControlCommandProvider::onMouseDown(int key, int mod) {
   }
 }
 
-void CameraControlCommandProvider::onKeyDown(int keyCode, int mod) {
+void CameraControlCommandProvider::onKeyDown(int keyCode, int, int mod) {
   std::cout << "key down  " << keyCode << "\n";
   switch (keyCode) {
     case 66:
@@ -110,7 +110,7 @@ void CameraControlCommandProvider::update(float dt) {
   }
 }
 
-void CameraControlCommandProvider::onKeyUp(int keyCode, int mod) {
+void CameraControlCommandProvider::onKeyUp(int keyCode, int, int mod) {
   switch (keyCode) {
     case 32:
       movementInProgress = false;

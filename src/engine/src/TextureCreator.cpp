@@ -1,6 +1,6 @@
+#include "TextureCreator.hpp"
 #include <iostream>
 #include "GeometryManager.hpp"
-#include "TextureCreator.hpp"
 namespace oa {
 namespace render {
 TextureCreator::TextureCreator(ShaderProgram *sp, std::vector<std::string> &t,
@@ -132,7 +132,6 @@ void TextureCreator::prepareFramebuffer(GLuint framebuffer,
     return;
   }
   glViewport(0, 0, width, height);
-  glClearColor(0.0, 1.0, 1.0, 1.0);
   glDisable(GL_DEPTH_TEST);
   if (useBlending) {
     std::cout << "use blending\n";

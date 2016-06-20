@@ -1,24 +1,18 @@
-#include <iostream>
 #include "GLFWWrapper.hpp"
+#include <iostream>
 
 namespace oa {
 namespace gl {
 
 GLFWWrapper::GLFWWrapper() : title("Orbital adventure") {}
-GLFWWrapper::~GLFWWrapper() {
-  glDeleteVertexArrays(1, &VertexArrayID);
-  glfwTerminate();
-}
+GLFWWrapper::~GLFWWrapper() { glfwTerminate(); }
 
 void GLFWWrapper::init() {
   initOpenGL();
   initInput();
 }
 
-void GLFWWrapper::genAttribArrays() {
-  glGenVertexArrays(1, &VertexArrayID);
-  glBindVertexArray(VertexArrayID);
-}
+GLFWwindow *GLFWWrapper::getWindow() { return window; }
 
 void GLFWWrapper::getWindowSize(int &w, int &h) {
   w = width;
@@ -48,7 +42,6 @@ void GLFWWrapper::initOpenGL() {
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   glDepthRange(0, 1000);
-  genAttribArrays();
   printf("Shader lang: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 }
 
@@ -72,6 +65,7 @@ void GLFWWrapper::initInput() {
   glfwSetCursorPosCallback(window, GLFWWrapper::mouseMoveCallback);
   glfwSetMouseButtonCallback(window, GLFWWrapper::mouseKeyCallback);
   glfwSetKeyCallback(window, GLFWWrapper::keyCallback);
+  glfwSetCharCallback(window, GLFWWrapper::charCallback);
   glfwSetScrollCallback(window, GLFWWrapper::mouseScrollCallback);
 }
 
@@ -102,14 +96,14 @@ void GLFWWrapper::determineOpenGLVersion() {
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
       }
       if (window) {
-        glfwSetWindowSizeCallback(window, GLFWWrapper::windowResizeCallbak);
+        glfwSetFramebufferSizeCallback(window,
+                                       GLFWWrapper::windowResizeCallback);
       } else {
         continue;
       }
 
       glfwMakeContextCurrent(window);
       glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
-      // glfwSwapInterval(0);
       glfwVersionMajor = max;
       glfwVersionMinor = min;
 
@@ -117,15 +111,17 @@ void GLFWWrapper::determineOpenGLVersion() {
     }
   }
 }
-void GLFWWrapper::windowResizeCallbak(GLFWwindow *win, int width, int height) {
+void GLFWWrapper::windowResizeCallback(GLFWwindow *win, int width, int height) {
   auto inst = GLFWWrapper::getInstance();
   inst->width = width;
   inst->height = height;
   int fbWidth, fbHeight;
   glfwGetFramebufferSize(win, &fbWidth, &fbHeight);
-  std::cout << "Window fb resized to " << fbWidth << "x" << fbHeight << "\n";
   glViewport(0, 0, fbWidth, fbHeight);
   inst->resolutionSlot(width, height);
+  for (auto listener : inst->inputListeners) {
+    listener->resize(width, height);
+  }
 }
 void GLFWWrapper::errorCallback(int error, const char *description) {
   std::cerr << "[Error] " << error << " (" << description << ")\n";
@@ -135,12 +131,18 @@ void GLFWWrapper::addResolutionListener(
     ResolutionSignal::slot_function_type fn) {
   resolutionSlot.connect(fn);
 }
+void GLFWWrapper::charCallback(GLFWwindow *, unsigned int c) {
+  GLFWWrapper *instance = getInstance();
+  for (auto listener : instance->inputListeners) {
+    listener->onChar(c);
+  }
+}
 void GLFWWrapper::keyCallback(GLFWwindow *, int key, int scan, int action,
                               int mods) {
   GLFWWrapper *instance = getInstance();
   for (auto listener : instance->inputListeners) {
-    if (action == GLFW_RELEASE) listener->onKeyUp(key, mods);
-    if (action == GLFW_PRESS) listener->onKeyDown(key, mods);
+    if (action == GLFW_RELEASE) listener->onKeyUp(key, scan, mods);
+    if (action == GLFW_PRESS) listener->onKeyDown(key, scan, mods);
   }
 }
 

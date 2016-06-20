@@ -4,8 +4,6 @@
 
 namespace oa {
 namespace gui {
-class GuiRenderer {
-
-};
+class GuiRenderer {};
 }
 }

@@ -7,7 +7,7 @@ namespace game {
 class Game;
 class GameEventsCommandProvider : public CommandProvider,
                                   public input::InputListener {
-  void onKeyDown(int key, int mods);
+  void onKeyDown(int key, int, int mods) override;
 
   Game *game;
 

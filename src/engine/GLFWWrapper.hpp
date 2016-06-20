@@ -21,10 +21,12 @@ class GLFWWrapper final {
  public:
   void init();  // Init opengl, scene, and everything;
   static GLFWWrapper *getInstance();
+
   void registerInputListener(oa::input::InputListener *);
   void addResolutionListener(ResolutionSignal::slot_function_type fn);
   void endFrame();
   void getWindowSize(int &width, int &height);
+  GLFWwindow *getWindow();
   ~GLFWWrapper();
 
  private:
@@ -36,7 +38,6 @@ class GLFWWrapper final {
   std::string title;
   int width = 800;
   int height = 600;
-  GLuint VertexArrayID;
   GLFWwindow *window = nullptr;
   std::vector<oa::input::InputListener *> inputListeners;
   ResolutionSignal resolutionSlot;
@@ -44,8 +45,6 @@ class GLFWWrapper final {
   void initOpenGL();
   void initInput();
   void glew();
-  void genAttribArrays();
-
   void determineOpenGLVersion();
 
   static void errorCallback(int error, const char *description);
@@ -54,7 +53,10 @@ class GLFWWrapper final {
   static void mouseMoveCallback(GLFWwindow *, double x, double y);
   static void mouseKeyCallback(GLFWwindow *, int key, int action, int mods);
   static void mouseScrollCallback(GLFWwindow *, double x, double y);
-  static void windowResizeCallbak(GLFWwindow *, int width, int height);
+  static void windowResizeCallback(GLFWwindow *, int width, int height);
+  static void cursorPosCallback(GLFWwindow *, double, double);
+  static void charCallback(GLFWwindow *, unsigned int);
+  static void dropCallback(GLFWwindow *, int count, const char **filenames);
 };
 }
 }

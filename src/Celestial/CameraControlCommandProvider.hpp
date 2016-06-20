@@ -35,8 +35,8 @@ class CameraControlCommandProvider : public CommandProvider,
   void onMouseUp(int key, int mods);
   void onMouseMove(glm::vec2 point);
   void onScroll(double w, double v);
-  void onKeyDown(int keyCode, int mods);
-  void onKeyUp(int keyCode, int mods);
+  void onKeyDown(int keyCode, int, int mods) override;
+  void onKeyUp(int keyCode, int, int mods) override;
 
   void createCommand();
   void update(float);

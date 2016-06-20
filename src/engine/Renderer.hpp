@@ -19,6 +19,7 @@ class Renderer {
   };
   GLuint framebuffer;
   GLuint depthbuffer;
+  GLuint VertexArrayID;
   int width, height;
   bool texturesUpdated;
   std::vector<std::unique_ptr<Filter>> filters;
@@ -30,20 +31,21 @@ class Renderer {
   void createFrameBuffer(bool);
   void startFBORendering();
   void renderFilters();
-  void unbindFramebuffer();
 
   void reinitFBOTargetTextures();
   void initFBOTargets(Filter *);
   void bindTargets(std::vector<std::string> &&ts);
   void bindTargets(std::vector<std::string> &ts);
   void updateUniformHolder();
-  // void bindTargets(std::vector<std::string> &);
+  void resetRenderState();
+  void bindVertexArrayBuffer();
 
  public:
   Renderer();
   void setupTarget(const std::string &name, int);
   void bindTarget(const std::string &name);
   void unbindTargets();
+  void unbindFramebuffer();
 
   void pushFilter(Filter *);
   void setViewportDimentions(int width, int height);
