@@ -46,11 +46,6 @@ void Game::initCommandsInf() {
   glfw->registerInputListener(cm);
   providers.push_back(std::unique_ptr<CommandProvider>(cm));
 
-  glfw->registerInputListener(&guiListener);
-  gui.setRenderer(&renderer);
-  gui.load();
-  guiListener.setContext(gui.getContext());
-  gui.showView("main");
 }
 
 void Game::stopGame() { isPlaying = false; }
@@ -88,7 +83,6 @@ void Game::initSolarSystem() {
   glfw->addResolutionListener([&](int width, int height) {
     renderer.setViewportDimentions(width, height);
     cameraManager.setNewWindowDimensions(width, height);
-    gui.setDimentions(width, height);
   });
   for (auto f : creator.getRenderFilters()) {
     renderer.pushFilter(f);
@@ -115,7 +109,6 @@ void Game::mainLoop() {
     for (auto &p : providers) p->update(timeDifff);
 
     processCommands();
-    gui.render(timeDifff);
     auto camera =
         std::unique_ptr<render::Camera>(cameraManager.getCamera()->clone());
     std::cout << std::setprecision(17);

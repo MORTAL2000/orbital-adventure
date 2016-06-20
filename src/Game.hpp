@@ -5,9 +5,6 @@
 #include "Celestial/SolarSystem.hpp"
 #include "CommandAcceptor.hpp"
 #include "GameEventsCommandProvider.hpp"
-#include "Gui/Gui.hpp"
-#include "Gui/GuiRender.hpp"
-#include "Gui/InputListener.hpp"
 #include "engine/Camera.hpp"
 #include "engine/GLFWWrapper.hpp"
 #include "engine/Renderer.hpp"
@@ -23,9 +20,6 @@ class Game : public CommandAcceptor {
   void stopGame();
 
  private:
-  gui::Gui gui;
-  gui::InputListener guiListener;
-  gui::GuiRenderer guiRenderer;
   typedef std::chrono::duration<double, std::ratio<1>> Duration;
   std::chrono::system_clock::time_point oldTimePoint;
   std::chrono::system_clock::time_point simulatatedTime;

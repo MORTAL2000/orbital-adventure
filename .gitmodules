@@ -5,3 +5,7 @@
 [submodule "external/libRocket"]
 	path = external/libRocket
 	url = https://github.com/libRocket/libRocket
+[submodule "external/nanogui"]
+	path = external/nanogui
+	url = https://github.com/stavenko/nanogui
+	branch = master

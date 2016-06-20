@@ -16,14 +16,8 @@ find_package(PNG REQUIRED)
 find_package(GLEW REQUIRED)
 FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
-#set(ext_dir "${CMAKE_BINARY_DIR}/external")
-#set(librocket_dir "${ext_dir}/libRocket")
-#ExternalProject_Add(libRocket 
-#GIT_REPOSITORY https://github.com/libRocket/libRocket
-#SOURCE_DIR "${librocket_dir}"
-#)
 
-add_subdirectory(${OA_EXTS}/libRocket/Build)
+add_subdirectory(${OA_EXTS}/nanogui)
 set(rocket_includes ${OA_EXTS}/libRocket/Include)
 
 
@@ -46,15 +40,14 @@ add_executable(orbital-adventure
     ${GUI_SOURCE_FILES}
     ${OA_SOURCE_FILES}
     )
+
 set(libs ${OPENGL_LIBRARY} 
     ${Boost_LIBRARIES}
     ${PNG_LIBRARIES} 
     ${JPEG_LIBRARIES}
     ${GLEW_LIBRARIES} 
     ${GLFW_STATIC_LIBRARIES} 
-    RocketCore
-    RocketControls
-    RocketDebugger
+    nanogui
 )
 target_link_libraries(orbital-adventure ${libs})
 
