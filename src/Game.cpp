@@ -83,9 +83,10 @@ void Game::initSolarSystem() {
 
   cameraManager.setSolarSystem(solarSystem.get());
   glfw->addResolutionListener([&](int width, int height) {
-    std::cout << "RESOLUTION" << width << "x" << height << "\n";
+    std::cout << "AAAAAAA WTF! " << width << "x" << height << "\n";
     renderer.setViewportDimentions(width, height);
     cameraManager.setNewWindowDimensions(width, height);
+    gui.setDimentions(width, height);
   });
   for (auto f : creator.getRenderFilters()) {
     renderer.pushFilter(f);
@@ -123,9 +124,11 @@ void Game::mainLoop() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-     gui.render(timeDifff);
+    gui.render(timeDifff);
     glDisable(GL_BLEND);
-    //std::cout << timeDifff << "sec " << (1.f / timeDifff) << "fps\n";
+    // std::cout << timeDifff << "sec " << (1.f / timeDifff) << "fps\n";
+    //
+    
 
     glfw->endFrame();
     oldTimePoint = timePoint;

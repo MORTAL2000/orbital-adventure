@@ -1,6 +1,8 @@
 #include "Gui.hpp"
+#include <nanovg.h>
 #include <iostream>
 #include "GLFWWrapper.hpp"
+#include "ImageButton.hpp"
 
 namespace oa {
 namespace gui {
@@ -8,57 +10,80 @@ namespace gui {
 Gui::~Gui() {}
 Gui::Gui() {}
 
+void Gui::initBuilderWindow() {
+  using namespace nanogui;
+  builderWindow = new Widget(nanoguiScreen.get());
+  builderWindow->setVisible(false);
+  builderWindow->setPosition(Vector2i(0, 0));
+  builderWindow->setFixedSize(Vector2i(200, 200));
+  builderWindow->setLayout(new GroupLayout);
+  new Label(builderWindow, "Builder");
+}
+void Gui::initScienceWindow() {
+  using namespace nanogui;
+  scienceWindow = new Widget(nanoguiScreen.get());
+  scienceWindow->setVisible(false);
+  scienceWindow->setPosition(Vector2i(0, 0));
+  scienceWindow->setFixedSize(Vector2i(200, 200));
+  scienceWindow->setLayout(new GroupLayout);
+  new Label(scienceWindow, "Science", "sans-bold", 40);
+}
+
 void Gui::showView(std::string name) {}
 
 void Gui::setRenderer(render::Renderer *r) {}
 
-void Gui::render(float td) { nanoguiScreen->drawWidgets(); }
+void Gui::render(float td) {
+  using namespace nanogui;
+  mainButtonsPanel->setPosition(Vector2i(0, height - 32));
+  glGetError();
+  nanoguiScreen->drawWidgets();
+}
 
-void Gui::setDimentions(int w, int h) {}
+void Gui::setDimentions(int w, int h) {
+  width = w;
+  height = h;
+}
 input::InputListener *Gui::getInputListener() { return inputListener.get(); }
 
-enum test_enum { Item1 = 0, Item2, Item3 };
 void Gui::init() {
   using namespace nanogui;
   nanoguiScreen = std::make_unique<Screen>();
   auto glfwWindow = gl::GLFWWrapper::getInstance()->getWindow();
   nanoguiScreen->initialize(glfwWindow, false);
   inputListener = std::make_unique<InputListener>(nanoguiScreen.get());
+  initScienceWindow();
+  initBuilderWindow();
+
   // EXAMPLE
+  mainButtonsPanel = new Widget(nanoguiScreen.get());
+  auto techButton = new ImageButton(mainButtonsPanel);
+  auto builderButton = new ImageButton(mainButtonsPanel);
+  builderButton->setFixedSize(Vector2i(32, 32));
+  techButton->setFixedSize(Vector2i(32, 32));
+  mainButtonsPanel->setPosition(Vector2i(50, 50));
 
-  bool bvar = true;
-  int ivar = 12345678;
-  double dvar = 3.1415926;
-  float fvar = (float)dvar;
-  std::string strval = "A string";
-  test_enum enumval = Item2;
-  Color colval(0.5f, 0.5f, 0.7f, 1.f);
-  bool enabled = true;
+  techButton->setImage(nvgCreateImage(nanoguiScreen->nvgContext(),
+                                      "../data/gui/icons/science.png", 0));
+  builderButton->setImage(nvgCreateImage(nanoguiScreen->nvgContext(),
+                                         "../data/gui/icons/blueprint.png", 0));
+  techButton->setCallback([&]() {
+    auto sv = scienceWindow->visible();
+    std::cout << "AAAA" << sv << "\n";
+    scienceWindow->setVisible(!sv);
+    builderWindow->setVisible(false);
+  });
+  builderButton->setCallback([&]() {
+    auto bv = builderWindow->visible();
+    scienceWindow->setVisible(false);
+    builderWindow->setVisible(!bv);
+  });
 
-  FormHelper *gui = new FormHelper(nanoguiScreen.get());
-  ref<Window> window =
-      gui->addWindow(Eigen::Vector2i(10, 10), "Form helper example");
-  gui->addGroup("Basic types");
-  gui->addVariable("bool", bvar);
-  gui->addVariable("string", strval);
-
-  gui->addGroup("Validating fields");
-  gui->addVariable("int", ivar);
-  gui->addVariable("float", fvar);
-  gui->addVariable("double", dvar);
-
-  gui->addGroup("Complex types");
-  gui->addVariable("Enumeration", enumval, enabled)
-      ->setItems({"Item 1", "Item 2", "Item 3"});
-  gui->addVariable("Color", colval);
-
-  gui->addGroup("Other widgets");
-  gui->addButton("A button",
-                 []() { std::cout << "Button pressed." << std::endl; });
+  mainButtonsPanel->setLayout(
+      new BoxLayout(Orientation::Horizontal, Alignment::Maximum, 0, 2));
 
   nanoguiScreen->setVisible(true);
   nanoguiScreen->performLayout();
-  window->center();
 }
 }
 }
