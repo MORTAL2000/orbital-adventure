@@ -3,6 +3,7 @@
 #include <iostream>
 #include "GLFWWrapper.hpp"
 #include "ImageButton.hpp"
+#include "Panel.hpp"
 
 namespace oa {
 namespace gui {
@@ -10,15 +11,105 @@ namespace gui {
 Gui::~Gui() {}
 Gui::Gui() {}
 
+std::function<void()> getCallback(nanogui::Widget *show,
+                                  std::vector<nanogui::Widget *> hide) {
+  return []() {};
+}
+
 void Gui::initBuilderWindow() {
   using namespace nanogui;
   builderWindow = new Widget(nanoguiScreen.get());
   builderWindow->setVisible(false);
   builderWindow->setPosition(Vector2i(0, 0));
   builderWindow->setFixedSize(Vector2i(200, 200));
-  builderWindow->setLayout(new GroupLayout);
-  new Label(builderWindow, "Builder");
+  // Order important
+  auto rocketButton = new Button(builderWindow, "Rocket design");
+  initRocketWindow(builderWindow);
+  auto stageButton = new Button(builderWindow, "Stage editor");
+  initStageWindow(builderWindow);
+  auto payloadButton = new Button(builderWindow, "Payload design");
+  initPayloadWindow(builderWindow);
+  new Label(builderWindow, "LABEL");
+
+  builderWindow->setLayout(
+      new BoxLayout(Orientation::Vertical, Alignment::Minimum, 0, 0));
+
+  rocketButton->setCallback([this, rocketButton, stageButton, payloadButton]() {
+    GuiTypes types[] = {STAGE, ROCKET, PAYLOAD};
+    std::for_each(&types[0], &types[3], [&](auto ui) {
+      if (uiWindows.count(ui)) {
+        if (ui == ROCKET)
+          uiWindows[ui]->setVisible(true);
+        else
+          uiWindows[ui]->setVisible(false);
+      }
+    });
+    stageButton->setVisible(true);
+    payloadButton->setVisible(true);
+    rocketButton->setVisible(false);
+  });
+
+  stageButton->setCallback([this, rocketButton, stageButton, payloadButton]() {
+    GuiTypes types[] = {STAGE, ROCKET, PAYLOAD};
+    std::for_each(&types[0], &types[3], [&](auto ui) {
+      if (uiWindows.count(ui)) {
+        if (ui == STAGE)
+          uiWindows[ui]->setVisible(true);
+        else
+          uiWindows[ui]->setVisible(false);
+      }
+    });
+    stageButton->setVisible(false);
+    payloadButton->setVisible(true);
+    rocketButton->setVisible(true);
+  });
+
+  payloadButton->setCallback(
+      [this, rocketButton, stageButton, payloadButton]() {
+        GuiTypes types[] = {STAGE, ROCKET, PAYLOAD};
+        std::for_each(&types[0], &types[3], [&](auto ui) {
+          if (uiWindows.count(ui)) {
+            std::cout << " found payload\n";
+            if (ui == PAYLOAD) {
+              uiWindows[ui]->setVisible(true);
+            } else
+              uiWindows[ui]->setVisible(false);
+          }
+        });
+        stageButton->setVisible(true);
+        payloadButton->setVisible(false);
+        rocketButton->setVisible(true);
+      });
 }
+
+void Gui::initRocketWindow(nanogui::Widget *on) {
+  auto ui = ROCKET;
+  uiWindows[ui] = new Panel(on);
+  uiWindows[ui]->setVisible(false);
+  // uiWindows[ui]->setSize(Vector2i(50, 100));
+  uiWindows[ui]->setLayout(
+      new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+  new Label(uiWindows[ui], "ROCKET");
+}
+void Gui::initStageWindow(nanogui::Widget *on) {
+  auto ui = STAGE;
+  uiWindows[ui] = new Panel(on);
+  uiWindows[ui]->setVisible(false);
+  // uiWindows[ui]->setSize(Vector2i(50, 100));
+  uiWindows[ui]->setLayout(
+      new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+  new Label(uiWindows[ui], "STAGE");
+}
+void Gui::initPayloadWindow(nanogui::Widget *on) {
+  auto ui = PAYLOAD;
+  uiWindows[ui] = new Panel(on);
+  uiWindows[ui]->setVisible(false);
+  // uiWindows[ui]->setSize(Vector2i(50, 100));
+  uiWindows[ui]->setLayout(
+      new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
+  new Label(uiWindows[ui], "PAYLOAD");
+}
+
 void Gui::initScienceWindow() {
   using namespace nanogui;
   scienceWindow = new Widget(nanoguiScreen.get());
@@ -37,6 +128,7 @@ void Gui::render(float td) {
   using namespace nanogui;
   mainButtonsPanel->setPosition(Vector2i(0, height - 32));
   glGetError();
+  nanoguiScreen->performLayout(nanoguiScreen->nvgContext());
   nanoguiScreen->drawWidgets();
 }
 
