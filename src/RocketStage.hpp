@@ -27,6 +27,7 @@ class RocketStage {
     Shape shape;
     float width;  // ширина стенки
     glm::vec3 drainPoint;
+    float drainDiameter;
   };
 
   class Engine {
@@ -49,7 +50,7 @@ class RocketStage {
 
   // Stageform is defined by formfactor and several interpolated bezier curves
   Shape stageForm;
-  std::vector<Tank> fuelTanks;  // fuel tanks are shapes within rocket;
+  std::vector<Tank> fuelTanks;
   std::vector<Mount> mounts;
   std::vector<Device> devices;
   std::vector<EnginePlacement> engines;
