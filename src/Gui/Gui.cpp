@@ -86,7 +86,6 @@ void Gui::initRocketWindow(nanogui::Widget *on) {
   auto ui = ROCKET;
   uiWindows[ui] = new Panel(on);
   uiWindows[ui]->setVisible(false);
-  // uiWindows[ui]->setSize(Vector2i(50, 100));
   uiWindows[ui]->setLayout(
       new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
   new Label(uiWindows[ui], "ROCKET");
@@ -95,7 +94,6 @@ void Gui::initStageWindow(nanogui::Widget *on) {
   auto ui = STAGE;
   uiWindows[ui] = new Panel(on);
   uiWindows[ui]->setVisible(false);
-  // uiWindows[ui]->setSize(Vector2i(50, 100));
   uiWindows[ui]->setLayout(
       new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
   new Label(uiWindows[ui], "STAGE");
@@ -104,7 +102,6 @@ void Gui::initPayloadWindow(nanogui::Widget *on) {
   auto ui = PAYLOAD;
   uiWindows[ui] = new Panel(on);
   uiWindows[ui]->setVisible(false);
-  // uiWindows[ui]->setSize(Vector2i(50, 100));
   uiWindows[ui]->setLayout(
       new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
   new Label(uiWindows[ui], "PAYLOAD");
