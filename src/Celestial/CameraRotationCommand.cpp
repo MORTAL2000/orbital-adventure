@@ -4,7 +4,7 @@ namespace game {
 CameraRotationCommand::CameraRotationCommand(CelestialCameraManager *c,
                                              glm::vec3 pd, glm::vec3 cd,
                                              glm::vec3 up)
-    : cameraMgrPtr(c), posDir(pd), camDir(cd), up(up) {}
+    : posDir(pd), camDir(cd), up(up), cameraMgrPtr(c) {}
 void CameraRotationCommand::execute() {
   cameraMgrPtr->setRotationAndDistance(camDir, posDir, up);
 }

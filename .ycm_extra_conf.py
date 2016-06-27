@@ -36,6 +36,8 @@ import ycm_core
 flags = [
     '-x',
     'c++',
+    '-Wall',
+    '-Wextra',
     '-DNDEBUG',
     '-DRocketControls_EXPORTS',
     '-DRocketCore_EXPORTS',

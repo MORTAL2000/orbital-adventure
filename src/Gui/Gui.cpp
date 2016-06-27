@@ -2,8 +2,11 @@
 #include <nanovg.h>
 #include <iostream>
 #include "GLFWWrapper.hpp"
-#include "ImageButton.hpp"
-#include "Panel.hpp"
+#include "PayloadForm.hpp"
+#include "RocketForm.hpp"
+#include "StageForm.hpp"
+#include "widgets/ImageButton.hpp"
+#include "widgets/Panel.hpp"
 
 namespace oa {
 namespace gui {
@@ -11,17 +14,12 @@ namespace gui {
 Gui::~Gui() {}
 Gui::Gui() {}
 
-std::function<void()> getCallback(nanogui::Widget *show,
-                                  std::vector<nanogui::Widget *> hide) {
-  return []() {};
-}
-
 void Gui::initBuilderWindow() {
   using namespace nanogui;
-  builderWindow = new Widget(nanoguiScreen.get());
+  builderWindow = new Window(nanoguiScreen.get(), "");
   builderWindow->setVisible(false);
   builderWindow->setPosition(Vector2i(0, 0));
-  builderWindow->setFixedSize(Vector2i(200, 200));
+  //builderWindow->setFixedSize(Vector2i(200, 200));
   // Order important
   auto rocketButton = new Button(builderWindow, "Rocket design");
   initRocketWindow(builderWindow);
@@ -39,9 +37,9 @@ void Gui::initBuilderWindow() {
     std::for_each(&types[0], &types[3], [&](auto ui) {
       if (uiWindows.count(ui)) {
         if (ui == ROCKET)
-          uiWindows[ui]->setVisible(true);
+          uiWindows[ui]->show();
         else
-          uiWindows[ui]->setVisible(false);
+          uiWindows[ui]->hide();
       }
     });
     stageButton->setVisible(true);
@@ -54,9 +52,9 @@ void Gui::initBuilderWindow() {
     std::for_each(&types[0], &types[3], [&](auto ui) {
       if (uiWindows.count(ui)) {
         if (ui == STAGE)
-          uiWindows[ui]->setVisible(true);
+          uiWindows[ui]->show();
         else
-          uiWindows[ui]->setVisible(false);
+          uiWindows[ui]->hide();
       }
     });
     stageButton->setVisible(false);
@@ -71,9 +69,9 @@ void Gui::initBuilderWindow() {
           if (uiWindows.count(ui)) {
             std::cout << " found payload\n";
             if (ui == PAYLOAD) {
-              uiWindows[ui]->setVisible(true);
+              uiWindows[ui]->show();
             } else
-              uiWindows[ui]->setVisible(false);
+              uiWindows[ui]->hide();
           }
         });
         stageButton->setVisible(true);
@@ -84,27 +82,15 @@ void Gui::initBuilderWindow() {
 
 void Gui::initRocketWindow(nanogui::Widget *on) {
   auto ui = ROCKET;
-  uiWindows[ui] = new Panel(on);
-  uiWindows[ui]->setVisible(false);
-  uiWindows[ui]->setLayout(
-      new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
-  new Label(uiWindows[ui], "ROCKET");
+  uiWindows[ui] = new RocketForm(on);
 }
 void Gui::initStageWindow(nanogui::Widget *on) {
   auto ui = STAGE;
-  uiWindows[ui] = new Panel(on);
-  uiWindows[ui]->setVisible(false);
-  uiWindows[ui]->setLayout(
-      new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
-  new Label(uiWindows[ui], "STAGE");
+  uiWindows[ui] = new StageForm(on);
 }
 void Gui::initPayloadWindow(nanogui::Widget *on) {
   auto ui = PAYLOAD;
-  uiWindows[ui] = new Panel(on);
-  uiWindows[ui]->setVisible(false);
-  uiWindows[ui]->setLayout(
-      new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 6));
-  new Label(uiWindows[ui], "PAYLOAD");
+  uiWindows[ui] = new PayloadForm(on);
 }
 
 void Gui::initScienceWindow() {

@@ -3,7 +3,7 @@ project(OA C CXX)
 include(ExternalProject)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wno-deprecated -Wno-deprecated-declarations -Wall -Wextra")
 set(OA_SOURCES ${OA_SOURCE_DIR}/src)
 set(OA_EXTS ${OA_SOURCE_DIR}/external)
 
@@ -26,6 +26,7 @@ file(GLOB OA_SOURCE_FILES ${OA_SOURCES}/*.cpp)
 file(GLOB ENGINE_SOURCE_FILES ${OA_SOURCES}/engine/src/*.cpp) 
 file(GLOB Celestial_SOURCE_FILES ${OA_SOURCES}/Celestial/*.cpp) 
 file(GLOB GUI_SOURCE_FILES ${OA_SOURCES}/Gui/*.cpp) 
+file(GLOB GUIW_SOURCE_FILES ${OA_SOURCES}/Gui/widgets/*.cpp) 
 set(EngineIncludes ${OA_SOURCES}/engine/)
 
 include_directories(
@@ -41,6 +42,7 @@ add_executable(orbital-adventure
     ${ENGINE_SOURCE_FILES}
     ${Celestial_SOURCE_FILES}
     ${GUI_SOURCE_FILES}
+    ${GUIW_SOURCE_FILES}
     ${OA_SOURCE_FILES}
     )
 

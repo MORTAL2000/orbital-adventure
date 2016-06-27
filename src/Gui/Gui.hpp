@@ -4,6 +4,7 @@
 #include <map>
 #include "../engine/Renderer.hpp"
 #include "InputListener.hpp"
+#include "View.hpp"
 
 namespace oa {
 namespace gui {
@@ -30,7 +31,7 @@ class Gui {
   nanogui::Widget *mainButtonsPanel;
   nanogui::Widget *builderWindow;
   nanogui::Widget *scienceWindow;
-  std::map<GuiTypes, nanogui::Widget *> uiWindows;
+  std::map<GuiTypes, View *> uiWindows;
 
   void initBuilderWindow();
   void initScienceWindow();
