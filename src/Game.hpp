@@ -21,7 +21,7 @@ class Game : public CommandAcceptor {
   void stopGame();
 
  private:
-  gui::Gui gui;
+  gui::Gui *gui;
   typedef std::chrono::duration<double, std::ratio<1>> Duration;
   std::chrono::system_clock::time_point oldTimePoint;
   std::chrono::system_clock::time_point simulatatedTime;

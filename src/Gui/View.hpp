@@ -1,10 +1,19 @@
-#pragma once
+#include <Awesomium/WebView.h>
+#include "TextureStreamer.hpp"
 namespace oa {
 namespace gui {
-struct View {
-  virtual ~View(){};
-  virtual void show() = 0;
-  virtual void hide() = 0;
+class View {
+  Awesomium::WebView *view;
+  render::TextureStreamer *streamer;
+  unsigned char *textureData;
+
+ public:
+  View(std::string url, int width, int height);
+  void resize(int, int);
+  void update();
+  bool textureRecreated();
+  render::Uniform *getUniform();
+  ~View();
 };
 }
 }

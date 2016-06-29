@@ -11,11 +11,18 @@
 #include <thread>
 #include <jpeglib.h>
 #include "TextureManager.hpp"
+#include "TextureStreamer.hpp"
 // clang-format on
 
 namespace oa {
 namespace render {
 TextureManager::TextureManager() {}
+
+TextureStreamer* TextureManager::createStreamer(int width, int height,
+                                                int type) {
+  auto streamer = new TextureStreamer(width, height, type);
+  return streamer;
+}
 
 GLuint TextureManager::loadTexture(std::string filepath) {
   if (loadedTextures.count(filepath)) {

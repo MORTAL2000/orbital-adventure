@@ -16,8 +16,10 @@ using namespace std::chrono;
 using namespace utils;
 
 Game::Game()
-    : simulatatedTime(std::chrono::system_clock::now()),
+    : gui(new gui::Gui("../data")),
       oldTimePoint(std::chrono::system_clock::now()),
+      simulatatedTime(std::chrono::system_clock::now()),
+
       isPlaying(true),
       glfw(oa::gl::GLFWWrapper::getInstance()) {}
 
@@ -46,8 +48,8 @@ void Game::initCommandsInf() {
   glfw->registerInputListener(cm);
   providers.push_back(std::unique_ptr<CommandProvider>(cm));
 
-  gui.init();
-  glfw->registerInputListener(gui.getInputListener());
+  gui->init();
+  glfw->registerInputListener(gui->getInputListener());
 }
 
 void Game::stopGame() { isPlaying = false; }
@@ -83,10 +85,9 @@ void Game::initSolarSystem() {
 
   cameraManager.setSolarSystem(solarSystem.get());
   glfw->addResolutionListener([&](int width, int height) {
-    std::cout << "AAAAAAA WTF! " << width << "x" << height << "\n";
     renderer.setViewportDimentions(width, height);
     cameraManager.setNewWindowDimensions(width, height);
-    gui.setDimentions(width, height);
+    gui->setDimentions(width, height);
   });
   for (auto f : creator.getRenderFilters()) {
     renderer.pushFilter(f);
@@ -107,8 +108,8 @@ void Game::mainLoop() {
     float timeDifff = duration_cast<Duration>(timeDiff).count();
     simulatatedTime +=
         system_clock::duration(uint64_t(timeDiff.count() * timeMultiplier));
-    auto tt = system_clock::to_time_t(simulatatedTime);
-    auto tm = localtime(&tt);
+    // auto tt = system_clock::to_time_t(simulatatedTime);
+    // auto tm = localtime(&tt);
     solarSystem->updatePlanets(simulatatedTime);
     for (auto &p : providers) p->update(timeDifff);
 
@@ -124,11 +125,10 @@ void Game::mainLoop() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    gui.render(timeDifff);
+    gui->render(timeDifff);
     glDisable(GL_BLEND);
     // std::cout << timeDifff << "sec " << (1.f / timeDifff) << "fps\n";
     //
-    
 
     glfw->endFrame();
     oldTimePoint = timePoint;

@@ -1,53 +1,37 @@
 #pragma once
 #undef NDEBUG
-#include <nanogui/nanogui.h>
+//#include <nanogui/nanogui.h>
+#include <Awesomium/WebCore.h>
+#include <Awesomium/WebView.h>
 #include <map>
 #include "../engine/Renderer.hpp"
+#include "Filter.hpp"
 #include "InputListener.hpp"
 #include "View.hpp"
 
 namespace oa {
 namespace gui {
 class Gui {
-  enum GuiTypes {
-    STAGE,
-    ROCKET,
-    PAYLOAD,
-    STAGE_FORM,
-    STAGE_ENGINE,
-    STAGE_TANKS,
-    STAGE_STRUCTURE,
-    STAGE_DEVICES,
-    ROCKET_DESIGN,
-    PAYLOD_FORM,
-    PAYLOAD_TANKS,
-    PAYLOAD_DEVICES
-  };
-  std::map<std::string, std::string> viewMap;
-  const std::string guiRendererTarget;
-  std::unique_ptr<nanogui::Screen> nanoguiScreen;
+  std::string dataRoot;
   std::unique_ptr<InputListener> inputListener;
   int width, height;
-  nanogui::Widget *mainButtonsPanel;
-  nanogui::Widget *builderWindow;
-  nanogui::Widget *scienceWindow;
-  std::map<GuiTypes, View *> uiWindows;
+  Awesomium::WebCore *webcore;
+  View *view;
+  render::Filter *filter;
+  struct GuiUniformInstaller : public render::UniformInstaller {
+    Gui *gui;
+    void install(render::UniformHolder *to, const render::Camera *, double);
+    GuiUniformInstaller(Gui *);
+  };
 
-  void initBuilderWindow();
-  void initScienceWindow();
-
-  void initRocketWindow(nanogui::Widget *);
-  void initStageWindow(nanogui::Widget *);
-  void initPayloadWindow(nanogui::Widget *);
-
-  void initStageTanksindow();
-  void initStageEngineWindow();
-  void initStageStructureWindow();
-  void initStageDevices();
+ private:
+  render::Uniform *getGuiTextureUniform();
+  friend void GuiUniformInstaller::install(render::UniformHolder *,
+                                           const render::Camera *, double);
 
  public:
   ~Gui();
-  Gui();
+  Gui(std::string dataRoot);
   void init();
   void setRenderer(render::Renderer *renderer);
   input::InputListener *getInputListener();
