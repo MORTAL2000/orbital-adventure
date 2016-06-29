@@ -45,6 +45,7 @@ flags = [
     '-Iexternal/libRocket/Build/../Include',
     '-Iexternal/libRocket/Include',
     '-Iexternal/nanogui/include',
+    '-Iexternal/awesomium/include',
     '-Iexternal/nanogui/ext/nanovg/src',
     '-Isrc/engine',
     '-I/usr/include/freetype2',
