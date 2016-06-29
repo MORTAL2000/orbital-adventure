@@ -3,6 +3,7 @@
 #include <Awesomium/STLHelpers.h>
 #include <Awesomium/WebCore.h>
 #include <Awesomium/WebURL.h>
+#include <iostream>
 
 namespace oa {
 namespace gui {
@@ -20,6 +21,10 @@ View::View(std::string url, int w, int h) {
 
 void View::update() {
   BitmapSurface* texture = static_cast<BitmapSurface*>(view->surface());
+  if (!texture) {
+    std::cout << "no surface returned\n";
+    return;
+  }
   auto buffer = texture->buffer();
   streamer->update(buffer);
 }

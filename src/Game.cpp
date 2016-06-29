@@ -49,6 +49,7 @@ void Game::initCommandsInf() {
   providers.push_back(std::unique_ptr<CommandProvider>(cm));
 
   gui->init();
+  gui->setRenderer(&renderer);
   glfw->registerInputListener(gui->getInputListener());
 }
 

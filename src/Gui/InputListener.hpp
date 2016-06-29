@@ -1,10 +1,11 @@
-#include <nanogui/screen.h>
+#pragma once
 #include "../engine/InputListener.hpp"
+#include "View.hpp"
 
 namespace oa {
 namespace gui {
 class InputListener : public input::InputListener {
-  nanogui::Screen *screen;
+  View *view;
   void onMouseMove(glm::vec2) override;
   void onMouseUp(int, int) override;
   void onMouseDown(int, int) override;
@@ -15,7 +16,7 @@ class InputListener : public input::InputListener {
   void resize(int, int) override;
 
  public:
-  InputListener(nanogui::Screen *);
+  InputListener(View *);
 };
 }
 }

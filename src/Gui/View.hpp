@@ -1,3 +1,4 @@
+#pragma once
 #include <Awesomium/WebView.h>
 #include "TextureStreamer.hpp"
 namespace oa {
