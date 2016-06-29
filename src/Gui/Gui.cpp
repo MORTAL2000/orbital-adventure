@@ -14,6 +14,7 @@ void Gui::GuiUniformInstaller::install(render::UniformHolder *to,
                                        const render::Camera *, double) {
   auto v = gui->view;
   if (v->textureRecreated()) {
+    std::cout << "-----GET NEW\n";
     to->setUniformValue("guiTexture", v->getUniform());
     to->setUniformValue(
         "viewportResolution",
@@ -33,7 +34,7 @@ void Gui::setRenderer(render::Renderer *r) {
   p /= "gui/guiRenderer.glsl";
   filter = new render::Filter(p.string());
   filter->addUniformInstaller(new Gui::GuiUniformInstaller(this));
-  view = new View("data:text/html, <html>Hello world</html>", width, height);
+  view = new View("data:text/html, <b> FSDSDF</b> Whhhh", width, height);
   inputListener = std::make_unique<InputListener>(view);
   r->pushFilter(filter);
 }
