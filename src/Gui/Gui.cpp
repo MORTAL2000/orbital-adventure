@@ -34,7 +34,7 @@ void Gui::setRenderer(render::Renderer *r) {
   p /= "gui/guiRenderer.glsl";
   filter = new render::Filter(p.string());
   filter->addUniformInstaller(new Gui::GuiUniformInstaller(this));
-  view = new View("data:text/html, <b> FSDSDF</b> Whhhh", width, height);
+  view = new View("https://www.yandex.ru", width, height);
   inputListener = std::make_unique<InputListener>(view);
   r->pushFilter(filter);
 }
