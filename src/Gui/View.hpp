@@ -13,6 +13,11 @@ class View {
   Awesomium::WebView *view;
   render::TextureStreamer *streamer;
   unsigned char *textureData;
+  int lastScanCode;
+  int lastVirtualKeyCode;
+  int lastMods;
+  char *buffer = nullptr;
+
 
  public:
   void injectMouseMove(int, int);
@@ -21,6 +26,7 @@ class View {
   void injectMouseWheel(int, int);
   void injectKeyboardUp(int, int, int);
   void injectKeyboardDown(int, int, int);
+  void injectChar(unsigned int);
 
   View(std::string url, int width, int height);
   void resize(int, int);

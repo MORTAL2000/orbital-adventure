@@ -20,7 +20,9 @@ void InputListener::onKeyDown(int k, int s, int m) {
   view->injectKeyboardDown(k, s, m);
   std::cout << "down " << k << "\n";
 }
-void InputListener::onChar(unsigned int ch) { std::cout << "oc" << ch << "\n"; }
+void InputListener::onChar(unsigned int ch) { 
+  view->injectChar(ch);
+  std::cout << "oc" << ch << "\n"; }
 void InputListener::resize(int w, int h) {}
 }
 }

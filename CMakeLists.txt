@@ -17,8 +17,6 @@ find_package(GLEW REQUIRED)
 FIND_PACKAGE (Boost COMPONENTS filesystem system REQUIRED)
 
 
-add_subdirectory(${OA_EXTS}/nanogui)
-set(nanogui_includes ${OA_EXTS}/nanogui/include)
 
 if(APPLE)
     message(STATUS "Prepare Awesonium for mac os x")
@@ -38,14 +36,12 @@ file(GLOB OA_SOURCE_FILES ${OA_SOURCES}/*.cpp)
 file(GLOB ENGINE_SOURCE_FILES ${OA_SOURCES}/engine/src/*.cpp) 
 file(GLOB Celestial_SOURCE_FILES ${OA_SOURCES}/Celestial/*.cpp) 
 file(GLOB GUI_SOURCE_FILES ${OA_SOURCES}/Gui/*.cpp) 
-file(GLOB GUIW_SOURCE_FILES ${OA_SOURCES}/Gui/widgets/*.cpp) 
 set(EngineIncludes ${OA_SOURCES}/engine/)
 
 include_directories(
     ${GLFW_INCLUDE_DIRS}
     ${nanogui_includes}
     ${EngineIncludes}
-     ${NANOGUI_EXTRA_INCS}
     )
 
 link_directories(${AWESONIUM_PATH})
@@ -53,7 +49,6 @@ add_executable(orbital-adventure
     ${ENGINE_SOURCE_FILES}
     ${Celestial_SOURCE_FILES}
     ${GUI_SOURCE_FILES}
-    ${GUIW_SOURCE_FILES}
     ${OA_SOURCE_FILES}
     )
 
@@ -64,7 +59,6 @@ set(libs ${OPENGL_LIBRARY}
     ${GLEW_LIBRARIES} 
     ${GLFW_STATIC_LIBRARIES} 
     ${AWESONIUM_LIBS} 
-    nanogui
 )
 message(DEBUG ${AWESONIUM_PATH})
 

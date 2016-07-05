@@ -28,6 +28,18 @@ void View::injectMouseDown(int k) {
   }
   // clang-format on
 }
+void View::injectChar(unsigned int ch){
+  Awesomium::WebKeyboardEvent event;
+  event.type = Awesomium::WebKeyboardEvent::kTypeChar;
+  event.text[0] = ch;
+  event.unmodified_text[0] = ch;
+  event.virtual_key_code = lastVirtualKeyCode;
+  event.native_key_code = lastScanCode;
+  strcpy(event.key_identifier, buffer);
+
+  view->InjectKeyboardEvent(event);
+
+}
 void View::injectMouseMove(int x, int y) { view->InjectMouseMove(x, y); }
 void View::injectMouseWheel(int x, int y) { view->InjectMouseWheel(y, x); }
 
@@ -35,6 +47,7 @@ void View::injectKeyboardUp(int k, int scancode, int mod) {
   Awesomium::WebKeyboardEvent event;
   event.type = Awesomium::WebKeyboardEvent::kTypeKeyUp;
   event.virtual_key_code = glfw2Awesomium(k);
+  event.native_key_code = scancode;
   char* buf = new char[20];
   Awesomium::GetKeyIdentifierFromVirtualKeyCode(event.virtual_key_code, &buf);
   strcpy(event.key_identifier, buf);
@@ -47,12 +60,21 @@ void View::injectKeyboardDown(int k, int scancode, int mod) {
   Awesomium::WebKeyboardEvent event;
   event.type = Awesomium::WebKeyboardEvent::kTypeKeyDown;
   event.virtual_key_code = glfw2Awesomium(k);
-  char* buf = new char[20];
-  Awesomium::GetKeyIdentifierFromVirtualKeyCode(event.virtual_key_code, &buf);
-  strcpy(event.key_identifier, buf);
+  //if(k == GLFW_KEY_BACKSPACE){
+    //std::cout << "send backspace~";
+    //event.virtual_key_code = 
+  //}
+  event.native_key_code = scancode;
+  if(buffer) delete[]buffer;
+  buffer = new char[20];
+  Awesomium::GetKeyIdentifierFromVirtualKeyCode(event.virtual_key_code, &buffer);
+  strcpy(event.key_identifier, buffer);
   event.modifiers = mod;
+  lastMods = mod;
+  lastScanCode = scancode;
+  lastVirtualKeyCode = event.virtual_key_code;
+
   view->InjectKeyboardEvent(event);
-  delete[] buf;
 }
 
 bool View::textureRecreated() { return streamer->isChanged(); }
@@ -114,8 +136,22 @@ int glfw2Awesomium(int key) {
     map_key(X, X)
     map_key(Y, Y)
     map_key(Z, Z)
+    map_key(BACKSPACE, BACK)
+    map_key(TAB, TAB)
+    map_key(SPACE, SPACE)
+    map_key(DELETE, DELETE)
+
+    map_key(UP, UP)
+    map_key(DOWN, DOWN)
+    map_key(RIGHT, RIGHT)
+    map_key(LEFT, LEFT)
+    map_key(INSERT, INSERT)
+    map_key(HOME, HOME)
+    map_key(END, END)
+    map_key(PAGE_UP, PRIOR)
+    map_key(PAGE_DOWN, NEXT)
     // clang-format on
-  }
-}
-}
-}
+  }    
+}      
+}      
+}      

@@ -34,7 +34,10 @@ void Gui::setRenderer(render::Renderer *r) {
   p /= "gui/guiRenderer.glsl";
   filter = new render::Filter(p.string());
   filter->addUniformInstaller(new Gui::GuiUniformInstaller(this));
-  view = new View("https://www.yandex.ru", width, height);
+  //auto url = "https://www.google.ru/maps";
+  auto url = "http://openstreetmap.ru/#map=3/62/88";
+
+  view = new View(url, width, height);
   inputListener = std::make_unique<InputListener>(view);
   r->pushFilter(filter);
 }
