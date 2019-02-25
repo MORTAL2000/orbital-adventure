@@ -1,7 +1,3 @@
-[submodule "data"]
-	path = data
-	url = https://github.com/stavenko/orbital-adventure-data.git
-	branch = master
 [submodule "external/nanogui"]
 	path = external/nanogui
 	url = https://github.com/stavenko/nanogui
